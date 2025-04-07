@@ -35,4 +35,13 @@ public class PostController {
 
         return new ResponseEntity<>(postList, HttpStatus.OK);
     }
+
+    //특정 게시글 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<PostResponseDto> findById(@PathVariable Long id) {
+
+        PostResponseDto findedById = postService.findById(id);
+
+        return new ResponseEntity<>(findedById, HttpStatus.OK);
+    }
 }

@@ -34,4 +34,12 @@ public class PostService {
                 .map(PostResponseDto::findAll)
                 .toList();
     }
+
+    //특정 게시글 조회
+    public PostResponseDto findById(Long id) {
+
+        Post findedById = postRepository.findByIdOrElseThrow(id);
+
+        return new PostResponseDto(findedById);
+    }
 }
