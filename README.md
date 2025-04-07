@@ -1,1 +1,1 @@
-# NewSfeed
+# NewsFeed
