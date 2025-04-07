@@ -17,7 +17,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class LoginController {
 
-    @PostMapping
+    @PostMapping("/login")
     public ResponseEntity<Map<String,String>> login (LoginRequestDto dto, HttpServletRequest request){
 
         LoginResponseDto responseDto = loginService.login(dto.getEmail(), dto.getPassword());
@@ -30,6 +30,18 @@ public class LoginController {
         session.setAttribute(Const.LOGIN_USER, "loginUser");
 
         return new ResponseEntity<>(Map.of("message", "로그인에 성공하였습니다."), HttpStatus.OK);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String,String>> logout (HttpServletRequest request){
+
+        HttpSession session = request.getSession(false);
+
+        if(session != null){
+            session.invalidate();
+        }
+
+        return new ResponseEntity<>(Map.of("message", "로그아웃하였습니다."),HttpStatus.OK);
     }
 
 
