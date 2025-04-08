@@ -1,12 +1,12 @@
 package org.example.newsfeed.comment.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
-@Getter
-@AllArgsConstructor
+@Data
 public class CommentSaveRequestDto {
 
+    @NotBlank(message = "내용을 입력하세요")
     private String content;
 
 }
