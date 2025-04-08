@@ -13,7 +13,7 @@ public class FollowResponseDto {
     }
 
     public static FollowResponseDto toDto(Follow follow){
-        return new FollowResponseDto(follow.getFollowusers().getName());
+        return new FollowResponseDto(follow.getFollowUsers().getName());
     }
 
 }

@@ -31,7 +31,16 @@ public class FollowController {
         return new ResponseEntity<>(Map.of("message", "팔로우 하였습니다."), HttpStatus.CREATED);
     }
 
+    @PutMapping
+    public ResponseEntity<Map<String,String>> updateFollow(
+            @PathVariable Long followId,
+            HttpSession session ) {
+        UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
 
+        followService.saveFollow(followId, loginUser.getId());
+
+        return new ResponseEntity<>(Map.of("message", "팔로우 하였습니다."), HttpStatus.CREATED);
+    }
 
 
 
