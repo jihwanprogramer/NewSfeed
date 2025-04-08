@@ -6,8 +6,9 @@ import java.util.List;
 
 public interface FollowService {
 
-    void saveFollow(Long followId, Long followingId);
-    boolean updateFollow(Long followId, Long followingId);
+    void saveFollow(Long followerId, Long followingId);
+    boolean updateFollow(Long followerId, Long followingId);
     List<FollowResponseDto> findFollowingsByMyId(Long myId);
     List<FollowResponseDto> findFollowersByMyId(Long myId);
+    boolean existFollowTrue (Long followerId, Long followingId);
 }

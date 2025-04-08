@@ -65,5 +65,13 @@ public class FollowServiceImpl implements FollowService{
         return followRepository.findByFollowingUsers(users).stream().map(FollowResponseDto::toDto).toList();
     }
 
+    @Override
+    public boolean existFollowTrue(Long followerId, Long followingId) {
+
+        Users followingUsers = userRepository.findUserByIdOrElseThrow(followerId);
+        Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUsers(followerId, followingUsers);
+        return optionalFollow.isPresent() && optionalFollow.get().isFollowYN();
+    }
+
 
 }
