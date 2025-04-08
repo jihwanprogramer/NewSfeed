@@ -54,4 +54,12 @@ public class PostController {
 
         return new ResponseEntity<>(update, HttpStatus.OK);
     }
+
+    //특정 게시글 삭제
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+
+        postService.delete(id);
+
+    }
 }

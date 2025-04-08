@@ -71,4 +71,12 @@ public class PostService {
 
         return new PostResponseDto(findedPost);
     }
+
+    //특정 게시물 삭제
+    public void delete(Long id) {
+
+        Post findedPost = postRepository.findByIdOrElseThrow(id);
+
+        postRepository.delete(findedPost);
+    }
 }
