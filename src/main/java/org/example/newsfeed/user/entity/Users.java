@@ -24,4 +24,16 @@ public class Users extends BaseEntity{
 
     @Column(nullable = false)
     private String password;
+
+    protected Users() {
+
+    }
+    public Users(String name, Integer age, String email, String password) {
+        this.name = name;
+        this.age = age;
+        this.email=email;
+        this.password=password;
+    }
+
+
 }
