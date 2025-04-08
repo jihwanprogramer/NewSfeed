@@ -95,11 +95,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUser(Long id, String password) {
 
         Users findUser = userRepository.findUserByIdOrElseThrow(id);
 
+        if (!passwordEncoder.matches(password,findUser.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"원래의 비밀번호가 일치하지 않습니다.");
+        }
         userRepository.delete(findUser);
-
     }
 }
