@@ -3,9 +3,6 @@ package org.example.newsfeed.post.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.example.newsfeed.post.dto.CreateRequestDto;
-import org.example.newsfeed.post.dto.PostResponseDto;
-
-import java.util.List;
 
 @Entity
 @Getter
