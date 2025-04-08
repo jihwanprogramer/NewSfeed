@@ -35,7 +35,7 @@ public class LoginController {
 
         UserResponseDto loginUser = userService.findUserById(userId);
 
-        session.setAttribute(Const.LOGIN_USER, "loginUser");
+        session.setAttribute(Const.LOGIN_USER, loginUser);
 
         return new ResponseEntity<>(Map.of("message", "로그인에 성공하였습니다."), HttpStatus.OK);
     }
