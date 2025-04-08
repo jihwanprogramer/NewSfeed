@@ -4,9 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.entity.Users;
 import org.example.newsfeed.user.repository.UserRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,14 +25,17 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public List<UserResponseDto> findUserByName(String name) {
 
+        return userRepository.findUserByName(name).stream().map(UserResponseDto::new).toList();
 
+    }
 
     @Override
     public UserResponseDto findUserById(Long id) {
 
-        Users findUser = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "유저가 없습니다"));
+        Users findUser = userRepository.findUserByIdOrElseThrow(id);
 
         return new UserResponseDto(findUser.getId(), findUser.getName(), findUser.getAge(), findUser.getCreatedAt(),
                 findUser.getModifiedAt());
