@@ -26,7 +26,7 @@ public class LoginController {
     private final LoginService loginService;
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String,String>> login ( LoginRequestDto dto, HttpServletRequest request){
+    public ResponseEntity<Map<String,String>> login (@Valid @RequestBody LoginRequestDto dto, HttpServletRequest request){
 
         LoginResponseDto responseDto = loginService.login(dto.getEmail(), dto.getPassword());
         Long userId =responseDto.getId();
@@ -35,7 +35,7 @@ public class LoginController {
 
         UserResponseDto loginUser = userService.findUserById(userId);
 
-        session.setAttribute(Const.LOGIN_USER, "loginUser");
+        session.setAttribute(Const.LOGIN_USER, loginUser);
 
         return new ResponseEntity<>(Map.of("message", "로그인에 성공하였습니다."), HttpStatus.OK);
     }
