@@ -36,10 +36,12 @@ public class UserServiceImpl implements UserService {
 
     }
 
+
     @Override
     public List<UserResponseDto> findUserByName(String name) {
 
-        return userRepository.findUserByName(name).stream().map(UserResponseDto::new).toList();
+        return userRepository.findUserByName(name).stream()
+                .map(UserResponseDto::new).toList();
 
     }
 
@@ -71,17 +73,24 @@ public class UserServiceImpl implements UserService {
             findUser.setEmail(email);
         }
 
+        // 셋 다 넣지 않으면 변경 불가
         if (password != null && newPassword != null && checkNewPassword != null) {
-            if (!passwordEncoder.matches(password,findUser.getPassword()) && !newPassword.equals(checkNewPassword)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"비밀번호가 일치하지 않습니다.");
+
+            if (!passwordEncoder.matches(password,findUser.getPassword())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"원래의 비밀번호가 일치하지 않습니다.");
             }
-            findUser.setPassword(newPassword);
+
+            if (!newPassword.equals(checkNewPassword)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "새로운 비밀번호와 새로운 비밀번호 확인이 일치하지 않습니다.");
+            }
+            findUser.setPassword(passwordEncoder.encode(newPassword));
         }
 
         userRepository.save(findUser);
 
         return new UpdateUserResponseDto(findUser.getId(), findUser.getName(), findUser.getAge(),
-                findUser.getEmail(),findUser.getPassword(),findUser.getCreatedAt(),findUser.getModifiedAt());
+                findUser.getEmail(),newPassword,findUser.getCreatedAt(),findUser.getModifiedAt());
 
     }
 
