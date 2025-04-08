@@ -6,7 +6,6 @@ import org.example.newsfeed.user.dto.UpdateUserResponseDto;
 import org.example.newsfeed.user.dto.UserRequestDto;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.service.UserService;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +19,7 @@ public class UserController {
 
     private final UserService userService;
 
+    // 회원가입
     @PostMapping
     public ResponseEntity<UserResponseDto> signUp(@RequestBody UserRequestDto userRequestDto) {
 
@@ -29,7 +29,8 @@ public class UserController {
         return new ResponseEntity<>(userResponseDto,HttpStatus.CREATED);
 
     }
-    // 미완성 상태 다시 해야 함
+
+    // 이름으로 유저 조회
     @GetMapping
     public ResponseEntity<List<UserResponseDto>> findUserByName(@RequestParam("name") String name) {
 
@@ -39,6 +40,7 @@ public class UserController {
         
     }
 
+    // 아이디로 유저 조회
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> findUserById(@PathVariable Long id) {
 
@@ -46,15 +48,25 @@ public class UserController {
 
         return new ResponseEntity<>(findUser,HttpStatus.OK);
     }
-    // 아직 하는 중
+
+    // 유저 수정
     @PatchMapping("/{id}")
     public ResponseEntity<UpdateUserResponseDto> updateUser(@PathVariable Long id,
                                                             @RequestBody UpdateUserRequestDto updateUserRequestDto) {
 
-        userService.updateUser(id,updateUserRequestDto.getName(),updateUserRequestDto.getAge(),
-                updateUserRequestDto.getEmail(),updateUserRequestDto.getPassword(),
-                updateUserRequestDto.getNewPassword(),updateUserRequestDto.getCheckNewPassword());
+        UpdateUserResponseDto updateUserResponseDto = userService.updateUser(id, updateUserRequestDto.getName(),
+                updateUserRequestDto.getAge(), updateUserRequestDto.getEmail(), updateUserRequestDto.getPassword(),
+                updateUserRequestDto.getNewPassword(), updateUserRequestDto.getCheckNewPassword());
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(updateUserResponseDto,HttpStatus.OK);
+    }
+
+    // 유저 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id, @RequestParam("password") String password) {
+
+        userService.deleteUser(id, password);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
