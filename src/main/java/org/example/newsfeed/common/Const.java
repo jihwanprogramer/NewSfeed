@@ -9,5 +9,4 @@ public interface Const {
             "/api/users"
     };
 
-
 }

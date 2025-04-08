@@ -2,8 +2,10 @@ package org.example.newsfeed.post.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import org.example.newsfeed.post.dto.CreateRequestDto;
 import org.example.newsfeed.post.dto.UpdateRequestDto;
+import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.entity.Users;
 
 @Entity
@@ -21,6 +23,7 @@ public class Post extends TimeEntity {
     @Column(nullable = false)
     private String contents;
 
+    @Setter
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users user;

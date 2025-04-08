@@ -1,6 +1,8 @@
 package org.example.newsfeed.post.service;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.example.newsfeed.common.Const;
 import org.example.newsfeed.common.config.ConfirmSameUser;
 import org.example.newsfeed.post.dto.CreateRequestDto;
 import org.example.newsfeed.post.dto.CreateResponseDto;
@@ -8,6 +10,9 @@ import org.example.newsfeed.post.dto.PostResponseDto;
 import org.example.newsfeed.post.dto.UpdateRequestDto;
 import org.example.newsfeed.post.entity.Post;
 import org.example.newsfeed.post.repository.PostRepository;
+import org.example.newsfeed.user.dto.UserResponseDto;
+import org.example.newsfeed.user.entity.Users;
+import org.example.newsfeed.user.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,19 +26,24 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final ConfirmSameUser confirmSameUser;
+    private final UserRepository userRepository;
 
     //게시글 생성
     @Transactional
-    public CreateResponseDto create(CreateRequestDto requestDto) {
+    public CreateResponseDto create(CreateRequestDto requestDto, HttpSession session) {
+
+        UserResponseDto userResponseDto = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
+        Users findedUser = userRepository.findUserByIdOrElseThrow(userResponseDto.getId());
 
         Post post = new Post(requestDto);
+        post.setUser(findedUser);
         Post savedPost = postRepository.save(post);
 
         return new CreateResponseDto(savedPost);
     }
 
 
-    //게시글 전체 조히
+    //게시글 전체 조회
     public List<PostResponseDto> findAll() {
 
         return postRepository.findAll()

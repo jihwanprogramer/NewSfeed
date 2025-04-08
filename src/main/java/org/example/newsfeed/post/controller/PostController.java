@@ -1,5 +1,6 @@
 package org.example.newsfeed.post.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.post.dto.CreateRequestDto;
 import org.example.newsfeed.post.dto.CreateResponseDto;
@@ -21,9 +22,9 @@ public class PostController {
 
     //게시글 생성
     @PostMapping
-    public ResponseEntity<CreateResponseDto> create(@RequestBody CreateRequestDto requestDto) {
+    public ResponseEntity<CreateResponseDto> create(@RequestBody CreateRequestDto requestDto, HttpSession session) {
 
-        CreateResponseDto responseDto = postService.create(requestDto);
+        CreateResponseDto responseDto = postService.create(requestDto,session);
 
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
