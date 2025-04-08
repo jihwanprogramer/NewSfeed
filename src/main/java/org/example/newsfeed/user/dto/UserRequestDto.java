@@ -7,22 +7,18 @@ import java.time.LocalDateTime;
 @Getter
 public class UserRequestDto {
 
-    private final Long id;
-
     private final String name;
 
     private final Integer age;
 
-    private final LocalDateTime createdAt;
+    private final String email;
 
-    private final LocalDateTime modifiedAt;
+    private final String password;
 
-
-    public UserRequestDto(Long id, String name, Integer age, LocalDateTime createdAt, LocalDateTime modifiedAt) {
-        this.id = id;
+    public UserRequestDto(String name, Integer age, String email, String password) {
         this.name = name;
         this.age = age;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
+        this.email = email;
+        this.password = password;
     }
 }
