@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.post.dto.CreateRequestDto;
 import org.example.newsfeed.post.dto.CreateResponseDto;
 import org.example.newsfeed.post.dto.PostResponseDto;
+import org.example.newsfeed.post.dto.UpdateRequestDto;
 import org.example.newsfeed.post.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,5 +44,14 @@ public class PostController {
         PostResponseDto findedById = postService.findById(id);
 
         return new ResponseEntity<>(findedById, HttpStatus.OK);
+    }
+
+    //특정 게시글 수정
+    @PatchMapping("/{id}")
+    public ResponseEntity<PostResponseDto> update(@PathVariable Long id, @RequestBody UpdateRequestDto requestDto) {
+
+        PostResponseDto update = postService.update(id, requestDto);
+
+        return new ResponseEntity<>(update, HttpStatus.OK);
     }
 }

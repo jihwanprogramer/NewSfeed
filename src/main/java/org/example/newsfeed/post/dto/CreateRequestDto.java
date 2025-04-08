@@ -2,8 +2,7 @@ package org.example.newsfeed.post.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
+import org.example.newsfeed.user.entity.Users;
 
 @Getter
 public class CreateRequestDto {
