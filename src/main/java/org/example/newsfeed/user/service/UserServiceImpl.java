@@ -1,6 +1,8 @@
 package org.example.newsfeed.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.newsfeed.common.config.PasswordEncoder;
+import org.example.newsfeed.user.dto.UpdateUserResponseDto;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.entity.Users;
 import org.example.newsfeed.user.repository.UserRepository;
@@ -14,6 +16,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponseDto signUp(String name, Integer age, String email, String password, String checkPassword) {
@@ -22,7 +25,9 @@ public class UserServiceImpl implements UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"비밀번호가 일치하지 않습니다.");
         }
 
-        Users users = new Users(name, age, email, password);
+        String encodedPassword = passwordEncoder.encode(password);
+
+        Users users = new Users(name, age, email, encodedPassword);
 
         Users savedUser = userRepository.save(users);
 
@@ -46,6 +51,11 @@ public class UserServiceImpl implements UserService {
         return new UserResponseDto(findUser.getId(), findUser.getName(), findUser.getAge(), findUser.getCreatedAt(),
                 findUser.getModifiedAt());
 
+    }
+
+    @Override
+    public UpdateUserResponseDto updateUser(Long id, String name, Integer age, String email, String password, String newPassword, String checkNewPassword) {
+        return null;
     }
 
 
