@@ -1,12 +1,10 @@
 package org.example.newsfeed.comment.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Getter
-@AllArgsConstructor
+@Data
 public class CommentResponseDto {
 
     private final Long id;
