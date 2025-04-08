@@ -1,6 +1,7 @@
 package org.example.newsfeed.user.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.newsfeed.user.dto.UpdateUserRequestDto;
 import org.example.newsfeed.user.dto.UpdateUserResponseDto;
 import org.example.newsfeed.user.dto.UserRequestDto;
 import org.example.newsfeed.user.dto.UserResponseDto;
@@ -23,7 +24,7 @@ public class UserController {
     public ResponseEntity<UserResponseDto> signUp(@RequestBody UserRequestDto userRequestDto) {
 
         UserResponseDto userResponseDto = userService.signUp(userRequestDto.getName(), userRequestDto.getAge(),
-                userRequestDto.getEmail(), userRequestDto.getPassword());
+                userRequestDto.getEmail(), userRequestDto.getPassword(),userRequestDto.getCheckPassword());
 
         return new ResponseEntity<>(userResponseDto,HttpStatus.CREATED);
 
@@ -45,10 +46,15 @@ public class UserController {
 
         return new ResponseEntity<>(findUser,HttpStatus.OK);
     }
+    // 아직 하는 중
+    @PatchMapping("/{id}")
+    public ResponseEntity<UpdateUserResponseDto> updateUser(@PathVariable Long id,
+                                                            @RequestBody UpdateUserRequestDto updateUserRequestDto) {
 
-//    @PatchMapping("/{id}")
-//    public ResponseEntity<UpdateUserResponseDto> updateUser(@PathVariable Long id) {
-//
-//        userService.
-//    }
+        userService.updateUser(id,updateUserRequestDto.getName(),updateUserRequestDto.getAge(),
+                updateUserRequestDto.getEmail(),updateUserRequestDto.getPassword(),
+                updateUserRequestDto.getNewPassword(),updateUserRequestDto.getCheckNewPassword());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
