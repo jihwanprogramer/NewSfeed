@@ -46,7 +46,7 @@ public class UserController {
 
         return new ResponseEntity<>(findUser,HttpStatus.OK);
     }
-    // 아직 하는 중
+
     @PatchMapping("/{id}")
     public ResponseEntity<UpdateUserResponseDto> updateUser(@PathVariable Long id,
                                                             @RequestBody UpdateUserRequestDto updateUserRequestDto) {
@@ -56,5 +56,13 @@ public class UserController {
                 updateUserRequestDto.getNewPassword(),updateUserRequestDto.getCheckNewPassword());
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+
+        userService.deleteUser(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
