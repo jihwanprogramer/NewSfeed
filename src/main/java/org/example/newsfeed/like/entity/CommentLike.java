@@ -5,12 +5,11 @@ import lombok.Getter;
 
 @Getter
 @Entity
-@Talbe(name = "boardLike")
-public class BoardLike extends BaseEntity {
-    // BaseEntity를 상속 받아 작성일과 수정일 생성.
+@Table(name = "commentLike")
+public class CommentLike {
     @Id
     @GeneratedValue(Strategy = GenerationType.IDENTITY)
-    private Long boardLikeId;
+    private Long commentLikeId;
 
     //튜터님한테 변수명 물어보기. 원시형을 써야하나 ?
     @Column(nullable = false)
@@ -18,21 +17,18 @@ public class BoardLike extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "")
-    private Long boardId;
+    private Long commentId;
 
     @ManyToOne
     @JoinColumn(name = "")
     private Long userId;
 
-    public BoardLike() {
-    }
-
-    public BoardLike(Long boardLikeId, Boolean likeYN, Long boardId, Long userId) {
-        this.boardLikeId = boardLikeId;
+    public CommentLike(Long commentLikeId, boolean likeYN, Long commentId, Long userId) {
+        this.commentLikeId = commentLikeId;
         this.likeYN = likeYN;
-        this.boardId = boardId;
+        this.commentId = commentId;
         this.userId = userId;
     }
-
-
 }
+
+
