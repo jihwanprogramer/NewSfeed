@@ -3,12 +3,14 @@ package org.example.newsfeed.follow.service;
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.exception.AlreadyExistsEsception;
 import org.example.newsfeed.exception.NullResponseException;
+import org.example.newsfeed.follow.dto.FollowResponseDto;
 import org.example.newsfeed.follow.entity.Follow;
 import org.example.newsfeed.follow.repository.FollowRepository;
 import org.example.newsfeed.user.entity.Users;
 import org.example.newsfeed.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -47,6 +49,12 @@ public class FollowServiceImpl implements FollowService{
         }
 
         return optionalFollow.get().updateFollow();
+    }
+
+    @Override
+    public List<FollowResponseDto> findFollowByFollowingId(Long followingId) {
+
+        return followRepository.findByFollowingId(followingId).stream().map(FollowResponseDto::toDto).toList();
     }
 
 
