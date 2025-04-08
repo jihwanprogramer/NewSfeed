@@ -10,6 +10,8 @@ public class PostResponseDto {
 
     private Long id;
 
+    private String username;
+
     private String title;
 
     private String contents;
@@ -20,6 +22,7 @@ public class PostResponseDto {
 
     public PostResponseDto(Post post) {
         this.id = post.getId();
+        this.username = post.getUser().getName();
         this.title = post.getTitle();
         this.contents = post.getContents();
         this.createdAt = post.getCreatedAt();
