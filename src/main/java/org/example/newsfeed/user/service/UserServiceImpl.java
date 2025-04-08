@@ -54,9 +54,43 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UpdateUserResponseDto updateUser(Long id, String name, Integer age, String email, String password, String newPassword, String checkNewPassword) {
-        return null;
+    public UpdateUserResponseDto updateUser(Long id, String name, Integer age, String email, String password,
+                                            String newPassword, String checkNewPassword) {
+
+        Users findUser = userRepository.findUserByIdOrElseThrow(id);
+
+        if (name != null) {
+            findUser.setName(name);
+        }
+
+        if (age != null) {
+            findUser.setAge(age);
+        }
+
+        if (email != null) {
+            findUser.setEmail(email);
+        }
+
+        if (password != null && newPassword != null && checkNewPassword != null) {
+            if (!passwordEncoder.matches(password,findUser.getPassword()) && !newPassword.equals(checkNewPassword)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"비밀번호가 일치하지 않습니다.");
+            }
+            findUser.setPassword(newPassword);
+        }
+
+        userRepository.save(findUser);
+
+        return new UpdateUserResponseDto(findUser.getId(), findUser.getName(), findUser.getAge(),
+                findUser.getEmail(),findUser.getPassword(),findUser.getCreatedAt(),findUser.getModifiedAt());
+
     }
 
+    @Override
+    public void deleteUser(Long id) {
 
+        Users findUser = userRepository.findUserByIdOrElseThrow(id);
+
+        userRepository.delete(findUser);
+
+    }
 }
