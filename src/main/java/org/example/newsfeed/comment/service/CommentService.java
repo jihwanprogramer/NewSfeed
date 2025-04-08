@@ -14,6 +14,9 @@ import org.example.newsfeed.user.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -37,7 +40,18 @@ public class CommentService {
                 comment.getUpdatedAt()
         );
 
-
-
     }
+
+    public List<CommentResponseDto> findByPost(Long id) {
+        Post post =postRepository.findByIdOrElseThrow(id);
+        List<Comment> comments = commentRepository.findByPost(post);
+        return comments.stream().map(comment -> new CommentResponseDto(
+                        comment.getId(),
+                        post.getId(),
+                        comment.getContent(),
+                        comment.getCreateAt(),
+                        comment.getUpdatedAt()
+                )).collect(Collectors.toList());
+    }
+
 }
