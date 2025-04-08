@@ -1,6 +1,7 @@
 package org.example.newsfeed.post.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.newsfeed.common.config.ConfirmSameUser;
 import org.example.newsfeed.post.dto.CreateRequestDto;
 import org.example.newsfeed.post.dto.CreateResponseDto;
 import org.example.newsfeed.post.dto.PostResponseDto;
@@ -8,8 +9,8 @@ import org.example.newsfeed.post.dto.UpdateRequestDto;
 import org.example.newsfeed.post.entity.Post;
 import org.example.newsfeed.post.repository.PostRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -19,8 +20,10 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final ConfirmSameUser confirmSameUser;
 
     //게시글 생성
+    @Transactional
     public CreateResponseDto create(CreateRequestDto requestDto) {
 
         Post post = new Post(requestDto);
@@ -48,9 +51,12 @@ public class PostService {
     }
 
     //특정 게시물 수정
+    @Transactional
     public PostResponseDto update(Long id, UpdateRequestDto requestDto) {
 
         Post findedPost = postRepository.findByIdOrElseThrow(id);
+
+        confirmSameUser.isSameUser(findedPost.getUser().getId()); //작성자와 로그인된 회원이 다를경우 예외처리
 
         if (requestDto.getTitle() == null && requestDto.getContents() == null) {
             throw new ResponseStatusException(
@@ -73,9 +79,12 @@ public class PostService {
     }
 
     //특정 게시물 삭제
+    @Transactional
     public void delete(Long id) {
 
         Post findedPost = postRepository.findByIdOrElseThrow(id);
+
+        confirmSameUser.isSameUser(findedPost.getUser().getId()); //작성자와 로그인된 회원이 다를경우 예외처리
 
         postRepository.delete(findedPost);
     }

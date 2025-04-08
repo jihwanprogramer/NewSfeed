@@ -5,7 +5,6 @@ import lombok.Getter;
 import org.example.newsfeed.post.dto.CreateRequestDto;
 import org.example.newsfeed.post.dto.UpdateRequestDto;
 import org.example.newsfeed.user.entity.Users;
-import org.springframework.transaction.annotation.Transactional;
 
 @Entity
 @Getter
