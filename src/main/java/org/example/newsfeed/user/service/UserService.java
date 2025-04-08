@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface UserService {
 
-    UserResponseDto signUp(String name, Integer age, String email, String password);
+    UserResponseDto signUp(String name, Integer age, String email, String password, String checkPassWord);
 
     List<UserResponseDto> findUserByName(String name);
 
