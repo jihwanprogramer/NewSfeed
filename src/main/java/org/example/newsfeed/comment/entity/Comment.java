@@ -1,6 +1,7 @@
 package org.example.newsfeed.comment.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.newsfeed.common.entity.BaseEntity;
@@ -15,6 +16,7 @@ public class Comment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, columnDefinition = "longtext")
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
