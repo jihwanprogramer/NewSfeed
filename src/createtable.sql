@@ -1,5 +1,4 @@
-USE users;
-
+USE newsfeed;
 CREATE TABLE users (
     id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '유저 식별자',
     name VARCHAR(50) NOT NULL COMMENT '유저명',
