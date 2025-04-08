@@ -3,12 +3,14 @@ package org.example.newsfeed.follow.service;
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.exception.AlreadyExistsEsception;
 import org.example.newsfeed.exception.NullResponseException;
+import org.example.newsfeed.exception.SelfFollowNotAllowedException;
 import org.example.newsfeed.follow.dto.FollowResponseDto;
 import org.example.newsfeed.follow.entity.Follow;
 import org.example.newsfeed.follow.repository.FollowRepository;
 import org.example.newsfeed.user.entity.Users;
 import org.example.newsfeed.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +26,11 @@ public class FollowServiceImpl implements FollowService{
     @Override
     public void saveFollow(Long followerId, Long followingId) {
 
-        Users followingUsers = userRepository.findUserByIdOrElseThrow(followerId);
+        if(followerId==followingId){
+            throw new SelfFollowNotAllowedException("자신은 팔로우 할 수 없습니다.");
+        }
+
+        Users followingUsers = userRepository.findUserByIdOrElseThrow(followingId);
 
         Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUsers(followerId, followingUsers);
         if(!optionalFollow.isEmpty()){
@@ -38,6 +44,7 @@ public class FollowServiceImpl implements FollowService{
 
     }
 
+    @Transactional
     @Override
     public boolean updateFollow(Long followerId, Long followingId) {
 

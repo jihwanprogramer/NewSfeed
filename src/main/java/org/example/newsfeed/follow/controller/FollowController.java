@@ -29,7 +29,7 @@ public class FollowController {
     ){
         UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
 
-        followService.saveFollow(followId, loginUser.getId());
+        followService.saveFollow(loginUser.getId(),followId);
 
         return new ResponseEntity<>(Map.of("message", "팔로우 하였습니다."), HttpStatus.CREATED);
     }

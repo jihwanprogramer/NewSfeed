@@ -21,7 +21,7 @@ public class Follow extends BaseEntity {
     private Long followerId;
 
     @ManyToOne
-    @JoinColumn(name = "follow_id")
+    @JoinColumn(name = "Users_id")
     private Users followingUsers;
 
     public Follow() {
