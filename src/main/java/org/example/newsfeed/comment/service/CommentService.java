@@ -6,6 +6,7 @@ import org.example.newsfeed.comment.dto.CommentSaveRequestDto;
 import org.example.newsfeed.comment.dto.CommentUpdateRequestDto;
 import org.example.newsfeed.comment.entity.Comment;
 import org.example.newsfeed.comment.repository.CommentRepository;
+import org.example.newsfeed.exception.UnauthorizedCommentAccessException;
 import org.example.newsfeed.post.entity.Post;
 import org.example.newsfeed.post.repository.PostRepository;
 import org.example.newsfeed.user.entity.Users;
@@ -63,7 +64,7 @@ public class CommentService {
         Comment comment = commentRepository.findByIdOrElseThrow(commentId);
 
         if (!comment.getUser().getId().equals(userId)) {
-            throw new IllegalArgumentException();
+            throw new UnauthorizedCommentAccessException("동일한 ID 회원만 업데이트 가능합니다.");
         }
 
         comment.update(commentUpdateRequestDto.getContent());
@@ -83,7 +84,7 @@ public class CommentService {
         Comment comment = commentRepository.findByIdOrElseThrow(commentId);
 
         if (!comment.getUser().getId().equals(userId)) {
-            throw new IllegalArgumentException();
+            throw new UnauthorizedCommentAccessException("동일한 ID 회원만 삭제 가능합니다.");
         }
         commentRepository.delete(comment);
     }
