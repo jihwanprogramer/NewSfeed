@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.entity.Users;
 import org.example.newsfeed.user.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
@@ -14,7 +16,11 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserResponseDto signUp(String name, Integer age, String email, String password) {
+    public UserResponseDto signUp(String name, Integer age, String email, String password, String checkPassword) {
+
+        if (!password.equals(checkPassword)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"비밀번호가 일치하지 않습니다.");
+        }
 
         Users users = new Users(name, age, email, password);
 
