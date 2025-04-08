@@ -2,6 +2,7 @@ package org.example.newsfeed.login.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.common.Const;
 import org.example.newsfeed.login.dto.LoginRequestDto;
@@ -12,6 +13,7 @@ import org.example.newsfeed.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -24,7 +26,7 @@ public class LoginController {
     private final LoginService loginService;
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String,String>> login (LoginRequestDto dto, HttpServletRequest request){
+    public ResponseEntity<Map<String,String>> login (@Valid @RequestBody LoginRequestDto dto, HttpServletRequest request){
 
         LoginResponseDto responseDto = loginService.login(dto.getEmail(), dto.getPassword());
         Long userId =responseDto.getId();
