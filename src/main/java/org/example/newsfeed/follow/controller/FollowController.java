@@ -49,7 +49,7 @@ public class FollowController {
     }
 
     @GetMapping
-    public List<FollowResponseDto> findFollowUsers(HttpSession session){
+    public List<FollowResponseDto> findFollowUsersByFllowingId(HttpSession session){
 
         UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
 
