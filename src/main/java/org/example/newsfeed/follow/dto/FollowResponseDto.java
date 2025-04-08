@@ -6,14 +6,18 @@ import org.example.newsfeed.follow.entity.Follow;
 @Getter
 public class FollowResponseDto {
 
-    private final String FollowName;
+    private final Long followId;
+    private final String followName;
 
-    public FollowResponseDto(String followName) {
-        FollowName = followName;
+    public FollowResponseDto(Long followId, String followName) {
+        this.followId = followId;
+        this.followName = followName;
     }
 
     public static FollowResponseDto toDto(Follow follow){
-        return new FollowResponseDto(follow.getFollowUsers().getName());
+        return new FollowResponseDto(follow.getFollowingUsers().getId(), follow.getFollowingUsers().getName());
     }
+
+
 
 }

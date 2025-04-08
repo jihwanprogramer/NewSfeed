@@ -8,5 +8,6 @@ public interface FollowService {
 
     void saveFollow(Long followId, Long followingId);
     boolean updateFollow(Long followId, Long followingId);
-    List<FollowResponseDto> findFollowByFollowingId(Long followingId);
+    List<FollowResponseDto> findFollowingsByMyId(Long myId);
+    List<FollowResponseDto> findFollowersByMyId(Long myId);
 }

@@ -22,28 +22,28 @@ public class FollowServiceImpl implements FollowService{
 
 
     @Override
-    public void saveFollow(Long followId, Long followingId) {
+    public void saveFollow(Long followerId, Long followingId) {
 
-        Users followUsers = userRepository.findUserByIdOrElseThrow(followId);
+        Users followingUsers = userRepository.findUserByIdOrElseThrow(followerId);
 
-        Optional<Follow> optionalFollow = followRepository.findByFollowingIdAndFollowUsers(followId, followUsers);
+        Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUsers(followerId, followingUsers);
         if(!optionalFollow.isEmpty()){
             throw new AlreadyExistsEsception("이미 팔로우 내역이 존재합니다.");
         }
 
-        Follow follow = new Follow(true, followingId);
-        follow.setFollowUsers(followUsers);
+        Follow follow = new Follow(true, followerId);
+        follow.setFollowUsers(followingUsers);
 
         followRepository.save(follow);
 
     }
 
     @Override
-    public boolean updateFollow(Long followId, Long followingId) {
+    public boolean updateFollow(Long followerId, Long followingId) {
 
-        Users followUsers = userRepository.findUserByIdOrElseThrow(followId);
+        Users followingUsers = userRepository.findUserByIdOrElseThrow(followerId);
 
-        Optional<Follow> optionalFollow = followRepository.findByFollowingIdAndFollowUsers(followId, followUsers);
+        Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUsers(followerId, followingUsers);
         if(optionalFollow.isEmpty()){
             throw new NullResponseException("팔로우 내역이 존재하지 않습니다.");
         }
@@ -52,9 +52,17 @@ public class FollowServiceImpl implements FollowService{
     }
 
     @Override
-    public List<FollowResponseDto> findFollowByFollowingId(Long followingId) {
+    public List<FollowResponseDto> findFollowingsByMyId(Long myId) {
 
-        return followRepository.findByFollowingId(followingId).stream().map(FollowResponseDto::toDto).toList();
+        return followRepository.findByFollowerId(myId).stream().map(FollowResponseDto::toDto).toList();
+    }
+
+    @Override
+    public List<FollowResponseDto> findFollowersByMyId(Long myId) {
+
+        Users users = userRepository.findUserByIdOrElseThrow(myId);
+
+        return followRepository.findByFollowingUsers(users).stream().map(FollowResponseDto::toDto).toList();
     }
 
 

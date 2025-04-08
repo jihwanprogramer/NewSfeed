@@ -18,22 +18,22 @@ public class Follow extends BaseEntity {
     private boolean followYN;
 
     @Column
-    private Long followingId;
+    private Long followerId;
 
     @ManyToOne
     @JoinColumn(name = "follow_id")
-    private Users followUsers;
+    private Users followingUsers;
 
     public Follow() {
     }
 
-    public Follow(boolean followYN, Long followingId) {
+    public Follow(boolean followYN, Long followerId) {
         this.followYN = followYN;
-        this.followingId = followingId;
+        this.followerId = followerId;
     }
 
-    public void setFollowUsers(Users followUsers){
-        this.followUsers = followUsers;
+    public void setFollowUsers(Users followingUsers){
+        this.followingUsers = followingUsers;
     }
 
     public boolean updateFollow() {

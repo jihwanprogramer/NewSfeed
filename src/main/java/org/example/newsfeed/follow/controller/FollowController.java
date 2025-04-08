@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/users/{followId}/follows")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class FollowController {
 
     private final FollowService followService;
 
-    @PostMapping
+    @PostMapping("/{followId}/follow")
     public ResponseEntity<Map<String,String>> saveFollow(
             @PathVariable Long followId,
             HttpSession session
@@ -33,7 +33,7 @@ public class FollowController {
         return new ResponseEntity<>(Map.of("message", "팔로우 하였습니다."), HttpStatus.CREATED);
     }
 
-    @PutMapping
+    @PutMapping("/{followId}/follow")
     public ResponseEntity<Map<String,String>> updateFollow(
             @PathVariable Long followId,
             HttpSession session ) {
@@ -48,12 +48,22 @@ public class FollowController {
         }
     }
 
-    @GetMapping
-    public List<FollowResponseDto> findFollowUsersByFllowingId(HttpSession session){
+    // 로그인한 사용자가 팔로우한 유저 목록 조회 following 목록
+    @GetMapping("/followings")
+    public List<FollowResponseDto> findFollowingsByFollowingId(HttpSession session){
 
         UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
 
-        return followService.findFollowByFollowingId(loginUser.getId());
+        return followService.findFollowingsByMyId(loginUser.getId());
+    }
+
+    // 로그인한 사용자를 팔로우한 유저 목록 조회 follower 목록
+    @GetMapping("/followers")
+    public List<FollowResponseDto> findFollowerByFollowId(HttpSession session){
+
+        UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
+
+        return followService.findFollowingsByMyId(loginUser.getId());
     }
 
 
