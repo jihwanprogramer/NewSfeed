@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.newsfeed.common.entity.BaseEntity;
+import org.example.newsfeed.post.entity.Post;
 
 @Getter
 @Entity
@@ -20,8 +21,9 @@ public class Comment extends BaseEntity
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    public Comment(Post post, String content) {
+        this.post =post;
+        this.content = content;
+    }
 
 }
