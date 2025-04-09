@@ -1,5 +1,6 @@
 package org.example.newsfeed.user.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.user.dto.UpdateUserRequestDto;
@@ -53,11 +54,13 @@ public class UserController {
     // 유저 수정
     @PatchMapping("/{id}")
     public ResponseEntity<UpdateUserResponseDto> updateUser(@PathVariable Long id,
-                                                            @Valid @RequestBody UpdateUserRequestDto updateUserRequestDto) {
+                                                            @Valid @RequestBody UpdateUserRequestDto updateUserRequestDto,
+                                                            HttpServletRequest httpServletRequest) {
 
-        UpdateUserResponseDto updateUserResponseDto = userService.updateUser(id, updateUserRequestDto.getName(),
-                updateUserRequestDto.getAge(), updateUserRequestDto.getEmail(), updateUserRequestDto.getPassword(),
-                updateUserRequestDto.getNewPassword(), updateUserRequestDto.getCheckNewPassword());
+        UpdateUserResponseDto updateUserResponseDto = userService.updateUser(id,httpServletRequest,
+                updateUserRequestDto.getName(), updateUserRequestDto.getAge(), updateUserRequestDto.getEmail(),
+                updateUserRequestDto.getPassword(), updateUserRequestDto.getNewPassword(),
+                updateUserRequestDto.getCheckNewPassword());
 
         return new ResponseEntity<>(updateUserResponseDto,HttpStatus.OK);
     }
