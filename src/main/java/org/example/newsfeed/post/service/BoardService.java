@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -108,5 +109,14 @@ public class BoardService {
         Page<Board> boardPage = boardRepository.findAll(pageable);
 
         return boardPage.map(board -> new PageResponseDto(board));
+    }
+
+    //수정일자 기준 최신순으로 조회
+    public List<BoardResponseDto> sortedByModifiedAt() {
+        return boardRepository.findAll()
+                .stream()
+                .map(BoardResponseDto::findAll)
+                .sorted(Comparator.comparing(BoardResponseDto::getModifiedAt).reversed())
+                .toList();
     }
 }
