@@ -2,7 +2,6 @@ package org.example.newsfeed.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.common.config.PasswordEncoder;
-import org.example.newsfeed.user.dto.UpdateUserResponseDto;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.entity.Users;
 import org.example.newsfeed.user.repository.UserRepository;
@@ -18,12 +17,16 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // service) 회원가입
     @Override
     public UserResponseDto signUp(String name, Integer age, String email, String password, String checkPassword) {
 
-        if (!password.equals(checkPassword)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"비밀번호가 일치하지 않습니다.");
+        // 중복 이메일 체크
+        if (userRepository.findUserByEmail(email).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,"이미 있는 이메일입니다");
         }
+
+        passwordCheck(password,checkPassword);
 
         String encodedPassword = passwordEncoder.encode(password);
 
@@ -36,15 +39,15 @@ public class UserServiceImpl implements UserService {
 
     }
 
-
+    // service) 이름으로 유저들 조회
     @Override
     public List<UserResponseDto> findUserByName(String name) {
 
-        return userRepository.findUserByName(name).stream()
-                .map(UserResponseDto::new).toList();
+        return userRepository.findUserByName(name).stream().map(UserResponseDto::new).toList();
 
     }
 
+    // service) 아이디로 유저 조회
     @Override
     public UserResponseDto findUserById(Long id) {
 
@@ -55,11 +58,66 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    // service) 유저 수정
     @Override
-    public UpdateUserResponseDto updateUser(Long id, String name, Integer age, String email, String password,
-                                            String newPassword, String checkNewPassword) {
+    public UserResponseDto updateUser(Long loginUserId, Long id , String name, Integer age,
+                                            String email, String password, String newPassword, String checkNewPassword) {
+
+        sessionCheck(loginUserId,id);
 
         Users findUser = userRepository.findUserByIdOrElseThrow(id);
+
+        notNullUpdate(findUser, name, age, email, password, newPassword, checkNewPassword);
+
+        userRepository.save(findUser);
+
+        return new UserResponseDto(findUser.getId(), findUser.getName(), findUser.getAge(),
+                findUser.getCreatedAt(),findUser.getModifiedAt());
+
+    }
+
+    // service) 유저 삭제
+    @Override
+    public void deleteUser(Long loginUserId,Long id, String password) {
+
+        sessionCheck(loginUserId,id);
+
+        Users findUser = userRepository.findUserByIdOrElseThrow(id);
+
+        passwordMatch(password, findUser);
+
+        userRepository.delete(findUser);
+    }
+
+    // 패스워드 매치 확인 메서드
+    private void passwordMatch(String password, Users users) {
+
+        if (!passwordEncoder.matches(password,users.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"원래의 비밀번호가 일치하지 않습니다.");
+        }
+
+    }
+
+    // 패스워드 같은지 확인 메서드
+    private void passwordCheck(String Password,String checkPassword){
+
+        if (!Password.equals(checkPassword)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호와 비밀번호 확인이 일치하지 않습니다");
+        }
+
+    }
+
+    // 세션의 id와 요청받은 id 확인 메서드
+    private void sessionCheck(Long loginUserId, Long id) {
+
+        if (!loginUserId.equals(id)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"본인 정보만 다룰 수 있습니다.");
+        }
+    }
+
+    // null 아닌 부분 수정 메서드
+    private void notNullUpdate(Users findUser, String name, Integer age, String email, String password,
+                               String newPassword, String checkNewPassword ) {
 
         if (name != null) {
             findUser.setName(name);
@@ -69,39 +127,20 @@ public class UserServiceImpl implements UserService {
             findUser.setAge(age);
         }
 
-        if (email != null) {
+        // 널은 허용, 빈 문자열은 허용X
+        if (email != null && !email.isEmpty()) {
             findUser.setEmail(email);
         }
 
-        // 셋 다 넣지 않으면 변경 불가
-        if (password != null && newPassword != null && checkNewPassword != null) {
+        // 둘 다 넣어야 변경
+        if (newPassword != null && checkNewPassword != null) {
 
-            if (!passwordEncoder.matches(password,findUser.getPassword())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"원래의 비밀번호가 일치하지 않습니다.");
-            }
+            passwordMatch(password, findUser);
 
-            if (!newPassword.equals(checkNewPassword)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "새로운 비밀번호와 새로운 비밀번호 확인이 일치하지 않습니다.");
-            }
+            passwordCheck(newPassword,checkNewPassword);
+
             findUser.setPassword(passwordEncoder.encode(newPassword));
         }
 
-        userRepository.save(findUser);
-
-        return new UpdateUserResponseDto(findUser.getId(), findUser.getName(), findUser.getAge(),
-                findUser.getEmail(),newPassword,findUser.getCreatedAt(),findUser.getModifiedAt());
-
-    }
-
-    @Override
-    public void deleteUser(Long id, String password) {
-
-        Users findUser = userRepository.findUserByIdOrElseThrow(id);
-
-        if (!passwordEncoder.matches(password,findUser.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"원래의 비밀번호가 일치하지 않습니다.");
-        }
-        userRepository.delete(findUser);
     }
 }

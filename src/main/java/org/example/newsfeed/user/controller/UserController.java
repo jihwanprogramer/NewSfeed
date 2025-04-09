@@ -1,8 +1,9 @@
 package org.example.newsfeed.user.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.newsfeed.common.Const;
 import org.example.newsfeed.user.dto.UpdateUserRequestDto;
-import org.example.newsfeed.user.dto.UpdateUserResponseDto;
 import org.example.newsfeed.user.dto.UserRequestDto;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.service.UserService;
@@ -20,8 +21,8 @@ public class UserController {
     private final UserService userService;
 
     // 회원가입
-    @PostMapping
-    public ResponseEntity<UserResponseDto> signUp(@RequestBody UserRequestDto userRequestDto) {
+    @PostMapping("/signup")
+    public ResponseEntity<UserResponseDto> signUp(@Valid @RequestBody UserRequestDto userRequestDto) {
 
         UserResponseDto userResponseDto = userService.signUp(userRequestDto.getName(), userRequestDto.getAge(),
                 userRequestDto.getEmail(), userRequestDto.getPassword(),userRequestDto.getCheckPassword());
@@ -30,7 +31,7 @@ public class UserController {
 
     }
 
-    // 이름으로 유저 조회
+    // 이름으로 유저들 조회
     @GetMapping
     public ResponseEntity<List<UserResponseDto>> findUserByName(@RequestParam("name") String name) {
 
@@ -51,21 +52,24 @@ public class UserController {
 
     // 유저 수정
     @PatchMapping("/{id}")
-    public ResponseEntity<UpdateUserResponseDto> updateUser(@PathVariable Long id,
-                                                            @RequestBody UpdateUserRequestDto updateUserRequestDto) {
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id,
+                                                      @Valid @RequestBody UpdateUserRequestDto updateUserRequestDto,
+                                                      @SessionAttribute(Const.LOGIN_USER) UserResponseDto loginUser) {
 
-        UpdateUserResponseDto updateUserResponseDto = userService.updateUser(id, updateUserRequestDto.getName(),
-                updateUserRequestDto.getAge(), updateUserRequestDto.getEmail(), updateUserRequestDto.getPassword(),
-                updateUserRequestDto.getNewPassword(), updateUserRequestDto.getCheckNewPassword());
+        UserResponseDto UserResponseDto = userService.updateUser(loginUser.getId(),id,
+                updateUserRequestDto.getName(), updateUserRequestDto.getAge(), updateUserRequestDto.getEmail(),
+                updateUserRequestDto.getPassword(), updateUserRequestDto.getNewPassword(),
+                updateUserRequestDto.getCheckNewPassword());
 
-        return new ResponseEntity<>(updateUserResponseDto,HttpStatus.OK);
+        return new ResponseEntity<>(UserResponseDto,HttpStatus.OK);
     }
 
     // 유저 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id, @RequestParam("password") String password) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id, @RequestParam("password") String password,
+                                           @SessionAttribute(Const.LOGIN_USER) UserResponseDto loginUser) {
 
-        userService.deleteUser(id, password);
+        userService.deleteUser(loginUser.getId(),id, password);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
