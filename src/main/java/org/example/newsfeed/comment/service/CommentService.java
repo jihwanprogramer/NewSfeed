@@ -49,6 +49,7 @@ public class CommentService {
     public List<CommentResponseDto> findByPost(Long id) {
         Post post = postRepository.findByIdOrElseThrow(id);
         List<Comment> comments = commentRepository.findByPost(post);
+
         return comments.stream().map(comment -> new CommentResponseDto(
                 comment.getId(),
                 post.getId(),
@@ -63,11 +64,12 @@ public class CommentService {
     public CommentResponseDto updateComment(Long commentId, Long userId, CommentUpdateRequestDto commentUpdateRequestDto) {
         Comment comment = commentRepository.findByIdOrElseThrow(commentId);
 
-        if (!comment.getUser().getId().equals(userId)) {
-            throw new UnauthorizedCommentAccessException("동일한 ID 회원만 업데이트 가능합니다.");
+        if (!(comment.getUser().getId().equals(userId) || comment.getPost().getUser().getId().equals(userId))) {
+            throw new UnauthorizedCommentAccessException("게시물 또는 댓글을 작성한 회원만 업데이트 가능합니다.");
         }
 
         comment.update(commentUpdateRequestDto.getContent());
+
         return new CommentResponseDto(
                 comment.getId(),
                 comment.getPost().getId(),
@@ -83,8 +85,8 @@ public class CommentService {
     public void delete(Long commentId, Long userId) {
         Comment comment = commentRepository.findByIdOrElseThrow(commentId);
 
-        if (!comment.getUser().getId().equals(userId)) {
-            throw new UnauthorizedCommentAccessException("동일한 ID 회원만 삭제 가능합니다.");
+        if (!(comment.getUser().getId().equals(userId) || comment.getPost().getUser().getId().equals(userId))) {
+            throw new UnauthorizedCommentAccessException("게시물 또는 댓글을 작성한 회원만 삭제 가능합니다.");
         }
         commentRepository.delete(comment);
     }
