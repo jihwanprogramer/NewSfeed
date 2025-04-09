@@ -45,8 +45,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserResponseDto> findUserByName(String name) {
 
-        return userRepository.findUserByName(name).stream()
-                .map(UserResponseDto::new).toList();
+        return userRepository.findUserByName(name).stream().map(UserResponseDto::new).toList();
 
     }
 
@@ -132,12 +131,12 @@ public class UserServiceImpl implements UserService {
             findUser.setAge(age);
         }
 
-        // 널은 허용하지만 빈 문자열은 허용하지 않음
+        // 널은 허용, 빈 문자열은 허용X
         if (email != null && !email.isEmpty()) {
             findUser.setEmail(email);
         }
 
-        // 둘 다 넣지 않으면 변경 불가
+        // 둘 다 넣어야 변경
         if (newPassword != null && checkNewPassword != null) {
 
             passwordMatch(password, findUser);
@@ -146,5 +145,6 @@ public class UserServiceImpl implements UserService {
 
             findUser.setPassword(passwordEncoder.encode(newPassword));
         }
+
     }
 }
