@@ -1,10 +1,10 @@
-package org.example.newsfeed.post.controller;
+package org.example.newsfeed.board.controller;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.newsfeed.post.dto.*;
-import org.example.newsfeed.post.service.BoardService;
+import org.example.newsfeed.board.dto.*;
+import org.example.newsfeed.board.service.BoardService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ public class BoardController {
     @PostMapping
     public ResponseEntity<CreateResponseDto> create(@Valid @RequestBody CreateRequestDto requestDto, HttpSession session) {
 
-        CreateResponseDto responseDto = boardService.create(requestDto,session);
+        CreateResponseDto responseDto = boardService.create(requestDto, session);
 
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
@@ -77,5 +77,14 @@ public class BoardController {
         List<BoardResponseDto> sortedByModifiedAt = boardService.sortedByModifiedAt();
 
         return new ResponseEntity<>(sortedByModifiedAt, HttpStatus.OK);
+    }
+
+    //기간별 검색 기능
+    @GetMapping("/period")
+    public ResponseEntity<List<BoardResponseDto>> findByPeriod(@RequestBody PeriodRequestDto requestDto) {
+
+        List<BoardResponseDto> findByPeriod = boardService.findByPeriod(requestDto);
+
+        return new ResponseEntity<>(findByPeriod, HttpStatus.OK);
     }
 }

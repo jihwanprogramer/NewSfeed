@@ -1,7 +1,7 @@
-package org.example.newsfeed.post.repository;
+package org.example.newsfeed.board.repository;
 
 
-import org.example.newsfeed.post.entity.Board;
+import org.example.newsfeed.board.entity.Board;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

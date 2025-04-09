@@ -1,7 +1,7 @@
 package org.example.newsfeed.comment.repository;
 
 import org.example.newsfeed.comment.entity.Comment;
-import org.example.newsfeed.post.entity.Board;
+import org.example.newsfeed.board.entity.Board;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;

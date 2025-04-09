@@ -1,10 +1,10 @@
-package org.example.newsfeed.post.entity;
+package org.example.newsfeed.board.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.example.newsfeed.post.dto.CreateRequestDto;
-import org.example.newsfeed.post.dto.UpdateRequestDto;
+import org.example.newsfeed.board.dto.CreateRequestDto;
+import org.example.newsfeed.board.dto.UpdateRequestDto;
 import org.example.newsfeed.user.entity.Users;
 
 @Entity
