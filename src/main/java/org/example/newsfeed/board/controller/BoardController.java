@@ -79,12 +79,12 @@ public class BoardController {
         return new ResponseEntity<>(sortedByModifiedAt, HttpStatus.OK);
     }
 
-    //기간별 검색 기능
+    //기간별 검색
     @GetMapping("/period")
-    public ResponseEntity<List<BoardResponseDto>> findByPeriod(@RequestBody PeriodRequestDto requestDto) {
+    public ResponseEntity<List<BoardResponseDto>> findByPeriod(@Valid @ModelAttribute PeriodRequestDto requestDto) {
 
-        List<BoardResponseDto> findByPeriod = boardService.findByPeriod(requestDto);
+        List<BoardResponseDto> findedByPeriod = boardService.findByPeriod(requestDto);
 
-        return new ResponseEntity<>(findByPeriod, HttpStatus.OK);
+        return new ResponseEntity<>(findedByPeriod, HttpStatus.OK);
     }
 }

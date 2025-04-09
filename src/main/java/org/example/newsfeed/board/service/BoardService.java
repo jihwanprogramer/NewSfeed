@@ -122,18 +122,16 @@ public class BoardService {
                 .toList();
     }
 
+    //기간별 검색
     public List<BoardResponseDto> findByPeriod(PeriodRequestDto requestDto) {
 
-        LocalDate startDate = LocalDate.parse(requestDto.getStartDate());
-        LocalDate endDate = LocalDate.parse(requestDto.getEndDate());
+        LocalDateTime startDate = LocalDate.parse(requestDto.getStartDate()).atStartOfDay();
+        LocalDateTime endDate = LocalDate.parse(requestDto.getEndDate()).atStartOfDay();
 
-        return boardRepository.findAll()
+        return boardRepository.findByCreatedAtBetween(startDate, endDate)
                 .stream()
                 .map(BoardResponseDto::findAll)
-                .filter(board ->
-                        board.getCreatedAt().toLocalDate().isAfter(startDate))
-                .filter(board ->
-                        board.getCreatedAt().toLocalDate().isBefore(endDate))
                 .toList();
     }
+
 }
