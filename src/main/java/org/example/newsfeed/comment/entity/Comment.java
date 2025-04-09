@@ -12,6 +12,7 @@ import org.example.newsfeed.user.entity.Users;
 @Entity
 @NoArgsConstructor
 public class Comment extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,7 +21,7 @@ public class Comment extends BaseEntity {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "board_id")
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
