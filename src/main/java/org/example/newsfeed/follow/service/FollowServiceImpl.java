@@ -1,6 +1,7 @@
 package org.example.newsfeed.follow.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.newsfeed.common.config.ConfirmSameUser;
 import org.example.newsfeed.exception.AlreadyExistsEsception;
 import org.example.newsfeed.exception.NullResponseException;
 import org.example.newsfeed.exception.SelfFollowNotAllowedException;
@@ -23,6 +24,8 @@ public class FollowServiceImpl implements FollowService{
 
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
+    private final ConfirmSameUser confirmSameUser;
+
 
 
     @Override
@@ -106,10 +109,20 @@ public class FollowServiceImpl implements FollowService{
     }
 
     @Override
-    public FollowCountResponseDto countFollowByFollowerId(Long followerID) {
+    public FollowCountResponseDto countFollowByFollowingId(Long followingId, Long loginId) {
 
-        Long count = followRepository.countByFollowerId(followerID);
-        return null;
+        Users followingUsers = userRepository.findUserByIdOrElseThrow(followingId);
+        Long count = followRepository.countByFollowingUsers(followingUsers);
+        return new FollowCountResponseDto(count, followingId.equals(loginId));
+
+    }
+
+    @Override
+    public FollowCountResponseDto countFollowByFollowerId(Long followerId, Long loginId) {
+
+        Long count = followRepository.countByFollowerId(followerId);
+        return new FollowCountResponseDto(count, followerId.equals(loginId));
+
     }
 
 

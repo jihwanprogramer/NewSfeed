@@ -26,9 +26,8 @@ public class FollowController {
     @PostMapping("/{followId}/follow")
     public ResponseEntity<FollowSingleResponseDto> saveFollow(
             @PathVariable Long followId,
-            HttpSession session
+            @SessionAttribute(name = Const.LOGIN_USER) UserResponseDto loginUser
     ){
-        UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
 
         FollowSingleResponseDto followSingleResponseDto = followService.saveFollow(loginUser.getId(),followId);
 
@@ -38,8 +37,8 @@ public class FollowController {
     @PatchMapping("/{followId}/follow")
     public ResponseEntity<FollowSingleResponseDto> updateFollow(
             @PathVariable Long followId,
-            HttpSession session ) {
-        UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
+            @SessionAttribute(name = Const.LOGIN_USER) UserResponseDto loginUser
+    ) {
 
         FollowSingleResponseDto followSingleResponseDto = followService.updateFollow(followId, loginUser.getId());
 
@@ -50,9 +49,10 @@ public class FollowController {
 
     //내가 본 대상이 내가 팔로우 했는지 확인
     @GetMapping("/{userId}/follow_status")
-    public ResponseEntity<FollowSingleResponseDto> findFollowYN(@PathVariable Long userId, HttpSession session){
-
-        UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
+    public ResponseEntity<FollowSingleResponseDto> findFollowYN(
+            @PathVariable Long userId,
+            @SessionAttribute(name = Const.LOGIN_USER) UserResponseDto loginUser
+    ){
 
         FollowSingleResponseDto followSingleResponseDto = followService.findFollowStatus(loginUser.getId(), userId);
 
@@ -62,10 +62,10 @@ public class FollowController {
 
     // 특정 유저의 팔로우한 유저 목록 조회 following 목록
     @GetMapping("/{userId}/followings")
-    public List<FollowResponseDto> findFollowingsByUserId(@PathVariable Long userId, HttpSession session){
-
-        UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
-
+    public List<FollowResponseDto> findFollowingsByUserId(
+            @PathVariable Long userId,
+            @SessionAttribute(name = Const.LOGIN_USER) UserResponseDto loginUser
+    ){
         //자기 자신이 아니거나 팔로우가 존재하지 않거나 팔로워가 false 면 예외
         if(userId!=loginUser.getId()&&!followService.existFollowTrue(userId, loginUser.getId())){
             throw new AccessDeniedException("이 유저가 당신을 팔로워 해야 볼 수 있습니다.");
@@ -77,9 +77,10 @@ public class FollowController {
 
     // 특정 유저를 팔로우한 유저 목록 조회 follower 목록
     @GetMapping("/{userId}/followers")
-    public List<FollowResponseDto> findFollowerByUserId(@PathVariable Long userId, HttpSession session){
-
-        UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
+    public List<FollowResponseDto> findFollowerByUserId(
+            @PathVariable Long userId,
+            @SessionAttribute(name = Const.LOGIN_USER) UserResponseDto loginUser
+    ){
 
         //자기 자신이 아니거나 팔로우가 존재하지 않거나 팔로워가 false 면 예외
         if(userId!=loginUser.getId()&&!followService.existFollowTrue(userId, loginUser.getId())){
@@ -91,12 +92,25 @@ public class FollowController {
 
     //팔로워 수 체크
     @GetMapping("/{userId}/followers/count")
-    public ResponseEntity<FollowCountResponseDto> countFollowers (@PathVariable Long userId, HttpSession session){
+    public ResponseEntity<FollowCountResponseDto> countFollowers (
+            @PathVariable Long userId,
+            @SessionAttribute(name = Const.LOGIN_USER) UserResponseDto loginUser
+    ){
 
-        UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
+        FollowCountResponseDto followCountResponseDto = followService.countFollowByFollowingId(userId, loginUser.getId());
 
+        return new ResponseEntity<>(followCountResponseDto,HttpStatus.OK);
+    }
 
+    //팔로잉 수 체크
+    @GetMapping("/{userId}/followings/count")
+    public ResponseEntity<FollowCountResponseDto> countFollowings (
+            @PathVariable Long userId,
+            @SessionAttribute(name = Const.LOGIN_USER) UserResponseDto loginUser
+    ){
+        FollowCountResponseDto followCountResponseDto = followService.countFollowByFollowerId(userId, loginUser.getId());
 
+        return new ResponseEntity<>(followCountResponseDto,HttpStatus.OK);
     }
 
 
