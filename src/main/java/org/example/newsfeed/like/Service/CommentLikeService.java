@@ -5,7 +5,7 @@ import org.example.newsfeed.comment.entity.Comment;
 import org.example.newsfeed.comment.repository.CommentRepository;
 import org.example.newsfeed.exception.AlreadyExistsEsception;
 import org.example.newsfeed.like.dto.CommentLikeResponseDto;
-import org.example.newsfeed.like.entity.BoardLike;
+
 import org.example.newsfeed.like.entity.CommentLike;
 import org.example.newsfeed.like.repository.CommentLikeRepository;
 import org.springframework.stereotype.Service;

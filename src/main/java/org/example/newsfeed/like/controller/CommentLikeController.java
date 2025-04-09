@@ -41,6 +41,6 @@ public class CommentLikeController {
         }
     }
 
-    @GetMapping("/{commentid}/like/{likeid}")
-    public
+//    @GetMapping("/{commentid}/like/{likeid}")
+//    public
 }

@@ -2,8 +2,9 @@ package org.example.newsfeed.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.common.config.PasswordEncoder;
+import org.example.newsfeed.exception.MisMatchUserException;
 import org.example.newsfeed.user.dto.UserResponseDto;
-import org.example.newsfeed.user.entity.Users;
+import org.example.newsfeed.user.entity.User;
 import org.example.newsfeed.user.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -30,9 +31,9 @@ public class UserServiceImpl implements UserService {
 
         String encodedPassword = passwordEncoder.encode(password);
 
-        Users users = new Users(name, age, email, encodedPassword);
+        User users = new User(name, age, email, encodedPassword);
 
-        Users savedUser = userRepository.save(users);
+        User savedUser = userRepository.save(users);
 
         return new UserResponseDto(savedUser.getId(), savedUser.getName(),savedUser.getAge(),savedUser.getCreatedAt(),
                 savedUser.getModifiedAt());
@@ -51,7 +52,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto findUserById(Long id) {
 
-        Users findUser = userRepository.findUserByIdOrElseThrow(id);
+        User findUser = userRepository.findUserByIdOrElseThrow(id);
 
         return new UserResponseDto(findUser.getId(), findUser.getName(), findUser.getAge(), findUser.getCreatedAt(),
                 findUser.getModifiedAt());
@@ -63,9 +64,14 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto updateUser(Long loginUserId, Long id , String name, Integer age,
                                             String email, String password, String newPassword, String checkNewPassword) {
 
-        sessionCheck(loginUserId,id);
 
-        Users findUser = userRepository.findUserByIdOrElseThrow(id);
+
+        User findUser = userRepository.findUserByIdOrElseThrow(id);
+
+        findUser.isSameUser(loginUserId);
+        if(!findUser.isSameUser(loginUserId)){
+            throw new MisMatchUserException("접근 권한이 없습니다.");
+        }
 
         notNullUpdate(findUser, name, age, email, password, newPassword, checkNewPassword);
 
@@ -82,7 +88,7 @@ public class UserServiceImpl implements UserService {
 
         sessionCheck(loginUserId,id);
 
-        Users findUser = userRepository.findUserByIdOrElseThrow(id);
+        User findUser = userRepository.findUserByIdOrElseThrow(id);
 
         passwordMatch(password, findUser);
 
@@ -90,7 +96,7 @@ public class UserServiceImpl implements UserService {
     }
 
     // 패스워드 매치 확인 메서드
-    private void passwordMatch(String password, Users users) {
+    private void passwordMatch(String password, User users) {
 
         if (!passwordEncoder.matches(password,users.getPassword())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"원래의 비밀번호가 일치하지 않습니다.");
@@ -116,7 +122,7 @@ public class UserServiceImpl implements UserService {
     }
 
     // null 아닌 부분 수정 메서드
-    private void notNullUpdate(Users findUser, String name, Integer age, String email, String password,
+    private void notNullUpdate(User findUser, String name, Integer age, String email, String password,
                                String newPassword, String checkNewPassword ) {
 
         if (name != null) {

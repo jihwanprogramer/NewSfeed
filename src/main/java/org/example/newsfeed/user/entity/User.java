@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "users")
-public class Users extends BaseEntity{
+public class User extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,15 +25,18 @@ public class Users extends BaseEntity{
     @Column(nullable = false)
     private String password;
 
-    protected Users() {
+    protected User() {
 
     }
-    public Users(String name, Integer age, String email, String password) {
+    public User(String name, Integer age, String email, String password) {
         this.name = name;
         this.age = age;
         this.email=email;
         this.password=password;
     }
 
+    public boolean isSameUser(Long id){
+        return this.id.equals(id);
+    }
 
 }

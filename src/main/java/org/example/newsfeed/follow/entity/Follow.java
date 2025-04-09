@@ -3,7 +3,7 @@ package org.example.newsfeed.follow.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.example.newsfeed.user.entity.BaseEntity;
-import org.example.newsfeed.user.entity.Users;
+import org.example.newsfeed.user.entity.User;
 
 @Entity
 @Getter
@@ -22,7 +22,7 @@ public class Follow extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "Users_id")
-    private Users followingUsers;
+    private User followingUsers;
 
     public Follow() {
     }
@@ -32,7 +32,7 @@ public class Follow extends BaseEntity {
         this.followerId = followerId;
     }
 
-    public void setFollowUsers(Users followingUsers){
+    public void setFollowUsers(User followingUsers){
         this.followingUsers = followingUsers;
     }
 

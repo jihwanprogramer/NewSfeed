@@ -1,13 +1,12 @@
 package org.example.newsfeed.like.Service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.newsfeed.board.entity.Board;
+import org.example.newsfeed.board.repository.BoardRepository;
 import org.example.newsfeed.exception.AlreadyExistsEsception;
 import org.example.newsfeed.like.dto.BoardLikeResponseDto;
 import org.example.newsfeed.like.entity.BoardLike;
 import org.example.newsfeed.like.repository.BoardLikeRepository;
-import org.example.newsfeed.post.entity.Post;
-import org.example.newsfeed.post.repository.PostRepository;
-import org.example.newsfeed.user.dto.UserResponseDto;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -51,10 +50,10 @@ public class BoardLikeService {
         return optionalBoardLike.get().changeLikeYN();
     }
 
-    public BoardLikeResponseDto findBoardLikeById(Long id){
-
-        BoardLike boardLike = boardLikeRepository.findBoardLikeById(id);
-
-        return new BoardLikeResponseDto(boardLike, );
-    }
+//    public BoardLikeResponseDto findBoardLikeById(Long id){
+//
+//        BoardLike boardLike = boardLikeRepository.findBoardLikeById(id);
+//
+//        return new BoardLikeResponseDto(boardLike, );
+//    }
 }

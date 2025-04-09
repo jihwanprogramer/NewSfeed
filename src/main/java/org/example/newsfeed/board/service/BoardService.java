@@ -8,7 +8,7 @@ import org.example.newsfeed.board.dto.*;
 import org.example.newsfeed.board.entity.Board;
 import org.example.newsfeed.board.repository.BoardRepository;
 import org.example.newsfeed.user.dto.UserResponseDto;
-import org.example.newsfeed.user.entity.Users;
+import org.example.newsfeed.user.entity.User;
 import org.example.newsfeed.user.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,7 +36,7 @@ public class BoardService {
     public CreateResponseDto create(CreateRequestDto requestDto, HttpSession session) {
 
         UserResponseDto userResponseDto = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
-        Users findedUser = userRepository.findUserByIdOrElseThrow(userResponseDto.getId());
+        User findedUser = userRepository.findUserByIdOrElseThrow(userResponseDto.getId());
 
         Board board = new Board(requestDto);
         board.setUser(findedUser);

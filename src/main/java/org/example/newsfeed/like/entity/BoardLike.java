@@ -2,6 +2,7 @@ package org.example.newsfeed.like.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.example.newsfeed.board.entity.Board;
 
 @Getter
 @Entity

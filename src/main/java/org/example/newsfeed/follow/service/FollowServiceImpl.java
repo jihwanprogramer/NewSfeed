@@ -7,7 +7,7 @@ import org.example.newsfeed.exception.SelfFollowNotAllowedException;
 import org.example.newsfeed.follow.dto.FollowResponseDto;
 import org.example.newsfeed.follow.entity.Follow;
 import org.example.newsfeed.follow.repository.FollowRepository;
-import org.example.newsfeed.user.entity.Users;
+import org.example.newsfeed.user.entity.User;
 import org.example.newsfeed.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +30,7 @@ public class FollowServiceImpl implements FollowService{
             throw new SelfFollowNotAllowedException("자신은 팔로우 할 수 없습니다.");
         }
 
-        Users followingUsers = userRepository.findUserByIdOrElseThrow(followingId);
+        User followingUsers = userRepository.findUserByIdOrElseThrow(followingId);
 
         Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUsers(followerId, followingUsers);
         if(!optionalFollow.isEmpty()){
@@ -48,7 +48,7 @@ public class FollowServiceImpl implements FollowService{
     @Override
     public boolean updateFollow(Long followerId, Long followingId) {
 
-        Users followingUsers = userRepository.findUserByIdOrElseThrow(followerId);
+        User followingUsers = userRepository.findUserByIdOrElseThrow(followerId);
 
         Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUsers(followerId, followingUsers);
         if(optionalFollow.isEmpty()){
@@ -67,7 +67,7 @@ public class FollowServiceImpl implements FollowService{
     @Override
     public List<FollowResponseDto> findFollowersByMyId(Long myId) {
 
-        Users users = userRepository.findUserByIdOrElseThrow(myId);
+        User users = userRepository.findUserByIdOrElseThrow(myId);
 
         return followRepository.findByFollowingUsers(users).stream().map(FollowResponseDto::toDto).toList();
     }
@@ -75,7 +75,7 @@ public class FollowServiceImpl implements FollowService{
     @Override
     public boolean existFollowTrue(Long followerId, Long followingId) {
 
-        Users followingUsers = userRepository.findUserByIdOrElseThrow(followerId);
+        User followingUsers = userRepository.findUserByIdOrElseThrow(followerId);
         Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUsers(followerId, followingUsers);
         return optionalFollow.isPresent() && optionalFollow.get().isFollowYN();
     }
