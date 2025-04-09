@@ -6,7 +6,7 @@ public interface Const {
     String[] WHITE_LIST = {
             "/",
             "/login",
-            "/api/users"
+            "/api/users/signup"
     };
 
 }
