@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.common.Const;
 import org.example.newsfeed.exception.MisMatchUserException;
+import org.example.newsfeed.user.dto.UserResponseDto;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,7 +13,7 @@ public class ConfirmSameUser {
 
     private final HttpSession session;
 
-    public void confirmSameUSer(long id){
+    public void isSameUser(long id){
 
         UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
 

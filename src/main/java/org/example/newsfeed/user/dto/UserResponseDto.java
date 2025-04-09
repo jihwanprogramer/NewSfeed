@@ -1,6 +1,7 @@
 package org.example.newsfeed.user.dto;
 
 import lombok.Getter;
+import org.example.newsfeed.user.entity.Users;
 
 import java.time.LocalDateTime;
 
@@ -23,5 +24,9 @@ public class UserResponseDto {
         this.age = age;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
+    }
+
+    public UserResponseDto(Users users) {
+        this(users.getId(), users.getName(), users.getAge(), users.getCreatedAt(),users.getModifiedAt());
     }
 }

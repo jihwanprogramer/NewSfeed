@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@SpringBootApplication
 @EnableJpaAuditing
+@SpringBootApplication
 public class NewSfeedApplication {
      //테스트코드
     public static void main(String[] args) {
