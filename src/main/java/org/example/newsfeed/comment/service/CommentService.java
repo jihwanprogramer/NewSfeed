@@ -1,6 +1,7 @@
 package org.example.newsfeed.comment.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.newsfeed.comment.dto.CommentPageResponseDto;
 import org.example.newsfeed.comment.dto.CommentResponseDto;
 import org.example.newsfeed.comment.dto.CommentSaveRequestDto;
 import org.example.newsfeed.comment.dto.CommentUpdateRequestDto;
@@ -10,6 +11,9 @@ import org.example.newsfeed.post.entity.Board;
 import org.example.newsfeed.post.repository.BoardRepository;
 import org.example.newsfeed.user.entity.Users;
 import org.example.newsfeed.user.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,5 +90,13 @@ public class CommentService {
             throw new IllegalArgumentException();
         }
         commentRepository.delete(comment);
+    }
+
+    public Page<CommentPageResponseDto> findAllPage(int page, int size) {
+        PageRequest pageable = PageRequest.of(page,size, Sort.by("createAt").descending());
+        Page<Comment> commentPage = commentRepository.findAll(pageable);
+
+        return commentPage.map(comment -> new CommentPageResponseDto(comment));
+
     }
 }

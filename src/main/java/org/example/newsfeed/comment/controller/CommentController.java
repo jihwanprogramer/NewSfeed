@@ -2,11 +2,13 @@ package org.example.newsfeed.comment.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.newsfeed.comment.dto.CommentPageResponseDto;
 import org.example.newsfeed.comment.dto.CommentResponseDto;
 import org.example.newsfeed.comment.dto.CommentSaveRequestDto;
 import org.example.newsfeed.comment.dto.CommentUpdateRequestDto;
 import org.example.newsfeed.comment.service.CommentService;
 import org.example.newsfeed.user.dto.UserResponseDto;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,6 +58,15 @@ public class CommentController {
             @PathVariable Long comment_id) {
         commentService.delete(comment_id, loginUser.getId());
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/comments/pages")
+    public ResponseEntity<Page<CommentPageResponseDto>> findAllPage(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ){
+        Page<CommentPageResponseDto> result = commentService.findAllPage(page,size);
+        return new ResponseEntity<>(result,HttpStatus.OK);
     }
 
 }
