@@ -21,6 +21,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto signUp(String name, Integer age, String email, String password, String checkPassword) {
 
+        if (userRepository.findUserByEmail(email).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,"이미 있는 이메일입니다");
+        }
+
         if (!password.equals(checkPassword)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"비밀번호가 일치하지 않습니다.");
         }
