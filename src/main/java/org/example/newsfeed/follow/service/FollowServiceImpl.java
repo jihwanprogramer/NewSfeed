@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.exception.AlreadyExistsEsception;
 import org.example.newsfeed.exception.NullResponseException;
 import org.example.newsfeed.exception.SelfFollowNotAllowedException;
+import org.example.newsfeed.follow.dto.FollowCountResponseDto;
 import org.example.newsfeed.follow.dto.FollowResponseDto;
 import org.example.newsfeed.follow.dto.FollowSingleResponseDto;
 import org.example.newsfeed.follow.entity.Follow;
@@ -34,7 +35,7 @@ public class FollowServiceImpl implements FollowService{
         Users followingUsers = userRepository.findUserByIdOrElseThrow(followingId);
 
         Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUsers(followerId, followingUsers);
-        if(!optionalFollow.isEmpty()){
+        if(optionalFollow.isPresent()){
             throw new AlreadyExistsEsception("이미 팔로우 내역이 존재합니다.");
         }
 
@@ -43,7 +44,7 @@ public class FollowServiceImpl implements FollowService{
 
         followRepository.save(follow);
 
-        return new FollowSingleResponseDto(follow.getId(), follow.isFollowYN());
+        return new FollowSingleResponseDto(follow.getId(), follow.isFollowYN(), false);
 
     }
 
@@ -51,7 +52,7 @@ public class FollowServiceImpl implements FollowService{
     @Override
     public FollowSingleResponseDto updateFollow(Long followerId, Long followingId) {
 
-        Users followingUsers = userRepository.findUserByIdOrElseThrow(followerId);
+        Users followingUsers = userRepository.findUserByIdOrElseThrow(followingId);
 
         Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUsers(followerId, followingUsers);
         if(optionalFollow.isEmpty()){
@@ -62,19 +63,36 @@ public class FollowServiceImpl implements FollowService{
 
         Follow updatedFollow = optionalFollow.get();
 
-        return new FollowSingleResponseDto(updatedFollow.getId(), updatedFollow.isFollowYN());
+        return new FollowSingleResponseDto(updatedFollow.getId(), updatedFollow.isFollowYN(), false);
     }
 
     @Override
-    public List<FollowResponseDto> findFollowingsByMyId(Long myId) {
+    public FollowSingleResponseDto findFollowStatus(Long followerId, Long followingId) {
 
-        return followRepository.findByFollowerId(myId).stream().map(FollowResponseDto::toDto).toList();
+        Users followingUsers = userRepository.findUserByIdOrElseThrow(followingId);
+
+        if (followerId == followingId){
+            return new FollowSingleResponseDto(null, false, true);
+        }
+
+        Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUsers(followerId, followingUsers);
+        if(optionalFollow.isEmpty()){
+            throw new NullResponseException("팔로우 내역이 없습니다.");
+        }
+
+        return new FollowSingleResponseDto(optionalFollow.get().getId(), optionalFollow.get().isFollowYN(), false);
     }
 
     @Override
-    public List<FollowResponseDto> findFollowersByMyId(Long myId) {
+    public List<FollowResponseDto> findFollowingsById(Long id) {
 
-        Users users = userRepository.findUserByIdOrElseThrow(myId);
+        return followRepository.findByFollowerId(id).stream().map(FollowResponseDto::toDto).toList();
+    }
+
+    @Override
+    public List<FollowResponseDto> findFollowersById(Long id) {
+
+        Users users = userRepository.findUserByIdOrElseThrow(id);
 
         return followRepository.findByFollowingUsers(users).stream().map(FollowResponseDto::toDto).toList();
     }
@@ -85,6 +103,13 @@ public class FollowServiceImpl implements FollowService{
         Users followingUsers = userRepository.findUserByIdOrElseThrow(followerId);
         Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUsers(followerId, followingUsers);
         return optionalFollow.isPresent() && optionalFollow.get().isFollowYN();
+    }
+
+    @Override
+    public FollowCountResponseDto countFollowByFollowerId(Long followerID) {
+
+        Long count = followRepository.countByFollowerId(followerID);
+        return null;
     }
 
 

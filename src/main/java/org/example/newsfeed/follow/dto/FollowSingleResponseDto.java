@@ -9,8 +9,11 @@ public class FollowSingleResponseDto {
 
     private final boolean followYN;
 
-    public FollowSingleResponseDto(Long id, boolean followYN) {
+    private final boolean isMyProfile;
+
+    public FollowSingleResponseDto(Long id, boolean followYN, boolean isMyProfile) {
         this.id = id;
         this.followYN = followYN;
+        this.isMyProfile = isMyProfile;
     }
 }

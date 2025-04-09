@@ -2,10 +2,10 @@ package org.example.newsfeed.follow.controller;
 
 
 import jakarta.servlet.http.HttpSession;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.common.Const;
 import org.example.newsfeed.exception.AccessDeniedException;
+import org.example.newsfeed.follow.dto.FollowCountResponseDto;
 import org.example.newsfeed.follow.dto.FollowResponseDto;
 import org.example.newsfeed.follow.dto.FollowSingleResponseDto;
 import org.example.newsfeed.follow.service.FollowService;
@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -36,7 +35,7 @@ public class FollowController {
         return new ResponseEntity<>(followSingleResponseDto, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{followId}/follow")
+    @PatchMapping("/{followId}/follow")
     public ResponseEntity<FollowSingleResponseDto> updateFollow(
             @PathVariable Long followId,
             HttpSession session ) {
@@ -49,7 +48,16 @@ public class FollowController {
 
     }
 
+    //내가 본 대상이 내가 팔로우 했는지 확인
+    @GetMapping("/{userId}/follow_status")
+    public ResponseEntity<FollowSingleResponseDto> findFollowYN(@PathVariable Long userId, HttpSession session){
 
+        UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
+
+        FollowSingleResponseDto followSingleResponseDto = followService.findFollowStatus(loginUser.getId(), userId);
+
+        return new ResponseEntity<>(followSingleResponseDto, HttpStatus.OK);
+    }
 
 
     // 특정 유저의 팔로우한 유저 목록 조회 following 목록
@@ -64,7 +72,7 @@ public class FollowController {
         }
 
 
-        return followService.findFollowingsByMyId(userId);
+        return followService.findFollowingsById(userId);
     }
 
     // 특정 유저를 팔로우한 유저 목록 조회 follower 목록
@@ -78,7 +86,17 @@ public class FollowController {
             throw new AccessDeniedException("이 유저가 당신을 팔로워 해야 볼 수 있습니다.");
         }
 
-        return followService.findFollowersByMyId(userId);
+        return followService.findFollowersById(userId);
+    }
+
+    //팔로워 수 체크
+    @GetMapping("/{userId}/followers/count")
+    public ResponseEntity<FollowCountResponseDto> countFollowers (@PathVariable Long userId, HttpSession session){
+
+        UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
+
+
+
     }
 
 
