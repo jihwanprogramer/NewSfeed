@@ -2,10 +2,12 @@ package org.example.newsfeed.follow.controller;
 
 
 import jakarta.servlet.http.HttpSession;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.common.Const;
 import org.example.newsfeed.exception.AccessDeniedException;
 import org.example.newsfeed.follow.dto.FollowResponseDto;
+import org.example.newsfeed.follow.dto.FollowSingleResponseDto;
 import org.example.newsfeed.follow.service.FollowService;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.springframework.http.HttpStatus;
@@ -23,31 +25,31 @@ public class FollowController {
     private final FollowService followService;
 
     @PostMapping("/{followId}/follow")
-    public ResponseEntity<Map<String,String>> saveFollow(
+    public ResponseEntity<FollowSingleResponseDto> saveFollow(
             @PathVariable Long followId,
             HttpSession session
     ){
         UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
 
-        followService.saveFollow(loginUser.getId(),followId);
+        FollowSingleResponseDto followSingleResponseDto = followService.saveFollow(loginUser.getId(),followId);
 
-        return new ResponseEntity<>(Map.of("message", "팔로우 하였습니다."), HttpStatus.CREATED);
+        return new ResponseEntity<>(followSingleResponseDto, HttpStatus.CREATED);
     }
 
     @PutMapping("/{followId}/follow")
-    public ResponseEntity<Map<String,String>> updateFollow(
+    public ResponseEntity<FollowSingleResponseDto> updateFollow(
             @PathVariable Long followId,
             HttpSession session ) {
         UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
 
-        boolean followYN = followService.updateFollow(followId, loginUser.getId());
+        FollowSingleResponseDto followSingleResponseDto = followService.updateFollow(followId, loginUser.getId());
 
-        if(followYN){
-            return new ResponseEntity<>(Map.of("message", "다시 팔로우 하였습니다."), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(Map.of("message", "팔로우를 취소하였습니다."), HttpStatus.OK);
-        }
+
+        return new ResponseEntity<>(followSingleResponseDto, HttpStatus.OK);
+
     }
+
+
 
 
     // 특정 유저의 팔로우한 유저 목록 조회 following 목록

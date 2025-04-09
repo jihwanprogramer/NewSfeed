@@ -5,6 +5,7 @@ import org.example.newsfeed.exception.AlreadyExistsEsception;
 import org.example.newsfeed.exception.NullResponseException;
 import org.example.newsfeed.exception.SelfFollowNotAllowedException;
 import org.example.newsfeed.follow.dto.FollowResponseDto;
+import org.example.newsfeed.follow.dto.FollowSingleResponseDto;
 import org.example.newsfeed.follow.entity.Follow;
 import org.example.newsfeed.follow.repository.FollowRepository;
 import org.example.newsfeed.user.entity.Users;
@@ -24,7 +25,7 @@ public class FollowServiceImpl implements FollowService{
 
 
     @Override
-    public void saveFollow(Long followerId, Long followingId) {
+    public FollowSingleResponseDto saveFollow(Long followerId, Long followingId) {
 
         if(followerId==followingId){
             throw new SelfFollowNotAllowedException("자신은 팔로우 할 수 없습니다.");
@@ -42,11 +43,13 @@ public class FollowServiceImpl implements FollowService{
 
         followRepository.save(follow);
 
+        return new FollowSingleResponseDto(follow.getId(), follow.isFollowYN());
+
     }
 
     @Transactional
     @Override
-    public boolean updateFollow(Long followerId, Long followingId) {
+    public FollowSingleResponseDto updateFollow(Long followerId, Long followingId) {
 
         Users followingUsers = userRepository.findUserByIdOrElseThrow(followerId);
 
@@ -55,7 +58,11 @@ public class FollowServiceImpl implements FollowService{
             throw new NullResponseException("팔로우 내역이 존재하지 않습니다.");
         }
 
-        return optionalFollow.get().updateFollow();
+        optionalFollow.get().updateFollow();
+
+        Follow updatedFollow = optionalFollow.get();
+
+        return new FollowSingleResponseDto(updatedFollow.getId(), updatedFollow.isFollowYN());
     }
 
     @Override
