@@ -1,8 +1,8 @@
 package org.example.newsfeed.user.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.newsfeed.common.Const;
 import org.example.newsfeed.user.dto.UpdateUserRequestDto;
 import org.example.newsfeed.user.dto.UserRequestDto;
 import org.example.newsfeed.user.dto.UserResponseDto;
@@ -53,10 +53,10 @@ public class UserController {
     // 유저 수정
     @PatchMapping("/{id}")
     public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id,
-                                                            @Valid @RequestBody UpdateUserRequestDto updateUserRequestDto,
-                                                            HttpServletRequest httpServletRequest) {
+                                                      @Valid @RequestBody UpdateUserRequestDto updateUserRequestDto,
+                                                      @SessionAttribute(Const.LOGIN_USER) UserResponseDto loginUser) {
 
-        UserResponseDto UserResponseDto = userService.updateUser(httpServletRequest,id,
+        UserResponseDto UserResponseDto = userService.updateUser(loginUser.getId(),id,
                 updateUserRequestDto.getName(), updateUserRequestDto.getAge(), updateUserRequestDto.getEmail(),
                 updateUserRequestDto.getPassword(), updateUserRequestDto.getNewPassword(),
                 updateUserRequestDto.getCheckNewPassword());
@@ -67,9 +67,9 @@ public class UserController {
     // 유저 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id, @RequestParam("password") String password,
-                                           HttpServletRequest httpServletRequest) {
+                                           @SessionAttribute(Const.LOGIN_USER) UserResponseDto loginUser) {
 
-        userService.deleteUser(httpServletRequest,id, password);
+        userService.deleteUser(loginUser.getId(),id, password);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
