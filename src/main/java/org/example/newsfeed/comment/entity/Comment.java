@@ -1,7 +1,6 @@
 package org.example.newsfeed.comment.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.newsfeed.common.entity.BaseEntity;
@@ -12,6 +11,7 @@ import org.example.newsfeed.user.entity.Users;
 @Entity
 @NoArgsConstructor
 public class Comment extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,7 +20,7 @@ public class Comment extends BaseEntity {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "board_id")
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)

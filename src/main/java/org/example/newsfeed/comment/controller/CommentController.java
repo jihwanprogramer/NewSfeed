@@ -14,26 +14,26 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/posts")
+@RequestMapping("/boards")
 @RequiredArgsConstructor
 public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("/{post_id}/comments")
+    @PostMapping("/{board_id}/comments")
     public ResponseEntity<CommentResponseDto> saveComment(
             @SessionAttribute(name = "loginUser") UserResponseDto loginUser,
-            @PathVariable Long post_id,
+            @PathVariable Long board_id,
             @Valid @RequestBody CommentSaveRequestDto commentSaveRequestDto
     ) {
-        CommentResponseDto save = commentService.save(loginUser.getId(), post_id, commentSaveRequestDto);
+        CommentResponseDto save = commentService.save(loginUser.getId(), board_id, commentSaveRequestDto);
 
         return new ResponseEntity<>(save, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{post_id}/comments")
-    public ResponseEntity<List<CommentResponseDto>> findByPostId(@PathVariable Long post_id) {
-        List<CommentResponseDto> commentResponseDtoList = commentService.findByPost(post_id);
+    @GetMapping("/{board_id}/comments")
+    public ResponseEntity<List<CommentResponseDto>> findByPostId(@PathVariable Long board_id) {
+        List<CommentResponseDto> commentResponseDtoList = commentService.findByPost(board_id);
 
         return new ResponseEntity<>(commentResponseDtoList, HttpStatus.OK);
     }
