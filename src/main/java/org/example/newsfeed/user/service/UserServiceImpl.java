@@ -1,6 +1,8 @@
 package org.example.newsfeed.user.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.example.newsfeed.common.Const;
 import org.example.newsfeed.common.config.PasswordEncoder;
 import org.example.newsfeed.user.dto.UpdateUserResponseDto;
 import org.example.newsfeed.user.dto.UserResponseDto;
@@ -65,8 +67,16 @@ public class UserServiceImpl implements UserService {
 
     // service) 유저 수정
     @Override
-    public UpdateUserResponseDto updateUser(Long id, String name, Integer age, String email, String password,
-                                            String newPassword, String checkNewPassword) {
+    public UpdateUserResponseDto updateUser(Long id, HttpServletRequest httpServletRequest, String name, Integer age,
+                                            String email, String password, String newPassword, String checkNewPassword) {
+
+
+        UserResponseDto userResponseDto = (UserResponseDto) httpServletRequest.getSession(false)
+                .getAttribute(Const.LOGIN_USER);
+
+        if (!userResponseDto.getId().equals(id)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"본인 정보만 수정할 수 있습니다.");
+        }
 
         Users findUser = userRepository.findUserByIdOrElseThrow(id);
 
@@ -78,16 +88,15 @@ public class UserServiceImpl implements UserService {
             findUser.setAge(age);
         }
 
-        if (email != null) {
+        // 널은 허용하지만 빈 문자열은 허용하지 않음
+        if (email != null && !email.isEmpty()) {
             findUser.setEmail(email);
         }
 
         // 둘 다 넣지 않으면 변경 불가
         if (newPassword != null && checkNewPassword != null) {
 
-            if (!passwordEncoder.matches(password,findUser.getPassword())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"원래의 비밀번호가 일치하지 않습니다.");
-            }
+            passwordMatch(password, findUser);
 
             if (!newPassword.equals(checkNewPassword)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -109,9 +118,15 @@ public class UserServiceImpl implements UserService {
 
         Users findUser = userRepository.findUserByIdOrElseThrow(id);
 
-        if (!passwordEncoder.matches(password,findUser.getPassword())) {
+        passwordMatch(password, findUser);
+
+        userRepository.delete(findUser);
+    }
+
+    // 패스워드 매치 확인 메서드
+    private void passwordMatch(String password, Users users) {
+        if (!passwordEncoder.matches(password,users.getPassword())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"원래의 비밀번호가 일치하지 않습니다.");
         }
-        userRepository.delete(findUser);
     }
 }
