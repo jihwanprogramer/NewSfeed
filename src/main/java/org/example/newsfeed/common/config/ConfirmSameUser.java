@@ -13,7 +13,7 @@ public class ConfirmSameUser {
 
     private final HttpSession session;
 
-    public void confirmSameUser(long id){
+    public void isSameUser(long id){
 
         UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
 
