@@ -82,8 +82,8 @@ public class UserServiceImpl implements UserService {
             findUser.setEmail(email);
         }
 
-        // 셋 다 넣지 않으면 변경 불가
-        if (password != null && newPassword != null && checkNewPassword != null) {
+        // 둘 다 넣지 않으면 변경 불가
+        if (newPassword != null && checkNewPassword != null) {
 
             if (!passwordEncoder.matches(password,findUser.getPassword())) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"원래의 비밀번호가 일치하지 않습니다.");
