@@ -5,8 +5,7 @@ import org.example.newsfeed.common.config.PasswordEncoder;
 import org.example.newsfeed.exception.LoginAuthException;
 import org.example.newsfeed.login.dto.LoginResponseDto;
 import org.example.newsfeed.login.repository.LoginRepository;
-import org.example.newsfeed.user.entity.Users;
-import org.example.newsfeed.user.repository.UserRepository;
+import org.example.newsfeed.user.entity.User;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,7 +18,7 @@ public class LoginService {
 
     public LoginResponseDto login(String email, String password){
 
-        Users users = loginRepository.findUsersByEmailOrElseThrow(email);
+        User users = loginRepository.findUsersByEmailOrElseThrow(email);
 
         if(!passwordEncoder.matches(password, users.getPassword())){
             throw new LoginAuthException("아이디가 없거나 비밀번호가 틀립니다.");

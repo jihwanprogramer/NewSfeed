@@ -1,17 +1,16 @@
-package org.example.newsfeed.post.entity;
+package org.example.newsfeed.board.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.example.newsfeed.post.dto.CreateRequestDto;
-import org.example.newsfeed.post.dto.UpdateRequestDto;
-import org.example.newsfeed.user.dto.UserResponseDto;
-import org.example.newsfeed.user.entity.Users;
+import org.example.newsfeed.board.dto.CreateRequestDto;
+import org.example.newsfeed.board.dto.UpdateRequestDto;
+import org.example.newsfeed.user.entity.User;
 
 @Entity
 @Getter
 @Table(name = "post")
-public class Post extends TimeEntity {
+public class Board extends TimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,13 +25,13 @@ public class Post extends TimeEntity {
     @Setter
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private Users user;
+    private User user;
 
-    public Post() {
+    public Board() {
 
     }
 
-    public Post(CreateRequestDto requestDto) {
+    public Board(CreateRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
     }
