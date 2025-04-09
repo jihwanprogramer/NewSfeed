@@ -34,14 +34,13 @@ public class FollowController {
         return new ResponseEntity<>(followSingleResponseDto, HttpStatus.CREATED);
     }
 
-    @PatchMapping("/{followId}/follow")
+    @PatchMapping("/{followingId}/follow")
     public ResponseEntity<FollowSingleResponseDto> updateFollow(
-            @PathVariable Long followId,
+            @PathVariable Long followingId,
             @SessionAttribute(name = Const.LOGIN_USER) UserResponseDto loginUser
     ) {
 
-        FollowSingleResponseDto followSingleResponseDto = followService.updateFollow(followId, loginUser.getId());
-
+        FollowSingleResponseDto followSingleResponseDto = followService.updateFollow(loginUser.getId(), followingId);
 
         return new ResponseEntity<>(followSingleResponseDto, HttpStatus.OK);
 

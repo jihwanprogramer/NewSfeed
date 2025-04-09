@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.newsfeed.common.entity.BaseEntity;
-import org.example.newsfeed.post.entity.Board;
-import org.example.newsfeed.user.entity.Users;
+import org.example.newsfeed.board.entity.Board;
+import org.example.newsfeed.user.entity.User;
 
 @Getter
 @Entity
@@ -24,9 +24,9 @@ public class Comment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private Users user;
+    private User user;
 
-    public Comment(Board post, Users user, String content) {
+    public Comment(Board post, User user, String content) {
         this.post = post;
         this.user = user;
         this.content = content;

@@ -1,7 +1,7 @@
-package org.example.newsfeed.post.dto;
+package org.example.newsfeed.board.dto;
 
 import lombok.Getter;
-import org.example.newsfeed.post.entity.Board;
+import org.example.newsfeed.board.entity.Board;
 
 import java.time.LocalDateTime;
 

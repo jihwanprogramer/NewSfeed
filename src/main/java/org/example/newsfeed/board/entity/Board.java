@@ -1,11 +1,11 @@
-package org.example.newsfeed.post.entity;
+package org.example.newsfeed.board.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.example.newsfeed.post.dto.CreateRequestDto;
-import org.example.newsfeed.post.dto.UpdateRequestDto;
-import org.example.newsfeed.user.entity.Users;
+import org.example.newsfeed.board.dto.CreateRequestDto;
+import org.example.newsfeed.board.dto.UpdateRequestDto;
+import org.example.newsfeed.user.entity.User;
 
 @Entity
 @Getter
@@ -25,7 +25,7 @@ public class Board extends TimeEntity {
     @Setter
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private Users user;
+    private User user;
 
     public Board() {
 

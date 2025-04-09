@@ -1,21 +1,18 @@
 package org.example.newsfeed.follow.repository;
 
 import org.example.newsfeed.follow.entity.Follow;
-import org.example.newsfeed.user.entity.Users;
+import org.example.newsfeed.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
 
-    Optional<Follow> findByFollowerIdAndFollowingUsers(Long followingID, Users followingUsers );
+    Optional<Follow> findByFollowerIdAndFollowingUser(Long followingID, User followUser);
     List<Follow> findByFollowerId(Long followerId);
-    List<Follow> findByFollowingUsers(Users followingUsers);
-    Long countByFollowerId(Long followerID);
-    Long countByFollowingUsers(Users followingUsers);
-
+    List<Follow> findByFollowingUser(User followingUser);
+    Long countByFollowerIdAndFollowYN(Long followerId,boolean followYN);
+    Long countByFollowingUserAndFollowYN(User followingUser,boolean followYN);
 
 }

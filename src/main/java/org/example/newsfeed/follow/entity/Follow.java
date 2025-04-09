@@ -3,7 +3,7 @@ package org.example.newsfeed.follow.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.example.newsfeed.user.entity.BaseEntity;
-import org.example.newsfeed.user.entity.Users;
+import org.example.newsfeed.user.entity.User;
 
 @Entity
 @Getter
@@ -21,8 +21,8 @@ public class Follow extends BaseEntity {
     private Long followerId;
 
     @ManyToOne
-    @JoinColumn(name = "Users_id")
-    private Users followingUsers;
+    @JoinColumn(name = "user_id")
+    private User followingUser;
 
     public Follow() {
     }
@@ -32,8 +32,8 @@ public class Follow extends BaseEntity {
         this.followerId = followerId;
     }
 
-    public void setFollowUsers(Users followingUsers){
-        this.followingUsers = followingUsers;
+    public void setFollowUser(User followingUser){
+        this.followingUser = followingUser;
     }
 
     public boolean updateFollow() {

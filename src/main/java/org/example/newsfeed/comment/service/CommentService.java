@@ -7,9 +7,9 @@ import org.example.newsfeed.comment.dto.CommentSaveRequestDto;
 import org.example.newsfeed.comment.dto.CommentUpdateRequestDto;
 import org.example.newsfeed.comment.entity.Comment;
 import org.example.newsfeed.comment.repository.CommentRepository;
-import org.example.newsfeed.post.entity.Board;
-import org.example.newsfeed.post.repository.BoardRepository;
-import org.example.newsfeed.user.entity.Users;
+import org.example.newsfeed.board.entity.Board;
+import org.example.newsfeed.board.repository.BoardRepository;
+import org.example.newsfeed.user.entity.User;
 import org.example.newsfeed.user.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +33,7 @@ public class CommentService {
 
         Board findPost = postRepository.findByIdOrElseThrow(postId);
 
-        Users user = userRepository.findUserByIdOrElseThrow(userId);
+        User user = userRepository.findUserByIdOrElseThrow(userId);
         Comment comment = new Comment(findPost, user, dto.getContent());
         commentRepository.save(comment);
 
@@ -42,8 +42,8 @@ public class CommentService {
                 findPost.getId(),
                 user.getId(),
                 comment.getContent(),
-                comment.getCreateAt(),
-                comment.getUpdatedAt()
+                comment.getCreatedAt(),
+                comment.getModifiedAt()
         );
 
     }
@@ -57,8 +57,8 @@ public class CommentService {
                 post.getId(),
                 comment.getUser().getId(),
                 comment.getContent(),
-                comment.getCreateAt(),
-                comment.getUpdatedAt()
+                comment.getCreatedAt(),
+                comment.getModifiedAt()
         )).collect(Collectors.toList());
     }
 
@@ -76,8 +76,8 @@ public class CommentService {
                 comment.getPost().getId(),
                 comment.getUser().getId(),
                 comment.getContent(),
-                comment.getCreateAt(),
-                comment.getUpdatedAt()
+                comment.getCreatedAt(),
+                comment.getModifiedAt()
         );
 
     }
