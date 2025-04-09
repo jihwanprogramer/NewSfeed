@@ -6,8 +6,8 @@ import org.example.newsfeed.comment.dto.CommentSaveRequestDto;
 import org.example.newsfeed.comment.dto.CommentUpdateRequestDto;
 import org.example.newsfeed.comment.entity.Comment;
 import org.example.newsfeed.comment.repository.CommentRepository;
-import org.example.newsfeed.post.entity.Post;
-import org.example.newsfeed.post.repository.PostRepository;
+import org.example.newsfeed.post.entity.Board;
+import org.example.newsfeed.post.repository.BoardRepository;
 import org.example.newsfeed.user.entity.Users;
 import org.example.newsfeed.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final PostRepository postRepository;
+    private final BoardRepository postRepository;
     private final UserRepository userRepository;
 
     @Transactional
     public CommentResponseDto save(Long userId, Long postId, CommentSaveRequestDto dto) {
 
-        Post findPost = postRepository.findByIdOrElseThrow(postId);
+        Board findPost = postRepository.findByIdOrElseThrow(postId);
 
         Users user = userRepository.findUserByIdOrElseThrow(userId);
         Comment comment = new Comment(findPost, user, dto.getContent());
@@ -46,7 +46,7 @@ public class CommentService {
 
     @Transactional
     public List<CommentResponseDto> findByPost(Long id) {
-        Post post = postRepository.findByIdOrElseThrow(id);
+        Board post = postRepository.findByIdOrElseThrow(id);
         List<Comment> comments = commentRepository.findByPost(post);
         return comments.stream().map(comment -> new CommentResponseDto(
                 comment.getId(),
