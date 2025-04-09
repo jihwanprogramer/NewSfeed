@@ -30,7 +30,7 @@ public class UserController {
 
     }
 
-    // 이름으로 유저 조회
+    // 이름으로 유저들 조회
     @GetMapping
     public ResponseEntity<List<UserResponseDto>> findUserByName(@RequestParam("name") String name) {
 

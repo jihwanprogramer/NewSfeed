@@ -18,13 +18,16 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // service) 회원가입
     @Override
     public UserResponseDto signUp(String name, Integer age, String email, String password, String checkPassword) {
 
+        // 중복 이메일 체크
         if (userRepository.findUserByEmail(email).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,"이미 있는 이메일입니다");
         }
 
+        // 비밀번호와 체크 비밀번호 일치하는지 확인
         if (!password.equals(checkPassword)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"비밀번호가 일치하지 않습니다.");
         }
@@ -40,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
     }
 
-
+    // service) 이름으로 유저들 조회
     @Override
     public List<UserResponseDto> findUserByName(String name) {
 
@@ -49,6 +52,7 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    // service) 아이디로 유저 조회
     @Override
     public UserResponseDto findUserById(Long id) {
 
@@ -59,6 +63,7 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    // service) 유저 수정
     @Override
     public UpdateUserResponseDto updateUser(Long id, String name, Integer age, String email, String password,
                                             String newPassword, String checkNewPassword) {
@@ -98,6 +103,7 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    // service) 유저 삭제
     @Override
     public void deleteUser(Long id, String password) {
 
