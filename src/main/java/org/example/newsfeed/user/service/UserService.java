@@ -1,7 +1,6 @@
 package org.example.newsfeed.user.service;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.example.newsfeed.user.dto.UpdateUserResponseDto;
 import org.example.newsfeed.user.dto.UserResponseDto;
 
 import java.util.List;
@@ -14,8 +13,8 @@ public interface UserService {
 
     UserResponseDto findUserById(Long id);
 
-    UpdateUserResponseDto updateUser(Long id, HttpServletRequest httpServletRequest, String name, Integer age,
+    UserResponseDto updateUser(HttpServletRequest httpServletRequest, Long id, String name, Integer age,
                                      String email, String password, String newPassword, String checkNewPassword);
 
-    void deleteUser(Long id, String password);
+    void deleteUser(HttpServletRequest httpServletRequest, Long id, String password);
 }
