@@ -5,13 +5,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.newsfeed.post.dto.CreateRequestDto;
 import org.example.newsfeed.post.dto.UpdateRequestDto;
-import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.entity.Users;
 
 @Entity
 @Getter
 @Table(name = "post")
-public class Post extends TimeEntity {
+public class Board extends TimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,11 +27,11 @@ public class Post extends TimeEntity {
     @JoinColumn(name = "user_id")
     private Users user;
 
-    public Post() {
+    public Board() {
 
     }
 
-    public Post(CreateRequestDto requestDto) {
+    public Board(CreateRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
     }
