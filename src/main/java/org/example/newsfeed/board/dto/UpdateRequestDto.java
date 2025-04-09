@@ -1,6 +1,5 @@
-package org.example.newsfeed.post.dto;
+package org.example.newsfeed.board.dto;
 
-import jakarta.validation.Valid;
 import lombok.Getter;
 
 @Getter

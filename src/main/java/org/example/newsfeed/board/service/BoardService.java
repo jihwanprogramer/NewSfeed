@@ -1,12 +1,12 @@
-package org.example.newsfeed.post.service;
+package org.example.newsfeed.board.service;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.common.Const;
 import org.example.newsfeed.common.config.ConfirmSameUser;
-import org.example.newsfeed.post.dto.*;
-import org.example.newsfeed.post.entity.Board;
-import org.example.newsfeed.post.repository.BoardRepository;
+import org.example.newsfeed.board.dto.*;
+import org.example.newsfeed.board.entity.Board;
+import org.example.newsfeed.board.repository.BoardRepository;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.entity.Users;
 import org.example.newsfeed.user.repository.UserRepository;
@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -109,4 +112,26 @@ public class BoardService {
 
         return boardPage.map(board -> new PageResponseDto(board));
     }
+
+    //수정일자 기준 최신순으로 조회
+    public List<BoardResponseDto> sortedByModifiedAt() {
+        return boardRepository.findAll()
+                .stream()
+                .map(BoardResponseDto::findAll)
+                .sorted(Comparator.comparing(BoardResponseDto::getModifiedAt).reversed())
+                .toList();
+    }
+
+    //기간별 검색
+    public List<BoardResponseDto> findByPeriod(PeriodRequestDto requestDto) {
+
+        LocalDateTime startDate = LocalDate.parse(requestDto.getStartDate()).atStartOfDay();
+        LocalDateTime endDate = LocalDate.parse(requestDto.getEndDate()).atStartOfDay();
+
+        return boardRepository.findByCreatedAtBetween(startDate, endDate)
+                .stream()
+                .map(BoardResponseDto::findAll)
+                .toList();
+    }
+
 }
