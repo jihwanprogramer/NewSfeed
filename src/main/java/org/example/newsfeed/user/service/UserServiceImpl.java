@@ -1,8 +1,6 @@
 package org.example.newsfeed.user.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.example.newsfeed.common.Const;
 import org.example.newsfeed.common.config.PasswordEncoder;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.entity.Users;
@@ -62,10 +60,10 @@ public class UserServiceImpl implements UserService {
 
     // service) 유저 수정
     @Override
-    public UserResponseDto updateUser(HttpServletRequest httpServletRequest, Long id , String name, Integer age,
+    public UserResponseDto updateUser(Long loginUserId, Long id , String name, Integer age,
                                             String email, String password, String newPassword, String checkNewPassword) {
 
-        sessionCheck(httpServletRequest,id);
+        sessionCheck(loginUserId,id);
 
         Users findUser = userRepository.findUserByIdOrElseThrow(id);
 
@@ -80,9 +78,9 @@ public class UserServiceImpl implements UserService {
 
     // service) 유저 삭제
     @Override
-    public void deleteUser(HttpServletRequest httpServletRequest,Long id, String password) {
+    public void deleteUser(Long loginUserId,Long id, String password) {
 
-        sessionCheck(httpServletRequest,id);
+        sessionCheck(loginUserId,id);
 
         Users findUser = userRepository.findUserByIdOrElseThrow(id);
 
@@ -110,11 +108,9 @@ public class UserServiceImpl implements UserService {
     }
 
     // 세션의 id와 요청받은 id 확인 메서드
-    private void sessionCheck(HttpServletRequest httpServletRequest, Long id) {
-        UserResponseDto userResponseDto = (UserResponseDto) httpServletRequest.getSession(false)
-                .getAttribute(Const.LOGIN_USER);
+    private void sessionCheck(Long loginUserId, Long id) {
 
-        if (!userResponseDto.getId().equals(id)) {
+        if (!loginUserId.equals(id)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,"본인 정보만 다룰 수 있습니다.");
         }
     }
