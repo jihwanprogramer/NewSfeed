@@ -1,3 +1,4 @@
+/*
 package org.example.newsfeed.like.controller;
 
 import jakarta.servlet.http.HttpSession;
@@ -47,3 +48,4 @@ public class BoardLikeController {
         return new ResponseEntity<>(boardLikeService.findBoardLikeById(id),HttpStatus.OK);
     }
 }
+*/
