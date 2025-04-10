@@ -42,4 +42,6 @@ public class BoardLike extends BaseEntity {
     this.likeYN = !this.likeYN;
     return this.likeYN;
     }
+
+
 }

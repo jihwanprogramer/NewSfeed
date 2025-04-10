@@ -21,16 +21,16 @@ public class CommentLikeService {
 
     private final CommentRepository commentRepository;
 
-    public CommentLikeResponseDto saveLikeYN(Long commentId, Long userId){
+    public CommentLikeResponseDto saveLikeYN(Long commentid, Long userid){
 
-            Comment findComment = commentRepository.findByIdOrElseThrow(commentId);
+            Comment findComment = commentRepository.findByIdOrElseThrow(commentid);
 
-            Optional<CommentLike> optionalCommentLike = commentLikeRepository.findByCommentAndUserId(findComment, userId);
+            Optional<CommentLike> optionalCommentLike = commentLikeRepository.findByCommentAndUserId(findComment, userid);
             if(optionalCommentLike.isPresent()) {
                  throw new AlreadyExistsEsception("이미 좋아요 내역이 존재합니다.");
             }
 
-            CommentLike commentLike = new CommentLike(userId, true);
+            CommentLike commentLike = new CommentLike(userid, true);
             commentLike.setComment(findComment);
 
             commentLikeRepository.save(commentLike);
@@ -39,11 +39,11 @@ public class CommentLikeService {
 
     }
 
-    public boolean changeLikeYN(Long commentId, Long userId){
+    public boolean changeLikeYN(Long commentid, Long userid){
 
-        Comment findComment = commentRepository.findByIdOrElseThrow(commentId);
+        Comment findComment = commentRepository.findByIdOrElseThrow(commentid);
 
-        Optional<CommentLike> optionalCommentLike = commentLikeRepository.findByCommentAndUserId(findComment, userId);
+        Optional<CommentLike> optionalCommentLike = commentLikeRepository.findByCommentAndUserId(findComment, userid);
         if(optionalCommentLike.isEmpty()){
             throw new AlreadyExistsEsception("좋아요 내역이 존재하지 않습니다.");
         }
