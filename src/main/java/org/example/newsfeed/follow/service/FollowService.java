@@ -14,6 +14,6 @@ public interface FollowService {
     List<FollowResponseDto> findFollowingsById(Long id);
     List<FollowResponseDto> findFollowersById(Long id);
     boolean existFollowTrue(Long followerId, Long followingId);
-    FollowCountResponseDto countFollowByFollowingId(Long followingID, Long loginId);
-    FollowCountResponseDto countFollowByFollowerId(Long followerID, Long loginId);
+    int countFollowByFollowingId(Long followingID, Long loginId);
+    int countFollowByFollowerId(Long followerID, Long loginId);
 }
