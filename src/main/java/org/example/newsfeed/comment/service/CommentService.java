@@ -9,6 +9,8 @@ import org.example.newsfeed.comment.entity.Comment;
 import org.example.newsfeed.comment.repository.CommentRepository;
 import org.example.newsfeed.board.entity.Board;
 import org.example.newsfeed.board.repository.BoardRepository;
+import org.example.newsfeed.exception.MisMatchUserException;
+import org.example.newsfeed.exception.UnauthorizedCommentAccessException;
 import org.example.newsfeed.user.entity.User;
 import org.example.newsfeed.user.repository.UserRepository;
 import org.springframework.data.domain.Page;
@@ -25,59 +27,39 @@ import java.util.stream.Collectors;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final BoardRepository postRepository;
+    private final BoardRepository boardRepository;
     private final UserRepository userRepository;
 
     @Transactional
-    public CommentResponseDto save(Long userId, Long postId, CommentSaveRequestDto dto) {
+    public CommentResponseDto save(Long userId, Long boardId, CommentSaveRequestDto dto) {
 
-        Board findPost = postRepository.findByIdOrElseThrow(postId);
+        Board findBoard = boardRepository.findByIdOrElseThrow(boardId);
 
         User user = userRepository.findUserByIdOrElseThrow(userId);
-        Comment comment = new Comment(findPost, user, dto.getContent());
+        Comment comment = new Comment(findBoard, user, dto.getContent());
         commentRepository.save(comment);
 
-        return new CommentResponseDto(
-                comment.getId(),
-                findPost.getId(),
-                user.getId(),
-                comment.getContent(),
-                comment.getCreatedAt(),
-                comment.getModifiedAt()
-        );
-
+        return new CommentResponseDto(comment);
     }
 
     @Transactional
-    public List<CommentResponseDto> findByPost(Long id) {
-        Board post = postRepository.findByIdOrElseThrow(id);
-        List<Comment> comments = commentRepository.findByPost(post);
-        return comments.stream().map(comment -> new CommentResponseDto(
-                comment.getId(),
-                post.getId(),
-                comment.getUser().getId(),
-                comment.getContent(),
-                comment.getCreatedAt(),
-                comment.getModifiedAt()
-        )).collect(Collectors.toList());
+    public List<CommentResponseDto> findByBoard(Long id) {
+        Board board = boardRepository.findByIdOrElseThrow(id);
+        List<Comment> comments = commentRepository.findByBoard(board);
+        return comments.stream().map(CommentResponseDto::new).collect(Collectors.toList());
     }
 
     @Transactional
     public CommentResponseDto updateComment(Long commentId, Long userId, CommentUpdateRequestDto commentUpdateRequestDto) {
         Comment comment = commentRepository.findByIdOrElseThrow(commentId);
 
-        if (!comment.getUser().getId().equals(userId)) {
-            throw new IllegalArgumentException();
+        if (!(comment.getUser().getId().equals(userId) || comment.getBoard().getUser().getId().equals(userId))) {
+            throw new MisMatchUserException("글 작성자나 댓글 작성자만 수정 가능합니다.");
         }
 
         comment.update(commentUpdateRequestDto.getContent());
         return new CommentResponseDto(
-                comment.getId(),
-                comment.getPost().getId(),
-                comment.getUser().getId(),
-                comment.getContent(),
-                comment.getCreatedAt(),
-                comment.getModifiedAt()
+                comment
         );
 
     }
@@ -87,13 +69,14 @@ public class CommentService {
         Comment comment = commentRepository.findByIdOrElseThrow(commentId);
 
         if (!comment.getUser().getId().equals(userId)) {
-            throw new IllegalArgumentException();
+            throw new MisMatchUserException("글 작성자나 댓글 작성자만 삭제 가능합니다.");
         }
         commentRepository.delete(comment);
     }
 
     public Page<CommentPageResponseDto> findAllPage(int page, int size) {
-        PageRequest pageable = PageRequest.of(page,size, Sort.by("createAt").descending());
+        int adjustedPage = (page > 0) ? page - 1 : 0;
+        PageRequest pageable = PageRequest.of(adjustedPage,size, Sort.by("createdAt").descending());
         Page<Comment> commentPage = commentRepository.findAll(pageable);
 
         return commentPage.map(comment -> new CommentPageResponseDto(comment));
