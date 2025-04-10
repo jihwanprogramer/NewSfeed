@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.board.dto.*;
 import org.example.newsfeed.board.entity.Board;
 import org.example.newsfeed.board.repository.BoardRepository;
+import org.example.newsfeed.exception.MisMatchUserException;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.entity.User;
 import org.example.newsfeed.user.repository.UserRepository;
@@ -17,7 +18,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -66,7 +66,7 @@ public class BoardService {
         Board findedBoard = boardRepository.findByIdOrElseThrow(id);
 
         if (!findedBoard.getUser().isSameUser(userResponseDto.getId())) { //작성자와 로그인된 회원이 다를경우 예외처리
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "작성자만 수정할 수 있습니다.");
+            throw new MisMatchUserException("작성자만 수정할 수 있습니다.");
         }
 
         if (requestDto.getTitle() == null && requestDto.getContents() == null) {
@@ -96,7 +96,7 @@ public class BoardService {
         Board findedBoard = boardRepository.findByIdOrElseThrow(id);
 
         if (!findedBoard.getUser().isSameUser(userResponseDto.getId())) { //작성자와 로그인된 회원이 다를경우 예외처리
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "작성자만 수정할 수 있습니다.");
+            throw new MisMatchUserException("작성자만 삭제할 수 있습니다.");
         }
 
         boardRepository.delete(findedBoard);
