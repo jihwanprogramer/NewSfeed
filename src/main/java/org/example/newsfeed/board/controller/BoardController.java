@@ -81,11 +81,11 @@ public class BoardController {
 
     //수정일자 기준 최신순으로 조회
     @GetMapping("/sorted-by-modifiedAt")
-    public ResponseEntity<List<BoardResponseDto>> sortedByModifiedAt() {
+    public ResponseEntity<Page<PageResponseDto>> sortedByModifiedAt(@RequestParam(defaultValue = "1") int page) {
 
-        List<BoardResponseDto> sortedByModifiedAt = boardService.sortedByModifiedAt();
+        Page<PageResponseDto> pageResponseDto = boardService.sortedByModifiedAt(page);
 
-        return new ResponseEntity<>(sortedByModifiedAt, HttpStatus.OK);
+        return new ResponseEntity<>(pageResponseDto, HttpStatus.OK);
     }
 
     //기간별 검색

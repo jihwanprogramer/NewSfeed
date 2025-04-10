@@ -114,12 +114,14 @@ public class BoardService {
     }
 
     //수정일자 기준 최신순으로 조회
-    public List<BoardResponseDto> sortedByModifiedAt() {
-        return boardRepository.findAll()
-                .stream()
-                .map(BoardResponseDto::findAll)
-                .sorted(Comparator.comparing(BoardResponseDto::getModifiedAt).reversed())
-                .toList();
+    public Page<PageResponseDto> sortedByModifiedAt(int page) {
+
+        int adjustedPage = (page > 0) ? page - 1 : 0;
+        PageRequest pageable = PageRequest.of(adjustedPage, 10, Sort.by("modifiedAt").descending());
+
+        Page<Board> boardPage = boardRepository.findAll(pageable);
+
+        return boardPage.map(board -> new PageResponseDto(board));
     }
 
     //기간별 검색
