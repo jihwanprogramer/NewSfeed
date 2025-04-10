@@ -2,7 +2,7 @@ package org.example.newsfeed.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.common.config.PasswordEncoder;
-import org.example.newsfeed.exception.AlreadyExistsEsception;
+import org.example.newsfeed.exception.AlreadyExistsException;
 import org.example.newsfeed.exception.MisMatchPasswordException;
 import org.example.newsfeed.exception.MisMatchUserException;
 import org.example.newsfeed.exception.WrongPasswordException;
@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
         // 중복 이메일 체크
         if (userRepository.findUserByEmail(email).isPresent()) {
-            throw new AlreadyExistsEsception("이미 있는 이메일입니다");
+            throw new AlreadyExistsException("이미 있는 이메일입니다");
         }
 
         passwordCheck(password,checkPassword);

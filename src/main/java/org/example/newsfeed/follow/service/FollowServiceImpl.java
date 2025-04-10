@@ -2,7 +2,7 @@ package org.example.newsfeed.follow.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.exception.AccessDeniedException;
-import org.example.newsfeed.exception.AlreadyExistsEsception;
+import org.example.newsfeed.exception.AlreadyExistsException;
 import org.example.newsfeed.exception.NullResponseException;
 import org.example.newsfeed.exception.SelfFollowNotAllowedException;
 import org.example.newsfeed.follow.dto.FollowResponseDto;
@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -39,7 +38,7 @@ public class FollowServiceImpl implements FollowService{
 
         Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUser(followerId, followingUsers);
         if(optionalFollow.isPresent()){
-            throw new AlreadyExistsEsception("이미 팔로우 내역이 존재합니다.");
+            throw new AlreadyExistsException("이미 팔로우 내역이 존재합니다.");
         }
 
         Follow follow = new Follow(true, followerId);
@@ -140,5 +139,5 @@ public class FollowServiceImpl implements FollowService{
 
     }
 
-
 }
+
