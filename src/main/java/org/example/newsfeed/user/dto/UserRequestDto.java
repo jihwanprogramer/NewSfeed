@@ -9,21 +9,21 @@ import org.hibernate.validator.constraints.Range;
 @Getter
 public class UserRequestDto {
 
-    @NotBlank
+    @NotBlank(message = "이름은 필수로 입력하셔야 합니다")
     private final String name;
 
-    @NotNull
+    @NotNull(message = "나이는 필수로 입력하셔야 합니다")
     @Range(min = 15, max = 130)
     private final Integer age;
 
-    @NotBlank
+    @NotBlank(message = "이메일은 필수로 입력하셔야 합니다")
     @Email
     private final String email;
 
-    @NotBlank
+    @NotBlank(message = "비밀번호는 필수로 입력하셔야 합니다")
     private final String password;
 
-    @NotBlank
+    @NotBlank(message = "비밀번호 확인은 필수로 입력하셔야 합니다")
     private final String checkPassword;
 
     public UserRequestDto(String name, Integer age, String email, String password, String checkPassword) {
