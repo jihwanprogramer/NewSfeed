@@ -1,6 +1,6 @@
 package org.example.newsfeed.follow.service;
 
-import org.example.newsfeed.follow.dto.FollowCountResponseDto;
+
 import org.example.newsfeed.follow.dto.FollowResponseDto;
 import org.example.newsfeed.follow.dto.FollowSingleResponseDto;
 import org.springframework.data.domain.Page;

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.exception.AlreadyExistsEsception;
 import org.example.newsfeed.exception.NullResponseException;
 import org.example.newsfeed.exception.SelfFollowNotAllowedException;
-import org.example.newsfeed.follow.dto.FollowCountResponseDto;
 import org.example.newsfeed.follow.dto.FollowResponseDto;
 import org.example.newsfeed.follow.dto.FollowSingleResponseDto;
 import org.example.newsfeed.follow.entity.Follow;
