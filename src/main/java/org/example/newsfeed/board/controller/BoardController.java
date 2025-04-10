@@ -62,10 +62,12 @@ public class BoardController {
 
     //게시글 삭제
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id,
+    public ResponseEntity<Void> delete(@PathVariable Long id,
                        @SessionAttribute(name = "loginUser") UserResponseDto userResponseDto)
     {
         boardService.delete(id, userResponseDto);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     //게시글 페이지로 조회
