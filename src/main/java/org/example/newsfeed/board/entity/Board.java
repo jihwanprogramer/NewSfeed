@@ -24,9 +24,12 @@ public class Board extends BaseEntity {
     private String contents;
 
     @Setter
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Column(nullable = false)
+    private int likesCount;
 
     public Board() {
 
@@ -43,5 +46,9 @@ public class Board extends BaseEntity {
 
     public void updateContents(UpdateRequestDto requestDto) {
         this.contents = requestDto.getContents();
+    }
+
+    public void initBoardLikes(int likesCount) {
+        this.likesCount = likesCount;
     }
 }

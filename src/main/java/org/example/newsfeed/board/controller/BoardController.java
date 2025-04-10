@@ -89,7 +89,7 @@ public class BoardController {
         return new ResponseEntity<>(pageResponseDto, HttpStatus.OK);
     }
 
-    //기간별 검색
+    //기간별 조회
     @GetMapping("/period")
     public ResponseEntity<Page<PageResponseDto>> findByPeriod(
             @Validated @ModelAttribute PeriodRequestDto requestDto,
@@ -99,5 +99,16 @@ public class BoardController {
         Page<PageResponseDto> findByPeriod = boardService.findByPeriod(requestDto, page);
 
         return new ResponseEntity<>(findByPeriod, HttpStatus.OK);
+    }
+
+    //좋아요순으로 조회
+    @GetMapping("/like/{id}")
+    public ResponseEntity<Page<LikesResponseDto>> sortedByLikes(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "1") int page)
+    {
+        Page<LikesResponseDto> likesResponseDto = boardService.sortedByLikes(id, page);
+
+        return new ResponseEntity<>(likesResponseDto, HttpStatus.OK);
     }
 }

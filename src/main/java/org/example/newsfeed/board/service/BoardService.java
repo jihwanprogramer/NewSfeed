@@ -6,13 +6,13 @@ import org.example.newsfeed.board.entity.Board;
 import org.example.newsfeed.board.repository.BoardRepository;
 import org.example.newsfeed.exception.MisMatchUserException;
 import org.example.newsfeed.exception.NullResponseException;
+import org.example.newsfeed.like.repository.BoardLikeRepository;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.entity.User;
 import org.example.newsfeed.user.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +26,7 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
+    private final BoardLikeRepository boardLikeRepository;
 
     //게시글 생성
     @Transactional
@@ -120,7 +121,7 @@ public class BoardService {
         return boardPage.map(board -> new PageResponseDto(board));
     }
 
-    //기간별 검색
+    //기간별 조회
     public Page<PageResponseDto> findByPeriod(PeriodRequestDto requestDto, int page) {
 
         if (requestDto.getStartDate() == null || requestDto.getEndDate() == null) {
@@ -138,4 +139,17 @@ public class BoardService {
         return boardPage.map(board -> new PageResponseDto(board));
     }
 
+    //좋아요순으로 조회
+    public Page<LikesResponseDto> sortedByLikes(Long id, int page) {
+
+        Board findedBoard = boardRepository.findByIdOrElseThrow(id);
+        int likesCount = boardLikeRepository.countByBoardAndLikeYN(findedBoard, true);
+        findedBoard.initBoardLikes(likesCount);
+
+        int adjustPage = (page > 0) ? page - 1 : 0;
+        PageRequest pageable = PageRequest.of(adjustPage, 10, Sort.by("likesCount").descending());
+        Page<Board> boardPage = boardRepository.findAll(pageable);
+
+        return boardPage.map(board -> new LikesResponseDto(board));
+    }
 }
