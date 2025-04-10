@@ -1,11 +1,9 @@
 package org.example.newsfeed.board.controller;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.board.dto.*;
 import org.example.newsfeed.board.service.BoardService;
-import org.example.newsfeed.common.Const;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -23,10 +21,10 @@ public class BoardController {
 
     //게시글 생성
     @PostMapping
-    public ResponseEntity<CreateResponseDto> create(@Valid @RequestBody CreateRequestDto requestDto, HttpSession session) {
-
-        UserResponseDto userResponseDto = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
-
+    public ResponseEntity<CreateResponseDto> create(
+            @Valid @RequestBody CreateRequestDto requestDto,
+            @SessionAttribute(name = "loginUser") UserResponseDto userResponseDto)
+    {
         CreateResponseDto responseDto = boardService.create(requestDto, userResponseDto);
 
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
@@ -52,10 +50,11 @@ public class BoardController {
 
     //게시글 수정
     @PatchMapping("/{id}")
-    public ResponseEntity<BoardResponseDto> update(@PathVariable Long id, @RequestBody UpdateRequestDto requestDto, HttpSession session) {
-
-        UserResponseDto userResponseDto = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
-
+    public ResponseEntity<BoardResponseDto> update(
+            @PathVariable Long id,
+            @RequestBody UpdateRequestDto requestDto,
+            @SessionAttribute(name = "loginUser") UserResponseDto userResponseDto)
+    {
         BoardResponseDto update = boardService.update(id, requestDto, userResponseDto);
 
         return new ResponseEntity<>(update, HttpStatus.OK);
@@ -63,10 +62,9 @@ public class BoardController {
 
     //게시글 삭제
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id, HttpSession session) {
-
-        UserResponseDto userResponseDto = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
-
+    public void delete(@PathVariable Long id,
+                       @SessionAttribute(name = "loginUser") UserResponseDto userResponseDto)
+    {
         boardService.delete(id, userResponseDto);
     }
 
@@ -81,19 +79,22 @@ public class BoardController {
 
     //수정일자 기준 최신순으로 조회
     @GetMapping("/sorted-by-modifiedAt")
-    public ResponseEntity<List<BoardResponseDto>> sortedByModifiedAt() {
+    public ResponseEntity<Page<PageResponseDto>> sortedByModifiedAt(@RequestParam(defaultValue = "1") int page) {
 
-        List<BoardResponseDto> sortedByModifiedAt = boardService.sortedByModifiedAt();
+        Page<PageResponseDto> pageResponseDto = boardService.sortedByModifiedAt(page);
 
-        return new ResponseEntity<>(sortedByModifiedAt, HttpStatus.OK);
+        return new ResponseEntity<>(pageResponseDto, HttpStatus.OK);
     }
 
     //기간별 검색
     @GetMapping("/period")
-    public ResponseEntity<List<BoardResponseDto>> findByPeriod(@Valid @ModelAttribute PeriodRequestDto requestDto) {
+    public ResponseEntity<Page<PageResponseDto>> findByPeriod(
+            @Valid @ModelAttribute PeriodRequestDto requestDto,
+            @RequestParam(defaultValue = "1") int page
+            )
+    {
+        Page<PageResponseDto> findByPeriod = boardService.findByPeriod(requestDto, page);
 
-        List<BoardResponseDto> findedByPeriod = boardService.findByPeriod(requestDto);
-
-        return new ResponseEntity<>(findedByPeriod, HttpStatus.OK);
+        return new ResponseEntity<>(findByPeriod, HttpStatus.OK);
     }
 }
