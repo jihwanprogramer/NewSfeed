@@ -1,14 +1,19 @@
 package org.example.newsfeed.follow.service;
 
+import org.example.newsfeed.follow.dto.FollowCountResponseDto;
 import org.example.newsfeed.follow.dto.FollowResponseDto;
+import org.example.newsfeed.follow.dto.FollowSingleResponseDto;
 
 import java.util.List;
 
 public interface FollowService {
 
-    void saveFollow(Long followerId, Long followingId);
-    boolean updateFollow(Long followerId, Long followingId);
-    List<FollowResponseDto> findFollowingsByMyId(Long myId);
-    List<FollowResponseDto> findFollowersByMyId(Long myId);
-    boolean existFollowTrue (Long followerId, Long followingId);
+    FollowSingleResponseDto saveFollow(Long followerId, Long followingId);
+    FollowSingleResponseDto updateFollow(Long followerId, Long followingId);
+    FollowSingleResponseDto findFollowStatus(Long followerId, Long followingId);
+    List<FollowResponseDto> findFollowingsById(Long id);
+    List<FollowResponseDto> findFollowersById(Long id);
+    boolean existFollowTrue(Long followerId, Long followingId);
+    FollowCountResponseDto countFollowByFollowingId(Long followingID, Long loginId);
+    FollowCountResponseDto countFollowByFollowerId(Long followerID, Long loginId);
 }

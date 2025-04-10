@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.exception.AlreadyExistsEsception;
 import org.example.newsfeed.exception.NullResponseException;
 import org.example.newsfeed.exception.SelfFollowNotAllowedException;
+import org.example.newsfeed.follow.dto.FollowCountResponseDto;
 import org.example.newsfeed.follow.dto.FollowResponseDto;
+import org.example.newsfeed.follow.dto.FollowSingleResponseDto;
 import org.example.newsfeed.follow.entity.Follow;
 import org.example.newsfeed.follow.repository.FollowRepository;
 import org.example.newsfeed.user.entity.User;
@@ -23,61 +25,102 @@ public class FollowServiceImpl implements FollowService{
     private final FollowRepository followRepository;
 
 
-    @Override
-    public void saveFollow(Long followerId, Long followingId) {
 
-        if(followerId==followingId){
+    @Override
+    public FollowSingleResponseDto saveFollow(Long followerId, Long followingId) {
+
+        if(followerId.equals(followingId)){
             throw new SelfFollowNotAllowedException("자신은 팔로우 할 수 없습니다.");
         }
 
         User followingUsers = userRepository.findUserByIdOrElseThrow(followingId);
 
-        Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUsers(followerId, followingUsers);
-        if(!optionalFollow.isEmpty()){
+        Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUser(followerId, followingUsers);
+        if(optionalFollow.isPresent()){
             throw new AlreadyExistsEsception("이미 팔로우 내역이 존재합니다.");
         }
 
         Follow follow = new Follow(true, followerId);
-        follow.setFollowUsers(followingUsers);
+        follow.setFollowUser(followingUsers);
 
         followRepository.save(follow);
+
+        return new FollowSingleResponseDto(follow.getId(), follow.isFollowYN(), false);
 
     }
 
     @Transactional
     @Override
-    public boolean updateFollow(Long followerId, Long followingId) {
+    public FollowSingleResponseDto updateFollow(Long followerId, Long followingId) {
 
-        User followingUsers = userRepository.findUserByIdOrElseThrow(followerId);
+        User followingUser = userRepository.findUserByIdOrElseThrow(followingId);
 
-        Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUsers(followerId, followingUsers);
+        Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUser(followerId, followingUser);
         if(optionalFollow.isEmpty()){
             throw new NullResponseException("팔로우 내역이 존재하지 않습니다.");
         }
 
-        return optionalFollow.get().updateFollow();
+        optionalFollow.get().updateFollow();
+
+        Follow updatedFollow = optionalFollow.get();
+
+        return new FollowSingleResponseDto(updatedFollow.getId(), updatedFollow.isFollowYN(), false);
     }
 
     @Override
-    public List<FollowResponseDto> findFollowingsByMyId(Long myId) {
+    public FollowSingleResponseDto findFollowStatus(Long followerId, Long followingId) {
 
-        return followRepository.findByFollowerId(myId).stream().map(FollowResponseDto::toDto).toList();
+        User followingUser = userRepository.findUserByIdOrElseThrow(followingId);
+
+        if (followerId == followingId){
+            return new FollowSingleResponseDto(null, false, true);
+        }
+
+        Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUser(followerId, followingUser);
+        if(optionalFollow.isEmpty()){
+            throw new NullResponseException("팔로우 내역이 없습니다.");
+        }
+
+        return new FollowSingleResponseDto(optionalFollow.get().getId(), optionalFollow.get().isFollowYN(), false);
     }
 
     @Override
-    public List<FollowResponseDto> findFollowersByMyId(Long myId) {
+    public List<FollowResponseDto> findFollowingsById(Long id) {
 
-        User users = userRepository.findUserByIdOrElseThrow(myId);
+        return followRepository.findByFollowerId(id).stream().map(FollowResponseDto::toDto).toList();
+    }
 
-        return followRepository.findByFollowingUsers(users).stream().map(FollowResponseDto::toDto).toList();
+    @Override
+    public List<FollowResponseDto> findFollowersById(Long id) {
+
+        User user = userRepository.findUserByIdOrElseThrow(id);
+
+        return followRepository.findByFollowingUser(user).stream().map(FollowResponseDto::toDto).toList();
     }
 
     @Override
     public boolean existFollowTrue(Long followerId, Long followingId) {
 
         User followingUsers = userRepository.findUserByIdOrElseThrow(followerId);
-        Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUsers(followerId, followingUsers);
+        Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUser(followerId, followingUsers);
         return optionalFollow.isPresent() && optionalFollow.get().isFollowYN();
+    }
+
+    @Override
+    public FollowCountResponseDto countFollowByFollowingId(Long followingId, Long loginId) {
+
+        User followingUser = userRepository.findUserByIdOrElseThrow(followingId);
+        Long count = followRepository.countByFollowingUserAndFollowYN(followingUser, true);
+        return new FollowCountResponseDto(count, followingId.equals(loginId));
+
+    }
+
+    @Override
+    public FollowCountResponseDto countFollowByFollowerId(Long followerId, Long loginId) {
+
+        Long count = followRepository.countByFollowerIdAndFollowYN(followerId, true);
+        return new FollowCountResponseDto(count, followerId.equals(loginId));
+
     }
 
 
