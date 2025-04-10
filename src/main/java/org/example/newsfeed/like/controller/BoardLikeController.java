@@ -37,7 +37,7 @@ public class BoardLikeController {
     }
 
 
-    @GetMapping("{boradid}/like")
+    @GetMapping("/{boradid}/like")
     public ResponseEntity<BoardLikeResponseDto> findBoardLikeByIdOrElseThrow(@PathVariable Long boradid, HttpSession session) {
 
         UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
