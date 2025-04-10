@@ -1,5 +1,6 @@
 package org.example.newsfeed.like.Service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.board.entity.Board;
 import org.example.newsfeed.board.repository.BoardRepository;
@@ -9,6 +10,7 @@ import org.example.newsfeed.like.entity.BoardLike;
 import org.example.newsfeed.like.repository.BoardLikeRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,6 +40,7 @@ public class BoardLikeService {
         return new BoardLikeResponseDto(boardLike.getId(), boardLike.isLikeYN());
     }
 
+    @Transactional
     public boolean changeLikeYN(Long boardId, Long userId) {
 
         Board findBoard = boardRepository.findByIdOrElseThrow(boardId);
@@ -49,6 +52,11 @@ public class BoardLikeService {
 
         return optionalBoardLike.get().changeLikeYN();
     }
+
+//    public List<BoardLikeResponseDto> findAllBoardLike() {
+//
+//        return boardLikeRepository.findAllBoardLike();
+//    }
 
 //    public BoardLikeResponseDto findBoardLikeById(Long id){
 //
