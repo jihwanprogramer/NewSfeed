@@ -2,14 +2,17 @@ package org.example.newsfeed.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.common.config.PasswordEncoder;
+import org.example.newsfeed.exception.AlreadyExistsEsception;
+import org.example.newsfeed.exception.MisMatchPasswordException;
+import org.example.newsfeed.exception.MisMatchUserException;
+import org.example.newsfeed.exception.WrongPasswordException;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.entity.User;
 import org.example.newsfeed.user.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+
 import java.util.List;
 
 @Service
@@ -25,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
         // 중복 이메일 체크
         if (userRepository.findUserByEmail(email).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,"이미 있는 이메일입니다");
+            throw new AlreadyExistsEsception("이미 있는 이메일입니다");
         }
 
         passwordCheck(password,checkPassword);
@@ -106,7 +109,7 @@ public class UserServiceImpl implements UserService {
     private void passwordMatch(String password, User users) {
 
         if (!passwordEncoder.matches(password,users.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"원래의 비밀번호와 일치하지 않습니다.");
+            throw new WrongPasswordException("비밀번호가 일치하지 않습니다.");
         }
 
     }
@@ -115,7 +118,7 @@ public class UserServiceImpl implements UserService {
     private void passwordCheck(String Password,String checkPassword){
 
         if (!Password.equals(checkPassword)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호와 비밀번호 확인이 일치하지 않습니다");
+            throw new MisMatchPasswordException("비밀번호와 비밀번호 확인이 일치하지 않습니다");
         }
 
     }
@@ -124,7 +127,7 @@ public class UserServiceImpl implements UserService {
     private void sessionCheck(User findUser, Long loginUserId) {
 
         if(!findUser.isSameUser(loginUserId)){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "접근 권한이 없습니다");
+            throw new MisMatchUserException("권한이 없습니다.");
         }
     }
 

@@ -11,13 +11,13 @@ public class UpdateUserRequestDto {
 
     private final String name;
 
-    @Range(min = 15, max = 130)
+    @Range(min = 15, max = 130, message = "나이는 15세이상 130세 이하만 가능합니다")
     private final Integer age;
 
-    @Email
+    @Email(message = "이메일 형식으로 작성해주세요")
     private final String email;
 
-    @NotBlank
+    @NotBlank(message = "비밀번호는 필수로 입력하셔야 합니다")
     private final String password;
 
     private final String newPassword;
