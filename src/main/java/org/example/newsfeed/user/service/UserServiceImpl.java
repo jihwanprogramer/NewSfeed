@@ -64,11 +64,8 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto updateUser(Long loginUserId, Long id , String name, Integer age,
                                             String email, String password, String newPassword, String checkNewPassword) {
 
-
-
         User findUser = userRepository.findUserByIdOrElseThrow(id);
 
-        findUser.isSameUser(loginUserId);
         if(!findUser.isSameUser(loginUserId)){
             throw new MisMatchUserException("접근 권한이 없습니다.");
         }

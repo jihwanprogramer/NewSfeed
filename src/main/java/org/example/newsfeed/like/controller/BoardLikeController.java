@@ -42,10 +42,10 @@ public class BoardLikeController {
         }
     }
 
-    @GetMapping("{boradid}/like/{likeid}")
-    public ResponseEntity<BoardLikeResponseDto> findByBoardLikeId(@PathVariable Long id){
-
-        return new ResponseEntity<>(boardLikeService.findBoardLikeById(id),HttpStatus.OK);
-    }
+//    @GetMapping("{boradid}/like/{likeid}")
+//    public ResponseEntity<BoardLikeResponseDto> findByBoardLikeId(@PathVariable Long id){
+//
+//        return new ResponseEntity<>(boardLikeService.findBoardLikeById(id),HttpStatus.OK);
+//    }
 }
 */
