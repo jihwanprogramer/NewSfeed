@@ -5,6 +5,7 @@ import org.example.newsfeed.board.dto.*;
 import org.example.newsfeed.board.entity.Board;
 import org.example.newsfeed.board.repository.BoardRepository;
 import org.example.newsfeed.exception.MisMatchUserException;
+import org.example.newsfeed.exception.NullResponseException;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.entity.User;
 import org.example.newsfeed.user.repository.UserRepository;
@@ -14,7 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -69,10 +69,7 @@ public class BoardService {
         }
 
         if (requestDto.getTitle() == null && requestDto.getContents() == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "잘못된 요청입니다."
-            );
+            throw new NullResponseException("잘못된 요청입니다.");
         }
 
         if (requestDto.getTitle() != null) {
@@ -112,7 +109,7 @@ public class BoardService {
         return boardPage.map(board -> new PageResponseDto(board));
     }
 
-    //수정일자 기준 최신순으로 조회ㅑㅏ
+    //수정일자 기준 최신순으로 조회
     public Page<PageResponseDto> sortedByModifiedAt(int page) {
 
         int adjustedPage = (page > 0) ? page - 1 : 0;
@@ -125,6 +122,10 @@ public class BoardService {
 
     //기간별 검색
     public Page<PageResponseDto> findByPeriod(PeriodRequestDto requestDto, int page) {
+
+        if (requestDto.getStartDate() == null || requestDto.getEndDate() == null) {
+            throw new NullResponseException("날짜를 입력해주세요");
+        }
 
         LocalDateTime startDate = LocalDate.parse(requestDto.getStartDate()).atStartOfDay();
         LocalDateTime endDate = LocalDate.parse(requestDto.getEndDate()).plusDays(1).atStartOfDay();
