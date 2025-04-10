@@ -10,7 +10,7 @@ import org.example.newsfeed.user.entity.User;
 
 @Entity
 @Getter
-@Table(name = "post")
+@Table(name = "boards")
 public class Board extends BaseEntity {
 
     @Id

@@ -18,7 +18,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -113,7 +112,7 @@ public class BoardService {
         return boardPage.map(board -> new PageResponseDto(board));
     }
 
-    //수정일자 기준 최신순으로 조회
+    //수정일자 기준 최신순으로 조회ㅑㅏ
     public Page<PageResponseDto> sortedByModifiedAt(int page) {
 
         int adjustedPage = (page > 0) ? page - 1 : 0;
@@ -125,15 +124,17 @@ public class BoardService {
     }
 
     //기간별 검색
-    public List<BoardResponseDto> findByPeriod(PeriodRequestDto requestDto) {
+    public Page<PageResponseDto> findByPeriod(PeriodRequestDto requestDto, int page) {
 
         LocalDateTime startDate = LocalDate.parse(requestDto.getStartDate()).atStartOfDay();
         LocalDateTime endDate = LocalDate.parse(requestDto.getEndDate()).plusDays(1).atStartOfDay();
 
-        return boardRepository.findByCreatedAtBetween(startDate, endDate)
-                .stream()
-                .map(BoardResponseDto::findAll)
-                .toList();
+        int adjustedPage = (page > 0) ? page - 1 : 0;
+        PageRequest pageable = PageRequest.of(adjustedPage, 10, Sort.by("createdAt").descending());
+
+        Page<Board> boardPage = boardRepository.findByCreatedAtBetween(startDate, endDate, pageable);
+
+        return boardPage.map(board -> new PageResponseDto(board));
     }
 
 }
