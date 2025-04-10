@@ -6,14 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.common.Const;
 import org.example.newsfeed.like.Service.BoardLikeService;
 import org.example.newsfeed.like.dto.BoardLikeResponseDto;
-import org.example.newsfeed.like.entity.BoardLike;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/boards")
@@ -31,29 +27,23 @@ public class BoardLikeController {
     }
 
     @PatchMapping("/{boardid}/like")
-    public ResponseEntity<Map<String,String>> changeLikeYN(@PathVariable Long boardid, HttpSession session){
+    public ResponseEntity<BoardLikeResponseDto> changeLikeYN(@PathVariable Long boardid, HttpSession session){
 
         UserResponseDto loginUser = (UserResponseDto)session.getAttribute(Const.LOGIN_USER);
 
-        boolean likeYN = boardLikeService.changeLikeYN(boardid, loginUser.getId());
+        BoardLikeResponseDto boardLikeResponseDto = boardLikeService.changeLikeYN(boardid, loginUser.getId());
 
-        if(likeYN){
-            return new ResponseEntity<>(Map.of("message", "다시 좋아요 하였습니다."), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(Map.of("message", "좋아요를 취소하였습니다."), HttpStatus.OK);
-        }
+        return new ResponseEntity<>(boardLikeResponseDto, HttpStatus.OK);
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<BoardLikeResponseDto>> findAllBoardLike(){
-//
-//        return new ResponseEntity<>(boardLikeService.findAllBoardLike(),HttpStatus.OK);
-//    }
 
-//    @GetMapping("{boradid}/like/{likeid}")
-//    public ResponseEntity<BoardLikeResponseDto> findByBoardLikeId(@PathVariable Long id){
-//
-//        return new ResponseEntity<>(boardLikeService.findBoardLikeById(id),HttpStatus.OK);
-//    }
+    @GetMapping("{boradid}/like")
+    public ResponseEntity<BoardLikeResponseDto> findBoardLikeByIdOrElseThrow(@PathVariable Long boradid, HttpSession session){
+
+        UserResponseDto loginUser = (UserResponseDto)session.getAttribute(Const.LOGIN_USER);
+
+        return new ResponseEntity<>(boardLikeService.findBoardLikeByIdOrElseThrow(boradid, loginUser.getId()),HttpStatus.OK);
+    }
+
 }
 
