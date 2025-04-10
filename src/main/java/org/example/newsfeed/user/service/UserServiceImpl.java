@@ -2,7 +2,6 @@ package org.example.newsfeed.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.common.config.PasswordEncoder;
-import org.example.newsfeed.exception.MisMatchUserException;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.entity.User;
 import org.example.newsfeed.user.repository.UserRepository;
@@ -94,7 +93,7 @@ public class UserServiceImpl implements UserService {
     private void passwordMatch(String password, User users) {
 
         if (!passwordEncoder.matches(password,users.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"원래의 비밀번호가 일치하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"원래의 비밀번호와 일치하지 않습니다.");
         }
 
     }
@@ -112,7 +111,7 @@ public class UserServiceImpl implements UserService {
     private void sessionCheck(User findUser, Long loginUserId) {
 
         if(!findUser.isSameUser(loginUserId)){
-            throw new MisMatchUserException("접근 권한이 없습니다.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "접근 권한이 없습니다");
         }
     }
 
