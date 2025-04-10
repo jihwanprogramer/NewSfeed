@@ -18,8 +18,8 @@ public class BoardLikeController {
     private final BoardLikeService boardLikeService;
 
     @PostMapping("/{boardid}/like")
-    public ResponseEntity<BoardLikeResponseDto> likeYN(@PathVariable Long boardid, HttpSession session){
-        UserResponseDto loginUser = (UserResponseDto)session.getAttribute(Const.LOGIN_USER); // 오브젝트를 그대로 쓸수 없어서 다운케스팅
+    public ResponseEntity<BoardLikeResponseDto> likeYN(@PathVariable Long boardid, HttpSession session) {
+        UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER); // 오브젝트를 그대로 쓸수 없어서 다운케스팅
 
         BoardLikeResponseDto boardLikeResponseDto = boardLikeService.saveLikeYN(boardid, loginUser.getId());
 
@@ -27,9 +27,9 @@ public class BoardLikeController {
     }
 
     @PatchMapping("/{boardid}/like")
-    public ResponseEntity<BoardLikeResponseDto> changeLikeYN(@PathVariable Long boardid, HttpSession session){
+    public ResponseEntity<BoardLikeResponseDto> changeLikeYN(@PathVariable Long boardid, HttpSession session) {
 
-        UserResponseDto loginUser = (UserResponseDto)session.getAttribute(Const.LOGIN_USER);
+        UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
 
         BoardLikeResponseDto boardLikeResponseDto = boardLikeService.changeLikeYN(boardid, loginUser.getId());
 
@@ -38,11 +38,11 @@ public class BoardLikeController {
 
 
     @GetMapping("{boradid}/like")
-    public ResponseEntity<BoardLikeResponseDto> findBoardLikeByIdOrElseThrow(@PathVariable Long boradid, HttpSession session){
+    public ResponseEntity<BoardLikeResponseDto> findBoardLikeByIdOrElseThrow(@PathVariable Long boradid, HttpSession session) {
 
-        UserResponseDto loginUser = (UserResponseDto)session.getAttribute(Const.LOGIN_USER);
+        UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
 
-        return new ResponseEntity<>(boardLikeService.findBoardLikeByIdOrElseThrow(boradid, loginUser.getId()),HttpStatus.OK);
+        return new ResponseEntity<>(boardLikeService.findBoardLikeByIdOrElseThrow(boradid, loginUser.getId()), HttpStatus.OK);
     }
 
 }
