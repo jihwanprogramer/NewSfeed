@@ -11,6 +11,8 @@ import org.example.newsfeed.follow.entity.Follow;
 import org.example.newsfeed.follow.repository.FollowRepository;
 import org.example.newsfeed.user.entity.User;
 import org.example.newsfeed.user.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -96,17 +98,17 @@ public class FollowServiceImpl implements FollowService{
     }
 
     @Override
-    public List<FollowResponseDto> findFollowingsById(Long id) {
+    public Page<FollowResponseDto> findFollowingsById(Long id, Pageable pageable) {
 
-        return followRepository.findByFollowerId(id).stream().map(FollowResponseDto::toDto).toList();
+        return followRepository.findByFollowerId(id, pageable).map(FollowResponseDto::toDto);
     }
 
     @Override
-    public List<FollowResponseDto> findFollowersById(Long id) {
+    public Page<FollowResponseDto> findFollowersById(Long id, Pageable pageable) {
 
         User user = userRepository.findUserByIdOrElseThrow(id);
 
-        return followRepository.findByFollowingUser(user).stream().map(FollowResponseDto::toDto).toList();
+        return followRepository.findByFollowingUser(user, pageable).map(FollowResponseDto::toDto);
     }
 
     @Override
