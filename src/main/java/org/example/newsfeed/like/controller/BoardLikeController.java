@@ -41,6 +41,12 @@ public class BoardLikeController {
         }
     }
 
+//    @GetMapping
+//    public ResponseEntity<List<BoardLikeResponseDto>> findAllBoardLike(){
+//
+//        return new ResponseEntity<>(boardLikeService.findAllBoardLike(),HttpStatus.OK);
+//    }
+
 //    @GetMapping("{boradid}/like/{likeid}")
 //    public ResponseEntity<BoardLikeResponseDto> findByBoardLikeId(@PathVariable Long id){
 //

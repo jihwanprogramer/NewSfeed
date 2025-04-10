@@ -18,8 +18,8 @@ public class CommentPageResponseDto {
     public CommentPageResponseDto(Comment comment){
         this.id= comment.getId();
         this.content =comment.getContent();
-        this.createAt = comment.getCreatedAt();
-        this.updateAt = comment.getModifiedAt();
+        this.createdAt = comment.getCreatedAt();
+        this.modifiedAt = comment.getModifiedAt();
         this.userName = comment.getUser().getName();
     }
 }

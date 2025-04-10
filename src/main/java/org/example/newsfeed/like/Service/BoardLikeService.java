@@ -9,6 +9,7 @@ import org.example.newsfeed.like.entity.BoardLike;
 import org.example.newsfeed.like.repository.BoardLikeRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -49,6 +50,11 @@ public class BoardLikeService {
 
         return optionalBoardLike.get().changeLikeYN();
     }
+
+//    public List<BoardLikeResponseDto> findAllBoardLike() {
+//
+//        return boardLikeRepository.findAllBoardLike();
+//    }
 
 //    public BoardLikeResponseDto findBoardLikeById(Long id){
 //
