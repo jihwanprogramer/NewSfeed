@@ -25,41 +25,26 @@ import java.util.stream.Collectors;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final BoardRepository postRepository;
+    private final BoardRepository boardRepository;
     private final UserRepository userRepository;
 
     @Transactional
-    public CommentResponseDto save(Long userId, Long postId, CommentSaveRequestDto dto) {
+    public CommentResponseDto save(Long userId, Long boardId, CommentSaveRequestDto dto) {
 
-        Board findPost = postRepository.findByIdOrElseThrow(postId);
+        Board findBoard = boardRepository.findByIdOrElseThrow(boardId);
 
         User user = userRepository.findUserByIdOrElseThrow(userId);
-        Comment comment = new Comment(findPost, user, dto.getContent());
+        Comment comment = new Comment(findBoard, user, dto.getContent());
         commentRepository.save(comment);
 
-        return new CommentResponseDto(
-                comment.getId(),
-                findPost.getId(),
-                user.getId(),
-                comment.getContent(),
-                comment.getCreatedAt(),
-                comment.getModifiedAt()
-        );
-
+        return new CommentResponseDto(comment);
     }
 
     @Transactional
-    public List<CommentResponseDto> findByPost(Long id) {
-        Board post = postRepository.findByIdOrElseThrow(id);
-        List<Comment> comments = commentRepository.findByPost(post);
-        return comments.stream().map(comment -> new CommentResponseDto(
-                comment.getId(),
-                post.getId(),
-                comment.getUser().getId(),
-                comment.getContent(),
-                comment.getCreatedAt(),
-                comment.getModifiedAt()
-        )).collect(Collectors.toList());
+    public List<CommentResponseDto> findByBoard(Long id) {
+        Board board = boardRepository.findByIdOrElseThrow(id);
+        List<Comment> comments = commentRepository.findByBoard(board);
+        return comments.stream().map(CommentResponseDto::new).collect(Collectors.toList());
     }
 
     @Transactional
@@ -72,12 +57,7 @@ public class CommentService {
 
         comment.update(commentUpdateRequestDto.getContent());
         return new CommentResponseDto(
-                comment.getId(),
-                comment.getPost().getId(),
-                comment.getUser().getId(),
-                comment.getContent(),
-                comment.getCreatedAt(),
-                comment.getModifiedAt()
+                comment
         );
 
     }
@@ -93,7 +73,8 @@ public class CommentService {
     }
 
     public Page<CommentPageResponseDto> findAllPage(int page, int size) {
-        PageRequest pageable = PageRequest.of(page,size, Sort.by("createAt").descending());
+        int adjustedPage = (page > 0) ? page - 1 : 0;
+        PageRequest pageable = PageRequest.of(adjustedPage,size, Sort.by("createdAt").descending());
         Page<Comment> commentPage = commentRepository.findAll(pageable);
 
         return commentPage.map(comment -> new CommentPageResponseDto(comment));
