@@ -1,6 +1,7 @@
 package org.example.newsfeed.follow.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.newsfeed.exception.AccessDeniedException;
 import org.example.newsfeed.exception.AlreadyExistsEsception;
 import org.example.newsfeed.exception.NullResponseException;
 import org.example.newsfeed.exception.SelfFollowNotAllowedException;
@@ -111,11 +112,16 @@ public class FollowServiceImpl implements FollowService{
     }
 
     @Override
-    public boolean existFollowTrue(Long followerId, Long followingId) {
+    public void existFollowTrue(Long followerId, Long followingId) {
 
         User followingUsers = userRepository.findUserByIdOrElseThrow(followerId);
         Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUser(followerId, followingUsers);
-        return optionalFollow.isPresent() && optionalFollow.get().isFollowYN();
+
+        //자기 자신이 아니거나 팔로우가 존재하지 않거나 팔로워가 false 면 예외
+        if(!followerId.equals(followingId)&&(optionalFollow.isEmpty()||!optionalFollow.get().isFollowYN())){
+            throw new AccessDeniedException("이 유저가 당신을 팔로워 해야 볼 수 있습니다.");
+        }
+
     }
 
     @Override

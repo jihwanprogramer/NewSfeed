@@ -67,11 +67,8 @@ public class FollowController {
             @SessionAttribute(name = Const.LOGIN_USER) UserResponseDto loginUser,
             @PageableDefault(size = 10, sort = "name") Pageable pageable
     ){
-        //자기 자신이 아니거나 팔로우가 존재하지 않거나 팔로워가 false 면 예외
-        if(userId!=loginUser.getId()&&!followService.existFollowTrue(userId, loginUser.getId())){
-            throw new AccessDeniedException("이 유저가 당신을 팔로워 해야 볼 수 있습니다.");
-        }
 
+        followService.existFollowTrue(userId, loginUser.getId());
 
         return new ResponseEntity<>(followService.findFollowingsById(userId, pageable), HttpStatus.OK);
     }
@@ -84,10 +81,7 @@ public class FollowController {
             @PageableDefault(size = 10, sort = "name") Pageable pageable
     ){
 
-        //자기 자신이 아니거나 팔로우가 존재하지 않거나 팔로워가 false 면 예외
-        if(userId!=loginUser.getId()&&!followService.existFollowTrue(userId, loginUser.getId())){
-            throw new AccessDeniedException("이 유저가 당신을 팔로워 해야 볼 수 있습니다.");
-        }
+        followService.existFollowTrue(userId, loginUser.getId());
 
         return new ResponseEntity<>(followService.findFollowersById(userId, pageable),HttpStatus.OK);
     }

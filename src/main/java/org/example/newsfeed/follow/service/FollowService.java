@@ -15,7 +15,7 @@ public interface FollowService {
     FollowSingleResponseDto findFollowStatus(Long followerId, Long followingId);
     Page<FollowResponseDto> findFollowingsById(Long id, Pageable pageable);
     Page<FollowResponseDto> findFollowersById(Long id, Pageable pageable);
-    boolean existFollowTrue(Long followerId, Long followingId);
+    void existFollowTrue(Long followerId, Long followingId);
     int countFollowByFollowingId(Long followingID, Long loginId);
     int countFollowByFollowerId(Long followerID, Long loginId);
 }
