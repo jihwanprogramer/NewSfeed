@@ -5,6 +5,8 @@ import org.example.newsfeed.common.config.PasswordEncoder;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.entity.User;
 import org.example.newsfeed.user.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -39,11 +41,22 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    // service) 이름으로 유저들 조회
+    // service) 이름으로 유저들 조회(List)
     @Override
     public List<UserResponseDto> findUserByName(String name) {
 
-        return userRepository.findUserByName(name).stream().map(UserResponseDto::new).toList();
+        return userRepository.findUserByName(name)
+                .stream()
+                .map(UserResponseDto::new)
+                .toList();
+
+    }
+
+    // service) 이름으로 유저들 조회(Page)
+    @Override
+    public Page<UserResponseDto> findUserByNamePage(String name, Pageable pageable) {
+
+        return userRepository.findUserByName(name, pageable).map(UserResponseDto::new);
 
     }
 
