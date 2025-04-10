@@ -1,8 +1,6 @@
 package org.example.newsfeed.board.service;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.example.newsfeed.common.Const;
 import org.example.newsfeed.board.dto.*;
 import org.example.newsfeed.board.entity.Board;
 import org.example.newsfeed.board.repository.BoardRepository;
@@ -19,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -127,7 +126,7 @@ public class BoardService {
     public List<BoardResponseDto> findByPeriod(PeriodRequestDto requestDto) {
 
         LocalDateTime startDate = LocalDate.parse(requestDto.getStartDate()).atStartOfDay();
-        LocalDateTime endDate = LocalDate.parse(requestDto.getEndDate()).atStartOfDay();
+        LocalDateTime endDate = LocalDate.parse(requestDto.getEndDate()).plusDays(1).atStartOfDay();
 
         return boardRepository.findByCreatedAtBetween(startDate, endDate)
                 .stream()
