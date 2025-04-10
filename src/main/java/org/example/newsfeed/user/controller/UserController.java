@@ -7,6 +7,9 @@ import org.example.newsfeed.user.dto.UpdateUserRequestDto;
 import org.example.newsfeed.user.dto.UserRequestDto;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +34,7 @@ public class UserController {
 
     }
 
-    // 이름으로 유저들 조회
+    // 이름으로 유저들 조회(List)
     @GetMapping
     public ResponseEntity<List<UserResponseDto>> findUserByName(@RequestParam("name") String name) {
 
@@ -41,6 +44,17 @@ public class UserController {
         
     }
 
+    // 이름으로 유저들 조회(Page)
+    @GetMapping("/pages")
+    public ResponseEntity<Page<UserResponseDto>> findUserByNamePage(@RequestParam("name") String name,
+                                                                    @PageableDefault Pageable pageable) {
+
+        Page<UserResponseDto> userResponseDtoPage = userService.findUserByNamePage(name, pageable);
+
+        return new ResponseEntity<>(userResponseDtoPage,HttpStatus.OK);
+
+    }
+
     // 아이디로 유저 조회
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> findUserById(@PathVariable Long id) {
@@ -48,6 +62,7 @@ public class UserController {
         UserResponseDto findUser = userService.findUserById(id);
 
         return new ResponseEntity<>(findUser,HttpStatus.OK);
+
     }
 
     // 유저 수정
@@ -62,6 +77,7 @@ public class UserController {
                 updateUserRequestDto.getCheckNewPassword());
 
         return new ResponseEntity<>(UserResponseDto,HttpStatus.OK);
+
     }
 
     // 유저 삭제
@@ -72,5 +88,6 @@ public class UserController {
         userService.deleteUser(loginUser.getId(),id, password);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
     }
 }
