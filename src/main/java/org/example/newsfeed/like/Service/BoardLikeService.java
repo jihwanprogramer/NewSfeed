@@ -1,5 +1,6 @@
 package org.example.newsfeed.like.Service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.board.entity.Board;
 import org.example.newsfeed.board.repository.BoardRepository;
@@ -39,6 +40,7 @@ public class BoardLikeService {
         return new BoardLikeResponseDto(boardLike.getId(), boardLike.isLikeYN());
     }
 
+    @Transactional
     public boolean changeLikeYN(Long boardId, Long userId) {
 
         Board findBoard = boardRepository.findByIdOrElseThrow(boardId);
