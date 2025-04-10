@@ -1,16 +1,18 @@
 package org.example.newsfeed.follow.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.newsfeed.exception.AccessDeniedException;
 import org.example.newsfeed.exception.AlreadyExistsEsception;
 import org.example.newsfeed.exception.NullResponseException;
 import org.example.newsfeed.exception.SelfFollowNotAllowedException;
-import org.example.newsfeed.follow.dto.FollowCountResponseDto;
 import org.example.newsfeed.follow.dto.FollowResponseDto;
 import org.example.newsfeed.follow.dto.FollowSingleResponseDto;
 import org.example.newsfeed.follow.entity.Follow;
 import org.example.newsfeed.follow.repository.FollowRepository;
 import org.example.newsfeed.user.entity.User;
 import org.example.newsfeed.user.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -96,25 +98,30 @@ public class FollowServiceImpl implements FollowService{
     }
 
     @Override
-    public List<FollowResponseDto> findFollowingsById(Long id) {
+    public Page<FollowResponseDto> findFollowingsById(Long id, Pageable pageable) {
 
-        return followRepository.findByFollowerId(id).stream().map(FollowResponseDto::toDto).toList();
+        return followRepository.findByFollowerId(id, pageable).map(FollowResponseDto::toDto);
     }
 
     @Override
-    public List<FollowResponseDto> findFollowersById(Long id) {
+    public Page<FollowResponseDto> findFollowersById(Long id, Pageable pageable) {
 
         User user = userRepository.findUserByIdOrElseThrow(id);
 
-        return followRepository.findByFollowingUser(user).stream().map(FollowResponseDto::toDto).toList();
+        return followRepository.findByFollowingUser(user, pageable).map(FollowResponseDto::toDto);
     }
 
     @Override
-    public boolean existFollowTrue(Long followerId, Long followingId) {
+    public void existFollowTrue(Long followerId, Long followingId) {
 
         User followingUsers = userRepository.findUserByIdOrElseThrow(followerId);
         Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUser(followerId, followingUsers);
-        return optionalFollow.isPresent() && optionalFollow.get().isFollowYN();
+
+        //자기 자신이 아니거나 팔로우가 존재하지 않거나 팔로워가 false 면 예외
+        if(!followerId.equals(followingId)&&(optionalFollow.isEmpty()||!optionalFollow.get().isFollowYN())){
+            throw new AccessDeniedException("이 유저가 당신을 팔로워 해야 볼 수 있습니다.");
+        }
+
     }
 
     @Override
