@@ -66,9 +66,7 @@ public class UserServiceImpl implements UserService {
 
         User findUser = userRepository.findUserByIdOrElseThrow(id);
 
-        if(!findUser.isSameUser(loginUserId)){
-            throw new MisMatchUserException("접근 권한이 없습니다.");
-        }
+        sessionCheck(findUser,loginUserId);
 
         notNullUpdate(findUser, name, age, email, password, newPassword, checkNewPassword);
 
@@ -83,9 +81,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long loginUserId,Long id, String password) {
 
-        sessionCheck(loginUserId,id);
-
         User findUser = userRepository.findUserByIdOrElseThrow(id);
+
+        sessionCheck(findUser,loginUserId);
 
         passwordMatch(password, findUser);
 
@@ -111,10 +109,10 @@ public class UserServiceImpl implements UserService {
     }
 
     // 세션의 id와 요청받은 id 확인 메서드
-    private void sessionCheck(Long loginUserId, Long id) {
+    private void sessionCheck(User findUser, Long loginUserId) {
 
-        if (!loginUserId.equals(id)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"본인 정보만 다룰 수 있습니다.");
+        if(!findUser.isSameUser(loginUserId)){
+            throw new MisMatchUserException("접근 권한이 없습니다.");
         }
     }
 
