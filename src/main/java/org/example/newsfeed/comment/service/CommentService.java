@@ -10,7 +10,6 @@ import org.example.newsfeed.comment.repository.CommentRepository;
 import org.example.newsfeed.board.entity.Board;
 import org.example.newsfeed.board.repository.BoardRepository;
 import org.example.newsfeed.exception.MisMatchUserException;
-import org.example.newsfeed.exception.UnauthorizedCommentAccessException;
 import org.example.newsfeed.user.entity.User;
 import org.example.newsfeed.user.repository.UserRepository;
 import org.springframework.data.domain.Page;
