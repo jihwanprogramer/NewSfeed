@@ -8,6 +8,7 @@ import org.example.newsfeed.user.dto.UserResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -91,7 +92,7 @@ public class BoardController {
     //기간별 검색
     @GetMapping("/period")
     public ResponseEntity<Page<PageResponseDto>> findByPeriod(
-            @Valid @ModelAttribute PeriodRequestDto requestDto,
+            @Validated @ModelAttribute PeriodRequestDto requestDto,
             @RequestParam(defaultValue = "1") int page
             )
     {
