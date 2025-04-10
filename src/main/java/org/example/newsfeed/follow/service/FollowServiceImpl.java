@@ -45,7 +45,11 @@ public class FollowServiceImpl implements FollowService{
 
         followRepository.save(follow);
 
-        return new FollowSingleResponseDto(follow.getId(), follow.isFollowYN(), false);
+        followRepository.flush();
+        int followerCount = countFollowByFollowingId(followingId, followerId);
+        int followingCount = countFollowByFollowerId(followerId, followingId);
+
+        return new FollowSingleResponseDto(follow.getId(), follow.isFollowYN(), followerCount, followingCount, false);
 
     }
 
@@ -64,7 +68,11 @@ public class FollowServiceImpl implements FollowService{
 
         Follow updatedFollow = optionalFollow.get();
 
-        return new FollowSingleResponseDto(updatedFollow.getId(), updatedFollow.isFollowYN(), false);
+        followRepository.flush();
+        int followerCount = countFollowByFollowingId(followingId, followerId);
+        int followingCount = countFollowByFollowerId(followerId, followingId);
+
+        return new FollowSingleResponseDto(updatedFollow.getId(), updatedFollow.isFollowYN(), followerCount, followingCount, false);
     }
 
     @Override
@@ -72,8 +80,11 @@ public class FollowServiceImpl implements FollowService{
 
         User followingUser = userRepository.findUserByIdOrElseThrow(followingId);
 
+        int followerCount = countFollowByFollowingId(followingId, followerId);
+        int followingCount = countFollowByFollowerId(followerId, followingId);
+
         if (followerId == followingId){
-            return new FollowSingleResponseDto(null, false, true);
+            return new FollowSingleResponseDto(null, false, followerCount, followingCount, true);
         }
 
         Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUser(followerId, followingUser);
@@ -81,7 +92,7 @@ public class FollowServiceImpl implements FollowService{
             throw new NullResponseException("팔로우 내역이 없습니다.");
         }
 
-        return new FollowSingleResponseDto(optionalFollow.get().getId(), optionalFollow.get().isFollowYN(), false);
+        return new FollowSingleResponseDto(optionalFollow.get().getId(), optionalFollow.get().isFollowYN(), followerCount, followingCount , false);
     }
 
     @Override
@@ -107,19 +118,18 @@ public class FollowServiceImpl implements FollowService{
     }
 
     @Override
-    public FollowCountResponseDto countFollowByFollowingId(Long followingId, Long loginId) {
+    public int countFollowByFollowingId(Long followingId, Long loginId) {
 
         User followingUser = userRepository.findUserByIdOrElseThrow(followingId);
-        Long count = followRepository.countByFollowingUserAndFollowYN(followingUser, true);
-        return new FollowCountResponseDto(count, followingId.equals(loginId));
+
+        return followRepository.countByFollowingUserAndFollowYN(followingUser, true);
 
     }
 
     @Override
-    public FollowCountResponseDto countFollowByFollowerId(Long followerId, Long loginId) {
+    public int countFollowByFollowerId(Long followerId, Long loginId) {
 
-        Long count = followRepository.countByFollowerIdAndFollowYN(followerId, true);
-        return new FollowCountResponseDto(count, followerId.equals(loginId));
+        return followRepository.countByFollowerIdAndFollowYN(followerId, true);
 
     }
 

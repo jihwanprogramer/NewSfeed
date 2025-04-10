@@ -2,10 +2,11 @@ package org.example.newsfeed.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.common.config.PasswordEncoder;
-import org.example.newsfeed.exception.MisMatchUserException;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.entity.User;
 import org.example.newsfeed.user.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -40,11 +41,22 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    // service) 이름으로 유저들 조회
+    // service) 이름으로 유저들 조회(List)
     @Override
     public List<UserResponseDto> findUserByName(String name) {
 
-        return userRepository.findUserByName(name).stream().map(UserResponseDto::new).toList();
+        return userRepository.findUserByName(name)
+                .stream()
+                .map(UserResponseDto::new)
+                .toList();
+
+    }
+
+    // service) 이름으로 유저들 조회(Page)
+    @Override
+    public Page<UserResponseDto> findUserByNamePage(String name, Pageable pageable) {
+
+        return userRepository.findUserByName(name, pageable).map(UserResponseDto::new);
 
     }
 
@@ -66,9 +78,7 @@ public class UserServiceImpl implements UserService {
 
         User findUser = userRepository.findUserByIdOrElseThrow(id);
 
-        if(!findUser.isSameUser(loginUserId)){
-            throw new MisMatchUserException("접근 권한이 없습니다.");
-        }
+        sessionCheck(findUser,loginUserId);
 
         notNullUpdate(findUser, name, age, email, password, newPassword, checkNewPassword);
 
@@ -83,9 +93,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long loginUserId,Long id, String password) {
 
-        sessionCheck(loginUserId,id);
-
         User findUser = userRepository.findUserByIdOrElseThrow(id);
+
+        sessionCheck(findUser,loginUserId);
 
         passwordMatch(password, findUser);
 
@@ -96,7 +106,7 @@ public class UserServiceImpl implements UserService {
     private void passwordMatch(String password, User users) {
 
         if (!passwordEncoder.matches(password,users.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"원래의 비밀번호가 일치하지 않습니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"원래의 비밀번호와 일치하지 않습니다.");
         }
 
     }
@@ -111,10 +121,10 @@ public class UserServiceImpl implements UserService {
     }
 
     // 세션의 id와 요청받은 id 확인 메서드
-    private void sessionCheck(Long loginUserId, Long id) {
+    private void sessionCheck(User findUser, Long loginUserId) {
 
-        if (!loginUserId.equals(id)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"본인 정보만 다룰 수 있습니다.");
+        if(!findUser.isSameUser(loginUserId)){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "접근 권한이 없습니다");
         }
     }
 

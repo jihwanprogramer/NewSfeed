@@ -46,7 +46,7 @@ public class FollowController {
     }
 
     //내가 본 대상이 내가 팔로우 했는지 확인
-    @GetMapping("/{userId}/follow_status")
+    @GetMapping("/{userId}/follow-status")
     public ResponseEntity<FollowSingleResponseDto> findFollowYN(
             @PathVariable Long userId,
             @SessionAttribute(name = Const.LOGIN_USER) UserResponseDto loginUser
@@ -87,29 +87,5 @@ public class FollowController {
 
         return new ResponseEntity<>(followService.findFollowersById(userId),HttpStatus.OK);
     }
-
-    //팔로워 수 체크
-    @GetMapping("/{userId}/followers/count")
-    public ResponseEntity<FollowCountResponseDto> countFollowers (
-            @PathVariable Long userId,
-            @SessionAttribute(name = Const.LOGIN_USER) UserResponseDto loginUser
-    ){
-
-        FollowCountResponseDto followCountResponseDto = followService.countFollowByFollowingId(userId, loginUser.getId());
-
-        return new ResponseEntity<>(followCountResponseDto,HttpStatus.OK);
-    }
-
-    //팔로잉 수 체크
-    @GetMapping("/{userId}/followings/count")
-    public ResponseEntity<FollowCountResponseDto> countFollowings (
-            @PathVariable Long userId,
-            @SessionAttribute(name = Const.LOGIN_USER) UserResponseDto loginUser
-    ){
-        FollowCountResponseDto followCountResponseDto = followService.countFollowByFollowerId(userId, loginUser.getId());
-
-        return new ResponseEntity<>(followCountResponseDto,HttpStatus.OK);
-    }
-
 
 }
