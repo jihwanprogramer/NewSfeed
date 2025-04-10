@@ -9,6 +9,7 @@ import org.example.newsfeed.comment.entity.Comment;
 import org.example.newsfeed.comment.repository.CommentRepository;
 import org.example.newsfeed.board.entity.Board;
 import org.example.newsfeed.board.repository.BoardRepository;
+import org.example.newsfeed.exception.MisMatchUserException;
 import org.example.newsfeed.exception.UnauthorizedCommentAccessException;
 import org.example.newsfeed.user.entity.User;
 import org.example.newsfeed.user.repository.UserRepository;
@@ -53,7 +54,7 @@ public class CommentService {
         Comment comment = commentRepository.findByIdOrElseThrow(commentId);
 
         if (!(comment.getUser().getId().equals(userId) || comment.getBoard().getUser().getId().equals(userId))) {
-            throw new UnauthorizedCommentAccessException("글 작성자나 댓글 작성자만 수정 가능합니다.");
+            throw new MisMatchUserException("글 작성자나 댓글 작성자만 수정 가능합니다.");
         }
 
         comment.update(commentUpdateRequestDto.getContent());
@@ -68,7 +69,7 @@ public class CommentService {
         Comment comment = commentRepository.findByIdOrElseThrow(commentId);
 
         if (!comment.getUser().getId().equals(userId)) {
-            throw new UnauthorizedCommentAccessException("글 작성자나 댓글 작성자만 삭제 가능합니다.");
+            throw new MisMatchUserException("글 작성자나 댓글 작성자만 삭제 가능합니다.");
         }
         commentRepository.delete(comment);
     }
