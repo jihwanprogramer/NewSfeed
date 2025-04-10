@@ -6,6 +6,7 @@ import org.example.newsfeed.exception.LoginAuthException;
 import org.example.newsfeed.login.dto.LoginResponseDto;
 import org.example.newsfeed.login.repository.LoginRepository;
 import org.example.newsfeed.user.entity.User;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
