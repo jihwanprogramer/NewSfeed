@@ -42,8 +42,8 @@ public class CommentService {
                 findPost.getId(),
                 user.getId(),
                 comment.getContent(),
-                comment.getCreateAt(),
-                comment.getUpdatedAt()
+                comment.getCreatedAt(),
+                comment.getModifiedAt()
         );
 
     }
@@ -57,8 +57,8 @@ public class CommentService {
                 post.getId(),
                 comment.getUser().getId(),
                 comment.getContent(),
-                comment.getCreateAt(),
-                comment.getUpdatedAt()
+                comment.getCreatedAt(),
+                comment.getModifiedAt()
         )).collect(Collectors.toList());
     }
 
@@ -76,8 +76,8 @@ public class CommentService {
                 comment.getPost().getId(),
                 comment.getUser().getId(),
                 comment.getContent(),
-                comment.getCreateAt(),
-                comment.getUpdatedAt()
+                comment.getCreatedAt(),
+                comment.getModifiedAt()
         );
 
     }

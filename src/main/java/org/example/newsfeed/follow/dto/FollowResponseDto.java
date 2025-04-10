@@ -15,7 +15,7 @@ public class FollowResponseDto {
     }
 
     public static FollowResponseDto toDto(Follow follow){
-        return new FollowResponseDto(follow.getFollowingUsers().getId(), follow.getFollowingUsers().getName());
+        return new FollowResponseDto(follow.getFollowingUser().getId(), follow.getFollowingUser().getName());
     }
 
 

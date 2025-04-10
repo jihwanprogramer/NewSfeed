@@ -5,12 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.newsfeed.board.dto.CreateRequestDto;
 import org.example.newsfeed.board.dto.UpdateRequestDto;
+import org.example.newsfeed.user.entity.BaseEntity;
 import org.example.newsfeed.user.entity.User;
 
 @Entity
 @Getter
 @Table(name = "post")
-public class Board extends TimeEntity {
+public class Board extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

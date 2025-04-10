@@ -6,6 +6,7 @@ import org.example.newsfeed.common.Const;
 import org.example.newsfeed.exception.MisMatchUserException;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 @Component
 @RequiredArgsConstructor
@@ -21,4 +22,5 @@ public class ConfirmSameUser {
             throw new MisMatchUserException("작성자가 아닙니다.");
         }
     }
+
 }

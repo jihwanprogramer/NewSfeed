@@ -5,6 +5,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.board.dto.*;
 import org.example.newsfeed.board.service.BoardService;
+import org.example.newsfeed.common.Const;
+import org.example.newsfeed.user.dto.UserResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +25,9 @@ public class BoardController {
     @PostMapping
     public ResponseEntity<CreateResponseDto> create(@Valid @RequestBody CreateRequestDto requestDto, HttpSession session) {
 
-        CreateResponseDto responseDto = boardService.create(requestDto, session);
+        UserResponseDto userResponseDto = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
+
+        CreateResponseDto responseDto = boardService.create(requestDto, userResponseDto);
 
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
@@ -48,17 +52,22 @@ public class BoardController {
 
     //게시글 수정
     @PatchMapping("/{id}")
-    public ResponseEntity<BoardResponseDto> update(@PathVariable Long id, @RequestBody UpdateRequestDto requestDto) {
+    public ResponseEntity<BoardResponseDto> update(@PathVariable Long id, @RequestBody UpdateRequestDto requestDto, HttpSession session) {
 
-        BoardResponseDto update = boardService.update(id, requestDto);
+        UserResponseDto userResponseDto = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
+
+        BoardResponseDto update = boardService.update(id, requestDto, userResponseDto);
 
         return new ResponseEntity<>(update, HttpStatus.OK);
     }
 
     //게시글 삭제
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        boardService.delete(id);
+    public void delete(@PathVariable Long id, HttpSession session) {
+
+        UserResponseDto userResponseDto = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
+
+        boardService.delete(id, userResponseDto);
     }
 
     //게시글 페이지로 조회

@@ -3,7 +3,6 @@ package org.example.newsfeed.board.service;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.common.Const;
-import org.example.newsfeed.common.config.ConfirmSameUser;
 import org.example.newsfeed.board.dto.*;
 import org.example.newsfeed.board.entity.Board;
 import org.example.newsfeed.board.repository.BoardRepository;
@@ -28,14 +27,12 @@ import java.util.List;
 public class BoardService {
 
     private final BoardRepository boardRepository;
-    private final ConfirmSameUser confirmSameUser;
     private final UserRepository userRepository;
 
     //게시글 생성
     @Transactional
-    public CreateResponseDto create(CreateRequestDto requestDto, HttpSession session) {
+    public CreateResponseDto create(CreateRequestDto requestDto, UserResponseDto userResponseDto) {
 
-        UserResponseDto userResponseDto = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
         User findedUser = userRepository.findUserByIdOrElseThrow(userResponseDto.getId());
 
         Board board = new Board(requestDto);
@@ -65,11 +62,13 @@ public class BoardService {
 
     //특정 게시물 수정
     @Transactional
-    public BoardResponseDto update(Long id, UpdateRequestDto requestDto) {
+    public BoardResponseDto update(Long id, UpdateRequestDto requestDto, UserResponseDto userResponseDto) {
 
         Board findedBoard = boardRepository.findByIdOrElseThrow(id);
 
-        confirmSameUser.isSameUser(findedBoard.getUser().getId()); //작성자와 로그인된 회원이 다를경우 예외처리
+        if (!findedBoard.getUser().isSameUser(userResponseDto.getId())) { //작성자와 로그인된 회원이 다를경우 예외처리
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "작성자만 수정할 수 있습니다.");
+        }
 
         if (requestDto.getTitle() == null && requestDto.getContents() == null) {
             throw new ResponseStatusException(
@@ -93,11 +92,13 @@ public class BoardService {
 
     //특정 게시물 삭제
     @Transactional
-    public void delete(Long id) {
+    public void delete(Long id, UserResponseDto userResponseDto) {
 
         Board findedBoard = boardRepository.findByIdOrElseThrow(id);
 
-        confirmSameUser.isSameUser(findedBoard.getUser().getId()); //작성자와 로그인된 회원이 다를경우 예외처리
+        if (!findedBoard.getUser().isSameUser(userResponseDto.getId())) { //작성자와 로그인된 회원이 다를경우 예외처리
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "작성자만 수정할 수 있습니다.");
+        }
 
         boardRepository.delete(findedBoard);
     }

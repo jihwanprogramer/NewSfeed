@@ -21,8 +21,8 @@ public class Follow extends BaseEntity {
     private Long followerId;
 
     @ManyToOne
-    @JoinColumn(name = "Users_id")
-    private User followingUsers;
+    @JoinColumn(name = "user_id")
+    private User followingUser;
 
     public Follow() {
     }
@@ -32,8 +32,8 @@ public class Follow extends BaseEntity {
         this.followerId = followerId;
     }
 
-    public void setFollowUsers(User followingUsers){
-        this.followingUsers = followingUsers;
+    public void setFollowUser(User followingUser){
+        this.followingUser = followingUser;
     }
 
     public boolean updateFollow() {
