@@ -1,7 +1,6 @@
 package org.example.newsfeed.follow.controller;
 
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.common.Const;
 import org.example.newsfeed.exception.AccessDeniedException;
@@ -61,7 +60,7 @@ public class FollowController {
 
     // 특정 유저의 팔로우한 유저 목록 조회 following 목록
     @GetMapping("/{userId}/followings")
-    public List<FollowResponseDto> findFollowingsByUserId(
+    public ResponseEntity<List<FollowResponseDto>> findFollowingsByUserId(
             @PathVariable Long userId,
             @SessionAttribute(name = Const.LOGIN_USER) UserResponseDto loginUser
     ){
@@ -71,12 +70,12 @@ public class FollowController {
         }
 
 
-        return followService.findFollowingsById(userId);
+        return new ResponseEntity<>(followService.findFollowingsById(userId), HttpStatus.OK);
     }
 
     // 특정 유저를 팔로우한 유저 목록 조회 follower 목록
     @GetMapping("/{userId}/followers")
-    public List<FollowResponseDto> findFollowerByUserId(
+    public ResponseEntity<List<FollowResponseDto>> findFollowerByUserId(
             @PathVariable Long userId,
             @SessionAttribute(name = Const.LOGIN_USER) UserResponseDto loginUser
     ){
@@ -86,7 +85,7 @@ public class FollowController {
             throw new AccessDeniedException("이 유저가 당신을 팔로워 해야 볼 수 있습니다.");
         }
 
-        return followService.findFollowersById(userId);
+        return new ResponseEntity<>(followService.findFollowersById(userId),HttpStatus.OK);
     }
 
     //팔로워 수 체크
