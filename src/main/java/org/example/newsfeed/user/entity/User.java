@@ -2,15 +2,13 @@ package org.example.newsfeed.user.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 import org.example.newsfeed.common.config.PasswordEncoder;
 import org.example.newsfeed.common.entity.BaseEntity;
-import org.example.newsfeed.exception.MisMatchPasswordException;
+import org.example.newsfeed.exception.MisMatchUserException;
 import org.example.newsfeed.exception.WrongPasswordException;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "users")
 public class User extends BaseEntity {
 
@@ -41,7 +39,53 @@ public class User extends BaseEntity {
     }
 
     public static User of(String name, Integer age, String email, String encodedPassword) {
+
         return new User(name,age,email,encodedPassword);
+
+    }
+
+    public void passwordMatch(String password, PasswordEncoder passwordEncoder) {
+
+        if (!passwordEncoder.matches(password,this.password)) {
+            throw new WrongPasswordException("비밀번호가 일치하지 않습니다.");
+        }
+
+    }
+
+    public void notNullUpdate(String name, Integer age, String email, String password, String newPassword,
+                              String checkNewPassword, PasswordEncoder passwordEncoder) {
+
+        if (name != null) {
+            this.name = name;
+        }
+
+        if (age != null) {
+            this.age = age;
+        }
+
+        // 널은 허용, 빈 문자열은 허용X
+        if (email != null && !email.isEmpty()) {
+            this.email=email;
+        }
+
+        passwordMatch(password, passwordEncoder);
+
+        // 둘 다 넣어야 변경
+        if (newPassword != null && checkNewPassword != null) {
+
+            this.password = passwordEncoder.encode(newPassword);
+
+        }
+
+    }
+
+    // 세션의 id와 요청받은 id 확인 메서드
+    public void sessionCheck(Long loginUserId) {
+
+        if(!isSameUser(loginUserId)){
+            throw new MisMatchUserException("권한이 없습니다.");
+        }
+
     }
 
     public boolean isSameUser(Long id){

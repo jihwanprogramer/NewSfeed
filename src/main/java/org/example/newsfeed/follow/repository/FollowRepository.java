@@ -71,4 +71,8 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
         return findByFollowerIdAndFollowingUser(followingID, followUser)
                 .orElseThrow(() -> new NullResponseException("팔로우 내역이 없습니다"));
     }
+
+    void deleteAllByFollowerId(Long followerId);
+
+    void deleteAllByFollowingUser(User followingUser);
 }

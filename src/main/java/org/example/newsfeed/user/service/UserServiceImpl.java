@@ -1,11 +1,12 @@
 package org.example.newsfeed.user.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.example.newsfeed.board.repository.BoardRepository;
 import org.example.newsfeed.common.config.PasswordEncoder;
 import org.example.newsfeed.exception.AlreadyExistsException;
 import org.example.newsfeed.exception.MisMatchPasswordException;
-import org.example.newsfeed.exception.MisMatchUserException;
-import org.example.newsfeed.exception.WrongPasswordException;
+import org.example.newsfeed.follow.repository.FollowRepository;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.entity.User;
 import org.example.newsfeed.user.repository.UserRepository;
@@ -20,10 +21,13 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final BoardRepository boardRepository;
+    private final FollowRepository followRepository;
     private final PasswordEncoder passwordEncoder;
 
     // service) 회원가입
     @Override
+    @Transactional
     public UserResponseDto signUp(String name, Integer age, String email, String password, String checkPassword) {
 
         // 중복 이메일 체크
@@ -76,14 +80,19 @@ public class UserServiceImpl implements UserService {
 
     // service) 유저 수정
     @Override
+    @Transactional
     public UserResponseDto updateUser(Long loginUserId, Long id , String name, Integer age,
                                             String email, String password, String newPassword, String checkNewPassword) {
 
         User findUser = userRepository.findUserByIdOrElseThrow(id);
 
-        sessionCheck(findUser,loginUserId);
+        findUser.sessionCheck(loginUserId);
 
-        notNullUpdate(findUser, name, age, email, password, newPassword, checkNewPassword);
+        if (newPassword != null && checkNewPassword != null) {
+            passwordCheck(newPassword,checkNewPassword);
+        }
+
+        findUser.notNullUpdate(name,age,email, password, newPassword, checkNewPassword,passwordEncoder);
 
         userRepository.save(findUser);
 
@@ -94,24 +103,21 @@ public class UserServiceImpl implements UserService {
 
     // service) 유저 삭제
     @Override
+    @Transactional
     public void deleteUser(Long loginUserId,Long id, String password) {
 
         User findUser = userRepository.findUserByIdOrElseThrow(id);
 
-        sessionCheck(findUser,loginUserId);
+        findUser.sessionCheck(loginUserId);
 
-        passwordMatch(password, findUser);
+        findUser.passwordMatch(password, passwordEncoder);
+
+        followRepository.deleteAllByFollowerId(id);
+        followRepository.deleteAllByFollowingUser(findUser);
+
+        boardRepository.deleteAllByUser(findUser);
 
         userRepository.delete(findUser);
-    }
-
-    // 패스워드 매치 확인 메서드
-    private void passwordMatch(String password, User users) {
-
-        if (!passwordEncoder.matches(password,users.getPassword())) {
-            throw new WrongPasswordException("비밀번호가 일치하지 않습니다.");
-        }
-
     }
 
     // 패스워드 같은지 확인 메서드
@@ -119,43 +125,6 @@ public class UserServiceImpl implements UserService {
 
         if (!Password.equals(checkPassword)) {
             throw new MisMatchPasswordException("비밀번호와 비밀번호 확인이 일치하지 않습니다");
-        }
-
-    }
-
-    // 세션의 id와 요청받은 id 확인 메서드
-    private void sessionCheck(User findUser, Long loginUserId) {
-
-        if(!findUser.isSameUser(loginUserId)){
-            throw new MisMatchUserException("권한이 없습니다.");
-        }
-    }
-
-    // null 아닌 부분 수정 메서드
-    private void notNullUpdate(User findUser, String name, Integer age, String email, String password,
-                               String newPassword, String checkNewPassword ) {
-
-        if (name != null) {
-            findUser.setName(name);
-        }
-
-        if (age != null) {
-            findUser.setAge(age);
-        }
-
-        // 널은 허용, 빈 문자열은 허용X
-        if (email != null && !email.isEmpty()) {
-            findUser.setEmail(email);
-        }
-
-        // 둘 다 넣어야 변경
-        if (newPassword != null && checkNewPassword != null) {
-
-            passwordMatch(password, findUser);
-
-            passwordCheck(newPassword,checkNewPassword);
-
-            findUser.setPassword(passwordEncoder.encode(newPassword));
         }
 
     }
