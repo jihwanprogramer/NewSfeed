@@ -19,7 +19,7 @@ public class BoardLike extends BaseEntity {
     private Long id;
 
     /**
-     * 겜시물 좋아요 여부 true false.
+     * 게시물 좋아요 여부 true false.
      */
     @Column(nullable = false)
     private boolean likeYN;
@@ -54,10 +54,25 @@ public class BoardLike extends BaseEntity {
     }
 
     /**
-     * 보드 초기화
+     * 게시물 초기화
      */
-    public void setBoard(Board board){
+    private void initBoard(Board board){
         this.board = board;
+    }
+
+    /**
+     * BoardLike 객체를 생성하는 정적 팩토리 메서드
+     *
+     * @param board 게시물
+     * @param userId 좋아요를 한 userId
+     * @return 생성된 BoardLike 객체
+     */
+    public static BoardLike createLikeYN(Board board, Long userId) {
+
+        BoardLike boardLike = new BoardLike(userId, true);
+        boardLike.initBoard(board);
+        return boardLike;
+
     }
 
     /**
