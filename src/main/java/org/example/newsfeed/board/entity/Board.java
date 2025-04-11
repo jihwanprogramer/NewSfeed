@@ -5,8 +5,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.newsfeed.board.dto.CreateRequestDto;
 import org.example.newsfeed.board.dto.UpdateRequestDto;
+import org.example.newsfeed.comment.entity.Comment;
 import org.example.newsfeed.user.entity.BaseEntity;
 import org.example.newsfeed.user.entity.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,6 +32,9 @@ public class Board extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    private List<Comment> comments = new ArrayList<>();
+
     @Column(nullable = false)
     private int likesCount;
 
@@ -38,6 +45,7 @@ public class Board extends BaseEntity {
     public Board(CreateRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
+
     }
 
     public void updateTitle(UpdateRequestDto requestDto) {
@@ -48,7 +56,11 @@ public class Board extends BaseEntity {
         this.contents = requestDto.getContents();
     }
 
-    public void initBoardLikes(int likesCount) {
-        this.likesCount = likesCount;
+    public void increaseLike() {
+        likesCount++;
+    }
+
+    public void decreaseLike() {
+        likesCount--;
     }
 }

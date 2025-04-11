@@ -41,7 +41,6 @@ public class BoardService {
         return new CreateResponseDto(savedBoard);
     }
 
-
     //게시글 전체 조회
     public List<BoardResponseDto> findAll() {
 
@@ -49,6 +48,17 @@ public class BoardService {
                 .stream()
                 .map(BoardResponseDto::findAll)
                 .toList();
+    }
+
+    //게시글 페이지로 조회
+    public Page<PageResponseDto> findAllPage(int page) {
+
+        int adjustedPage = (page > 0) ? page - 1 : 0;
+        PageRequest pageable = PageRequest.of(adjustedPage, 10, Sort.by("createdAt").descending());
+
+        Page<Board> boardPage = boardRepository.findAll(pageable);
+
+        return boardPage.map(board -> new PageResponseDto(board));
     }
 
     //특정 게시글 조회
@@ -99,17 +109,6 @@ public class BoardService {
         boardRepository.delete(findedBoard);
     }
 
-    //게시글 페이지로 조회
-    public Page<PageResponseDto> findAllPage(int page) {
-
-        int adjustedPage = (page > 0) ? page - 1 : 0;
-        PageRequest pageable = PageRequest.of(adjustedPage, 10, Sort.by("createdAt").descending());
-
-        Page<Board> boardPage = boardRepository.findAll(pageable);
-
-        return boardPage.map(board -> new PageResponseDto(board));
-    }
-
     //수정일자 기준 최신순으로 조회
     public Page<PageResponseDto> sortedByModifiedAt(int page) {
 
@@ -140,11 +139,7 @@ public class BoardService {
     }
 
     //좋아요순으로 조회
-    public Page<LikesResponseDto> sortedByLikes(Long id, int page) {
-
-        Board findedBoard = boardRepository.findByIdOrElseThrow(id);
-        int likesCount = boardLikeRepository.countByBoardAndLikeYN(findedBoard, true);
-        findedBoard.initBoardLikes(likesCount);
+    public Page<LikesResponseDto> sortedByLikes(int page) {
 
         int adjustPage = (page > 0) ? page - 1 : 0;
         PageRequest pageable = PageRequest.of(adjustPage, 10, Sort.by("likesCount").descending());
