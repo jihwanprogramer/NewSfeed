@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/comments")
 @RequiredArgsConstructor
+@SessionAttributes
 public class CommentLikeController {
     private final CommentLikeServiceImpl commentLikeService;
 
@@ -21,7 +22,7 @@ public class CommentLikeController {
      * 댓글 좋아요를 생성합니다.
      *
      * @param commentid 댓글의 id
-     * @return 생성된 좋아요의 DTO, HttpStatus
+     * @return 생성된 좋아요의 DTO
      *
      **/
     @PostMapping("/{commentid}/like")
@@ -35,10 +36,10 @@ public class CommentLikeController {
 
 
     /**
-     * 댓글 좋아요를 true,false로 전환 합니다.
+     * 댓글 좋아요를 토글하여 true,false로 전환 합니다.
      *
      * @param commentid 댓글의 id
-     * @return 변경된 좋아요의 DTO, HttpStatus
+     * @return 변경된 좋아요의 DTO
      *
      **/
     @PatchMapping("/{commentid}/like")
@@ -54,15 +55,15 @@ public class CommentLikeController {
      * 댓글 좋아요를 조회합니다.
      *
      * @param commentid 댓글의 id
-     * @return 좋아요의 DTO, HttpStatus
+     * @return 좋아요의 DTO
      *
      **/
     @GetMapping("/{commentid}/like")
-    public ResponseEntity<CommentLikeResponseDto> findBoardLikeByIdOrElseThrow(@PathVariable Long commentid, HttpSession session){
+    public ResponseEntity<CommentLikeResponseDto> findCommentLikeByIdOrElseThrow(@PathVariable Long commentid, HttpSession session){
 
         UserResponseDto loginUser = (UserResponseDto)session.getAttribute(Const.LOGIN_USER);
 
-        return new ResponseEntity<>(commentLikeService.findBoardLikeByIdOrElseThrow(commentid, loginUser.getId()),HttpStatus.OK);
+        return new ResponseEntity<>(commentLikeService.findCommentLikeByIdOrElseThrow(commentid, loginUser.getId()),HttpStatus.OK);
     }
 
 }

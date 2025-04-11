@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/boards")
 @RequiredArgsConstructor
+@SessionAttributes
 public class BoardLikeController {
     private final BoardLikeServiceImpl boardLikeService;
 
@@ -21,7 +22,7 @@ public class BoardLikeController {
      * 게시물 좋아요를 생성합니다.
      *
      * @param boardid 게시물의 id
-     * @return 생성된 좋아요의 DTO, HttpStatus
+     * @return 생성된 좋아요의 DTO
      *
      **/
 
@@ -35,10 +36,10 @@ public class BoardLikeController {
     }
 
     /**
-     * 게시물 좋아요를 true,false로 전환 합니다.
+     * 게시물 좋아요를 토글하여 true,false로 전환 합니다.
      *
      * @param boardid 게시물의 id
-     * @return 변경된 좋아요의 DTO, HttpStatus
+     * @return 변경된 좋아요의 DTO
      *
      **/
     @PatchMapping("/{boardid}/like")
@@ -55,7 +56,7 @@ public class BoardLikeController {
      * 게시물 좋아요를 조회합니다.
      *
      * @param boardid 게시물의 id
-     * @return 좋아요의 DTO, HttpStatus
+     * @return 좋아요의 DTO
      *
      **/
     @GetMapping("/{boardid}/like")
