@@ -7,7 +7,7 @@
   
 | 역할 | 팀장 | 팀원 | 팀원 | 팀원 | 팀원 |
 |:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|
-|프로필|![image](https://avatars.githubusercontent.com/u/196007904?v=4&size=64)|![image](https://avatars.githubusercontent.com/u/130281249?v=4&size=64)|![image](https://avatars.githubusercontent.com/u/194772779?v=4&size=64)|![image]()|![image](https://avatars.githubusercontent.com/u/191333665?s=64&v=4)|
+|프로필|![image](https://avatars.githubusercontent.com/u/196007904?v=4&size=64)|![image](https://avatars.githubusercontent.com/u/130281249?v=4&size=64)|![image](https://avatars.githubusercontent.com/u/194772779?v=4&size=64)|![image](https://avatars.githubusercontent.com/u/198323298?v=4&size=64)|![image](https://avatars.githubusercontent.com/u/191333665?s=64&v=4)|
 |이름|김규현|김지환|김채원|류경선|오병택|
 |GitHub|0122-0|jihwanprogramer|chaewon9999|RKS-t|byeongtaek12|
 |기술블로그|[규현velog](https://velog.io/@flowercat95/posts)|[지환tistory](https://computerreport.tistory.com/)|[채원velog](https://velog.io/@w0729/posts)|[경선tistory](https://rudtjs2.tistory.com/)|[병택velog](https://velog.io/@byeongtaek12/posts)|
@@ -108,45 +108,48 @@
 
 
 - **팔로우 조회**
-    - 로그인 후 사용자는 
-
-
-- **팔로워 조회**
-    - 로그인 후 사용자는 본인의 게시글을 삭제 할 수 있습니다.
+    - 로그인 후 사용자는 자신이 팔로우 하고 있는 회원의 팔로워, 팔로잉 조회 가능
 
 <h3>게시물 좋아요</h3>
 
 - **게시물 좋아요 생성**
-    - 로그인 후 사용자는 새로운 게시물을 생성할 수 있으며, 제목과 내용을 입력하여 저장함.
-
-
-- **게시물 좋아요 조회**
-  - 사용자는 모든 게시물을 조회 하거나 특정 게시물을 조회할 수 있습니다. ResponseEntity<ResponseDto> 형식으로 항목 정보를 제공함.
+    - 로그인 후 사용자는 토글을 통해 게시물 좋아요를 생성 합니다.
 
 
 - **게시물 좋아요 수정**
-    - 로그인 후 사용자는 기존의 게시물을 수정할 수 있으며, 새로운 제목과 내용을 입력하여 업데이트함.
+  - 생성된 좋아요를 토글을 하여 true,false로 변환 가능.
+  - true = 활성화 , flase = 비활성화
+
+- **게시물 좋아요 조회**
+  - 생성된 좋아요를 조회하여 해당 게시물에 좋아요 갯수 확인
 
 <h3>댓글 좋아요</h3>
 
 - **댓글 좋아요 생성**
-    - 로그인 후 사용자는 새로운 게시물을 생성할 수 있으며, 제목과 내용을 입력하여 저장함.
-
-
-- **댓글 좋아요 조회**
-  - 사용자는 모든 게시물을 조회 하거나 특정 게시물을 조회할 수 있습니다. ResponseEntity<ResponseDto> 형식으로 항목 정보를 제공함.
+    - 로그인 후 사용자는 토글을 통해 댓글 좋아요를 생성 합니다.
 
 
 - **댓글 좋아요 수정**
-    - 로그인 후 사용자는 기존의 게시물을 수정할 수 있으며, 새로운 제목과 내용을 입력하여 업데이트함.
+  - 생성된 좋아요를 토글을 하여 true,false로 변환 가능.
+  - true = 활성화 , flase = 비활성화
+
+- **댓글 좋아요 조회**
+  - 생성된 좋아요를 조회하여 해당 댓글에 좋아요 갯수 확인 
 
 # 3. Technology Stack (기술 스택)
 
 ## Language
 
+<img src="https://img.shields.io/badge/java-007396?style=flat-square&logo=java&logoColor=white"/><img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=MySQL&logoColor=white"/>
+
 ## Version Control
 
+<img src="https://img.shields.io/badge/Spring-6DB33F?style=flat-square&logo=Spring&logoColor=white"/><img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=GitHub&logoColor=white"/><img src="https://img.shields.io/badge/Postman-FF6C37?style=flat-square&logo=Postman&logoColor=white"/>
+
 ## JDK Version
+
+Java 17 (OpenJDK 17)
+
 
 <br/>
 
