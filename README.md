@@ -312,8 +312,7 @@ Java 17 (OpenJDK 17)
 
 ## 브랜치 전략 (Branch Strategy)
 
-적절한 클래스 사용과 다양한 메소드 활용이 주목적이기에 빠르게 수정 가능한
-직접적인 Main Branch을 바로 사용했습니다.
+각각의 기능을 맡아서 서로 맡은 기능부분으로 브랜치를 나눈 뒤 코드리뷰를 하고 코드 컨벤션과 브랜치 컨벤션을 맞춤
 
 ## 블록 구문
 
@@ -348,8 +347,11 @@ public class PasswordEqualsCheckException extends RuntimeException
 
 # 6. 트러블 슈팅
 
+- user를 삭제하려는 중에 삭제가 안되서 확인 해보니 user에서 boardrepository통해서 삭제를 하는데 board에서 연관관계설정이 안되어 있어서 삭제가 안됨 -> board에서는 method를 호출해서 지웠음 like and comment 를 user 에서 board로 삭제하려고 하면 method가 호출이 안되서 삭제 불가->
+board에서 연관관계를 설정해서 해결
 
 # 7. 수행 결과
+
 
 
 ## 1.게시물 생성
