@@ -4,7 +4,7 @@ package org.example.newsfeed.like.controller;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.common.Const;
-import org.example.newsfeed.like.Service.BoardLikeService;
+import org.example.newsfeed.like.Service.BoardLikeServiceImpl;
 import org.example.newsfeed.like.dto.BoardLikeResponseDto;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.springframework.http.HttpStatus;
@@ -15,7 +15,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/boards")
 @RequiredArgsConstructor
 public class BoardLikeController {
-    private final BoardLikeService boardLikeService;
+    private final BoardLikeServiceImpl boardLikeService;
+
+     /**
+     * 게시물 좋아요를 생성합니다.
+     *
+     * @param boardid 게시물의 id
+     * @return 생성된 좋아요의 DTO, HttpStatus
+     *
+     **/
 
     @PostMapping("/{boardid}/like")
     public ResponseEntity<BoardLikeResponseDto> likeYN(@PathVariable Long boardid, HttpSession session) {
@@ -26,6 +34,13 @@ public class BoardLikeController {
         return new ResponseEntity<>(boardLikeResponseDto, HttpStatus.CREATED);
     }
 
+    /**
+     * 게시물 좋아요를 true,false로 전환 합니다.
+     *
+     * @param boardid 게시물의 id
+     * @return 변경된 좋아요의 DTO, HttpStatus
+     *
+     **/
     @PatchMapping("/{boardid}/like")
     public ResponseEntity<BoardLikeResponseDto> changeLikeYN(@PathVariable Long boardid, HttpSession session) {
 
@@ -36,13 +51,19 @@ public class BoardLikeController {
         return new ResponseEntity<>(boardLikeResponseDto, HttpStatus.OK);
     }
 
-
-    @GetMapping("/{boradid}/like")
-    public ResponseEntity<BoardLikeResponseDto> findBoardLikeByIdOrElseThrow(@PathVariable Long boradid, HttpSession session) {
+    /**
+     * 게시물 좋아요를 조회합니다.
+     *
+     * @param boardid 게시물의 id
+     * @return 좋아요의 DTO, HttpStatus
+     *
+     **/
+    @GetMapping("/{boardid}/like")
+    public ResponseEntity<BoardLikeResponseDto> findBoardLikeByIdOrElseThrow(@PathVariable Long boardid, HttpSession session) {
 
         UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
 
-        return new ResponseEntity<>(boardLikeService.findBoardLikeByIdOrElseThrow(boradid, loginUser.getId()), HttpStatus.OK);
+        return new ResponseEntity<>(boardLikeService.findBoardLikeByIdOrElseThrow(boardid, loginUser.getId()), HttpStatus.OK);
     }
 
 }

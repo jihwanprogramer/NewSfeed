@@ -3,7 +3,7 @@ package org.example.newsfeed.board.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.board.dto.*;
-import org.example.newsfeed.board.service.BoardService;
+import org.example.newsfeed.board.service.BoardServiceImpl;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -18,15 +18,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardController {
 
-    private final BoardService boardService;
+    private final BoardServiceImpl boardService;
 
     //게시글 생성
     @PostMapping
-    public ResponseEntity<CreateResponseDto> create(
+    public ResponseEntity<CreateResponseDto> createBoard(
             @Valid @RequestBody CreateRequestDto requestDto,
             @SessionAttribute(name = "loginUser") UserResponseDto userResponseDto)
     {
-        CreateResponseDto responseDto = boardService.create(requestDto, userResponseDto);
+        CreateResponseDto responseDto = boardService.createBoard(requestDto, userResponseDto);
 
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
@@ -51,31 +51,41 @@ public class BoardController {
 
     //특정 게시글 조회
     @GetMapping("/{id}")
-    public ResponseEntity<BoardResponseDto> findById(@PathVariable Long id) {
+    public ResponseEntity<BoardResponseDto> findBoardById(@PathVariable Long id) {
 
-        BoardResponseDto findedById = boardService.findById(id);
+        BoardResponseDto findedById = boardService.findBoardById(id);
 
         return new ResponseEntity<>(findedById, HttpStatus.OK);
     }
 
+    //게시글 페이지로 조회
+    @GetMapping("/pages")
+    public ResponseEntity<Page<PageResponseDto>> findAllPage(@RequestParam(defaultValue = "1") int page) {
+
+        Page<PageResponseDto> findAllPage = boardService.findAllPage(page);
+
+        return new ResponseEntity<>(findAllPage, HttpStatus.OK);
+    }
+
     //게시글 수정
     @PatchMapping("/{id}")
-    public ResponseEntity<BoardResponseDto> update(
+    public ResponseEntity<BoardResponseDto> updateBoard(
             @PathVariable Long id,
             @RequestBody UpdateRequestDto requestDto,
             @SessionAttribute(name = "loginUser") UserResponseDto userResponseDto)
     {
-        BoardResponseDto update = boardService.update(id, requestDto, userResponseDto);
+        BoardResponseDto update = boardService.updateBoard(id, requestDto, userResponseDto);
 
         return new ResponseEntity<>(update, HttpStatus.OK);
     }
 
     //게시글 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id,
-                       @SessionAttribute(name = "loginUser") UserResponseDto userResponseDto)
+    public ResponseEntity<Void> deleteBoard(
+            @PathVariable Long id,
+            @SessionAttribute(name = "loginUser") UserResponseDto userResponseDto)
     {
-        boardService.delete(id, userResponseDto);
+        boardService.deleteBoard(id, userResponseDto);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -91,12 +101,12 @@ public class BoardController {
 
     //기간별 조회
     @GetMapping("/period")
-    public ResponseEntity<Page<PageResponseDto>> findByPeriod(
+    public ResponseEntity<Page<PageResponseDto>> findBoardByPeriod(
             @Validated @ModelAttribute PeriodRequestDto requestDto,
             @RequestParam(defaultValue = "1") int page
             )
     {
-        Page<PageResponseDto> findByPeriod = boardService.findByPeriod(requestDto, page);
+        Page<PageResponseDto> findByPeriod = boardService.findBoardByPeriod(requestDto, page);
 
         return new ResponseEntity<>(findByPeriod, HttpStatus.OK);
     }
