@@ -108,11 +108,13 @@ public class UserServiceImpl implements UserService {
 
         findUser.passwordMatch(password, passwordEncoder);
 
+
+
         userRepository.delete(findUser);
     }
 
     // 패스워드 같은지 확인 메서드
-    public void passwordCheck(String Password,String checkPassword){
+    private void passwordCheck(String Password,String checkPassword){
 
         if (!Password.equals(checkPassword)) {
             throw new MisMatchPasswordException("비밀번호와 비밀번호 확인이 일치하지 않습니다");
