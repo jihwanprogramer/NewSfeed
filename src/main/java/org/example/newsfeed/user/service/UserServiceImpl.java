@@ -5,8 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.common.config.PasswordEncoder;
 import org.example.newsfeed.exception.AlreadyExistsException;
 import org.example.newsfeed.exception.MisMatchPasswordException;
-import org.example.newsfeed.exception.MisMatchUserException;
-import org.example.newsfeed.exception.WrongPasswordException;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.entity.User;
 import org.example.newsfeed.user.repository.UserRepository;
@@ -84,7 +82,7 @@ public class UserServiceImpl implements UserService {
 
         User findUser = userRepository.findUserByIdOrElseThrow(id);
 
-        sessionCheck(findUser,loginUserId);
+        findUser.sessionCheck(loginUserId);
 
         if (newPassword != null && checkNewPassword != null) {
             passwordCheck(newPassword,checkNewPassword);
@@ -106,7 +104,7 @@ public class UserServiceImpl implements UserService {
 
         User findUser = userRepository.findUserByIdOrElseThrow(id);
 
-        sessionCheck(findUser,loginUserId);
+        findUser.sessionCheck(loginUserId);
 
         findUser.passwordMatch(password, passwordEncoder);
 
@@ -121,13 +119,4 @@ public class UserServiceImpl implements UserService {
         }
 
     }
-
-    // 세션의 id와 요청받은 id 확인 메서드
-    private void sessionCheck(User findUser, Long loginUserId) {
-
-        if(!findUser.isSameUser(loginUserId)){
-            throw new MisMatchUserException("권한이 없습니다.");
-        }
-    }
-
 }
