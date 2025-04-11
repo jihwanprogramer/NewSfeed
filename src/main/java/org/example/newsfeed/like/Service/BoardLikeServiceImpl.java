@@ -35,6 +35,7 @@ public class BoardLikeServiceImpl implements BoardLikeService{
 
             BoardLike boardLike = new BoardLike(userId, true);
             boardLike.setBoard(findBoard);
+            findBoard.increaseLike();
 
             boardLikeRepository.save(boardLike);
 
@@ -55,6 +56,7 @@ public class BoardLikeServiceImpl implements BoardLikeService{
         optionalBoardLike.get().changeLikeYN();
 
         BoardLike changedBoardLike = optionalBoardLike.get();
+        findBoard.decreaseLike();
 
         return new BoardLikeResponseDto(changedBoardLike.getId(), countLike(findBoard), changedBoardLike.isLikeYN());
     }
