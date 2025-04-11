@@ -68,10 +68,10 @@ public class User extends BaseEntity {
             this.email=email;
         }
 
+        passwordMatch(password, passwordEncoder);
+
         // 둘 다 넣어야 변경
         if (newPassword != null && checkNewPassword != null) {
-
-            passwordMatch(password, passwordEncoder);
 
             this.password = passwordEncoder.encode(newPassword);
 
