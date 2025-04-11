@@ -2,9 +2,11 @@ package org.example.newsfeed.user.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.example.newsfeed.board.repository.BoardRepository;
 import org.example.newsfeed.common.config.PasswordEncoder;
 import org.example.newsfeed.exception.AlreadyExistsException;
 import org.example.newsfeed.exception.MisMatchPasswordException;
+import org.example.newsfeed.follow.repository.FollowRepository;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.entity.User;
 import org.example.newsfeed.user.repository.UserRepository;
@@ -19,6 +21,8 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final BoardRepository boardRepository;
+    private final FollowRepository followRepository;
     private final PasswordEncoder passwordEncoder;
 
     // service) 회원가입
@@ -108,7 +112,10 @@ public class UserServiceImpl implements UserService {
 
         findUser.passwordMatch(password, passwordEncoder);
 
+        followRepository.deleteAllByFollowerId(id);
+        followRepository.deleteAllByFollowingUser(findUser);
 
+        boardRepository.deleteAllByUser(findUser);
 
         userRepository.delete(findUser);
     }
