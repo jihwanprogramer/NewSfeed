@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.newsfeed.board.dto.*;
 import org.example.newsfeed.board.entity.Board;
 import org.example.newsfeed.board.repository.BoardRepository;
-import org.example.newsfeed.exception.NullResponseException;
 import org.example.newsfeed.like.repository.BoardLikeRepository;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.entity.User;
@@ -46,7 +45,11 @@ public class BoardServiceImpl implements BoardService{
     }
 
 
-    //게시글 전체 조회
+    /**
+     * 게시글 전체 조회
+     *
+     * @return 게시글 응답 DTO 리스트
+     */
     public List<BoardResponseDto> findAll() {
 
         return boardRepository.findAll()
@@ -55,7 +58,12 @@ public class BoardServiceImpl implements BoardService{
                 .toList();
     }
 
-    //게시글 페이지로 조회
+    /**
+     * 게시글 페이지 조회
+     *
+     * @param page 요청 페이지 번호
+     * @return 페이지 응답 DTO
+     */
     public Page<PageResponseDto> findAllPage(int page) {
 
         int adjustedPage = (page > 0) ? page - 1 : 0;
@@ -66,7 +74,12 @@ public class BoardServiceImpl implements BoardService{
         return boardPage.map(board -> new PageResponseDto(board));
     }
 
-    //특정 게시글 조회
+    /**
+     * 특정 게시글 조회
+     *
+     * @param id 게시글 ID
+     * @return 게시글 응답 DTO
+     */
     public BoardResponseDto findBoardById(Long id) {
 
         Board findedById = boardRepository.findByIdOrElseThrow(id);
@@ -74,7 +87,14 @@ public class BoardServiceImpl implements BoardService{
         return new BoardResponseDto(findedById);
     }
 
-    //특정 게시물 수정
+    /**
+     * 게시글 수정
+     *
+     * @param id              게시글 ID
+     * @param requestDto      수정 요청 DTO
+     * @param userResponseDto 요청한 사용자 정보
+     * @return 수정된 게시글 응답 DTO
+     */
     @Transactional
     public BoardResponseDto updateBoard(Long id, UpdateRequestDto requestDto, UserResponseDto userResponseDto) {
 
@@ -82,20 +102,19 @@ public class BoardServiceImpl implements BoardService{
         Long userId = userResponseDto.getId();
 
         findedBoard.isSameUser(userId);
-
-        if (requestDto.getTitle() == null && requestDto.getContents() == null) {
-            throw new NullResponseException("잘못된 요청입니다.");
-        }
-
-        findedBoard.updateTitle(requestDto);
-        findedBoard.updateContents(requestDto);
+        findedBoard.updateBoard(requestDto);
 
         boardRepository.save(findedBoard);
 
         return new BoardResponseDto(findedBoard);
     }
 
-    //특정 게시물 삭제
+    /**
+     * 게시글 삭제
+     *
+     * @param id              게시글 ID
+     * @param userResponseDto 요청한 사용자 정보
+     */
     @Transactional
     public void deleteBoard(Long id, UserResponseDto userResponseDto) {
 
@@ -107,7 +126,12 @@ public class BoardServiceImpl implements BoardService{
         boardRepository.delete(findedBoard);
     }
 
-    //수정일자 기준 최신순으로 조회
+    /**
+     * 수정일 기준 최신순 게시글 페이지 조회
+     *
+     * @param page 요청 페이지 번호
+     * @return 페이지 응답 DTO
+     */
     public Page<PageResponseDto> sortedByModifiedAt(int page) {
 
         int adjustedPage = (page > 0) ? page - 1 : 0;
@@ -118,7 +142,13 @@ public class BoardServiceImpl implements BoardService{
         return boardPage.map(board -> new PageResponseDto(board));
     }
 
-    //기간별 검색
+    /**
+     * 기간별 게시글 검색
+     *
+     * @param requestDto 기간 검색 요청 DTO
+     * @param page       요청 페이지 번호
+     * @return 기간 내 게시글 페이지 응답 DTO
+     */
     public Page<PageResponseDto> findBoardByPeriod(PeriodRequestDto requestDto, int page) {
 
         LocalDateTime startDate = LocalDate.parse(requestDto.getStartDate()).atStartOfDay();
@@ -132,7 +162,12 @@ public class BoardServiceImpl implements BoardService{
         return boardPage.map(board -> new PageResponseDto(board));
     }
 
-    //좋아요순 검색
+    /**
+     * 좋아요 수 기준 정렬
+     *
+     * @param page 요청 페이지 번호
+     * @return 좋아요 기준 정렬된 페이지 응답 DTO
+     */
     public Page<LikesResponseDto> sortedByLikes(int page) {
 
         int adjustedPage = (page > 0) ? page - 1 : 0;

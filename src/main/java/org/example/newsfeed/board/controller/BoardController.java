@@ -20,7 +20,13 @@ public class BoardController {
 
     private final BoardServiceImpl boardService;
 
-    //게시글 생성
+    /**
+     * 게시글 생성
+     *
+     * @param requestDto 게시글 생성 요청 DTO
+     * @param userResponseDto 세션에서 가져온 로그인 사용자 정보
+     * @return 생성된 게시글 응답 DTO
+     */
     @PostMapping
     public ResponseEntity<CreateResponseDto> createBoard(
             @Valid @RequestBody CreateRequestDto requestDto,
@@ -31,7 +37,11 @@ public class BoardController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    //게시글 전체 조회
+    /**
+     * 전체 게시글 조회
+     *
+     * @return 게시글 리스트 응답 DTO
+     */
     @GetMapping
     public ResponseEntity<List<BoardResponseDto>> findAll() {
 
@@ -40,7 +50,12 @@ public class BoardController {
         return new ResponseEntity<>(postList, HttpStatus.OK);
     }
 
-    //게시글 페이지로 조회
+    /**
+     * 게시글 페이지 단위 조회
+     *
+     * @param page 요청 페이지 번호
+     * @return 페이징된 게시글 응답 DTO
+     */
     @GetMapping("/pages")
     public ResponseEntity<Page<PageResponseDto>> findAllPage(@RequestParam(defaultValue = "1") int page) {
 
@@ -49,7 +64,12 @@ public class BoardController {
         return new ResponseEntity<>(findAllPage, HttpStatus.OK);
     }
 
-    //특정 게시글 조회
+    /**
+     * 특정 게시글 상세 조회
+     *
+     * @param id 게시글 ID
+     * @return 게시글 응답 DTO
+     */
     @GetMapping("/{id}")
     public ResponseEntity<BoardResponseDto> findBoardById(@PathVariable Long id) {
 
@@ -58,7 +78,14 @@ public class BoardController {
         return new ResponseEntity<>(findedById, HttpStatus.OK);
     }
 
-    //게시글 수정
+    /**
+     * 게시글 수정
+     *
+     * @param id 게시글 ID
+     * @param requestDto 수정 요청 DTO
+     * @param userResponseDto 세션에서 가져온 로그인 사용자 정보
+     * @return 수정된 게시글 응답 DTO
+     */
     @PatchMapping("/{id}")
     public ResponseEntity<BoardResponseDto> updateBoard(
             @PathVariable Long id,
@@ -70,7 +97,13 @@ public class BoardController {
         return new ResponseEntity<>(update, HttpStatus.OK);
     }
 
-    //게시글 삭제
+    /**
+     * 게시글 삭제
+     *
+     * @param id 게시글 ID
+     * @param userResponseDto 세션에서 가져온 로그인 사용자 정보
+     * @return 응답 없음(204)
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBoard(
             @PathVariable Long id,
@@ -81,7 +114,12 @@ public class BoardController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    //수정일자 기준 최신순으로 조회
+    /**
+     * 수정일 기준 최신순으로 게시글 조회
+     *
+     * @param page 요청 페이지 번호
+     * @return 정렬된 게시글 페이지 응답 DTO
+     */
     @GetMapping("/sorted-by-modifiedAt")
     public ResponseEntity<Page<PageResponseDto>> sortedByModifiedAt(@RequestParam(defaultValue = "1") int page) {
 
@@ -90,7 +128,13 @@ public class BoardController {
         return new ResponseEntity<>(pageResponseDto, HttpStatus.OK);
     }
 
-    //기간별 조회
+    /**
+     * 기간별 게시글 조회
+     *
+     * @param requestDto 검색 기간 요청 DTO
+     * @param page 요청 페이지 번호
+     * @return 기간 내 게시글 페이지 응답 DTO
+     */
     @GetMapping("/period")
     public ResponseEntity<Page<PageResponseDto>> findBoardByPeriod(
             @Validated @ModelAttribute PeriodRequestDto requestDto,
@@ -102,7 +146,12 @@ public class BoardController {
         return new ResponseEntity<>(findByPeriod, HttpStatus.OK);
     }
 
-    //좋아요순으로 조회
+    /**
+     * 좋아요 수 기준 게시글 정렬
+     *
+     * @param page 요청 페이지 번호
+     * @return 좋아요 기준 정렬된 게시글 페이지 응답 DTO
+     */
     @GetMapping("/like")
     public ResponseEntity<Page<LikesResponseDto>> sortedByLikes(
             @RequestParam(defaultValue = "1") int page)
