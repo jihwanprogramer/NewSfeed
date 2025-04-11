@@ -27,7 +27,13 @@ public class BoardServiceImpl implements BoardService{
     private final UserRepository userRepository;
     private final BoardLikeRepository boardLikeRepository;
 
-    //게시글 생성
+    /**
+     * 게시글 생성
+     *
+     * @param requestDto      게시글 생성 요청 데이터
+     * @param userResponseDto 사용자 정보
+     * @return 생성된 게시글 응답 DTO
+     */
     @Transactional
     public CreateResponseDto createBoard(CreateRequestDto requestDto, UserResponseDto userResponseDto) {
 
@@ -97,7 +103,7 @@ public class BoardServiceImpl implements BoardService{
         Long userId = userResponseDto.getId();
 
         findedBoard.isSameUser(userId); //작성자와 로그인된 회원이 다를경우 예외처리
-        
+
         boardRepository.delete(findedBoard);
     }
 
