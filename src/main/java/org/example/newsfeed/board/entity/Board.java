@@ -112,12 +112,16 @@ public class Board extends BaseEntity {
         this.contents = requestDto.getContents();
     }
 
-
+    /**
+     * 게시글 좋아요 증가
+     */
     public void increaseLike() {
         likesCount++;
     }
 
-
+    /**
+     * 게시글 좋아요 감소
+     */
     public void decreaseLike() {
         likesCount--;
     }
