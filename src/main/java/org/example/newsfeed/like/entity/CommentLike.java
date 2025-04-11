@@ -3,16 +3,16 @@ package org.example.newsfeed.like.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.example.newsfeed.comment.entity.Comment;
+import org.example.newsfeed.common.entity.BaseEntity;
 
 @Getter
 @Entity
 @Table(name = "commentLike")
-public class CommentLike {
+public class CommentLike extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
-    //튜터님한테 변수명 물어보기. 원시형을 써야하나 ?
     @Column(nullable = false)
     private boolean likeYN;
 

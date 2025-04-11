@@ -9,9 +9,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class WebConfig {
 
-    //로그인 필터 등록
+    /**
+     * 로그인 필터를 등록하는 빈을 생성합니다.
+     *
+     * @return 로그인 필터 등록 정보
+     */
     @Bean
-    public FilterRegistrationBean loginFilter() {
+    public FilterRegistrationBean<Filter> loginFilter() {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new LoginFilter());
         filterRegistrationBean.setOrder(1);
@@ -19,7 +23,4 @@ public class WebConfig {
 
         return filterRegistrationBean;
     }
-
-
-
 }

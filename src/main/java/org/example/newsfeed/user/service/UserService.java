@@ -12,7 +12,7 @@ public interface UserService {
 
     List<UserResponseDto> findUserByName(String name);
 
-    Page<UserResponseDto> findUserByNamePage(String name, Pageable pageable);
+    Page<UserResponseDto> findPageUserByName(String name, Pageable pageable);
 
     UserResponseDto findUserById(Long id);
 

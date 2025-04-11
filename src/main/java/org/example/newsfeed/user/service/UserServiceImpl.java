@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
 
         String encodedPassword = passwordEncoder.encode(password);
 
-        User users = new User(name, age, email, encodedPassword);
+        User users = User.of(name,age,email,encodedPassword);
 
         User savedUser = userRepository.save(users);
 
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
 
     // service) 이름으로 유저들 조회(Page)
     @Override
-    public Page<UserResponseDto> findUserByNamePage(String name, Pageable pageable) {
+    public Page<UserResponseDto> findPageUserByName(String name, Pageable pageable) {
 
         return userRepository.findUserByName(name, pageable).map(UserResponseDto::new);
 
