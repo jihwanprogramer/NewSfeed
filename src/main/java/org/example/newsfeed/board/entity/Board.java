@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import org.example.newsfeed.board.dto.CreateRequestDto;
 import org.example.newsfeed.board.dto.UpdateRequestDto;
+import org.example.newsfeed.comment.entity.Comment;
 import org.example.newsfeed.common.entity.BaseEntity;
 import org.example.newsfeed.exception.MisMatchUserException;
-import org.example.newsfeed.comment.entity.Comment;
 import org.example.newsfeed.user.entity.User;
 
 import java.util.ArrayList;
@@ -49,17 +49,6 @@ public class Board extends BaseEntity {
     @Column(nullable = false)
     private int likesCount;
 
-    public Board() {
-
-    }
-
-    public Board(CreateRequestDto requestDto) {
-    /**
-     * 게시글 생성자
-     *
-     * @param requestDto 게시글 생성 요청 dto
-     * @return 생성된 게시글 객체
-     */
     private Board(CreateRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
@@ -102,6 +91,18 @@ public class Board extends BaseEntity {
     }
 
     /**
+     * 게시글 작성자와 수정하려는 유저가 같은지 확인하는 메서드
+     *
+     * @param userId 수정하려는 유저
+     * @return 값을 비교 후 boolean 반환
+     */
+    public void isSameUser(Long userId) {
+        if (!this.user.getId().equals(userId)) {
+            throw new MisMatchUserException("작성자만 수정할 수 있습니다.");
+        }
+    }
+
+    /**
      * 게시글 제목 수정 메서드
      *
      * @param requestDto 내용 수정 dto
@@ -111,27 +112,20 @@ public class Board extends BaseEntity {
         this.contents = requestDto.getContents();
     }
 
+
     public void increaseLike() {
         likesCount++;
     }
 
+
     public void decreaseLike() {
         likesCount--;
     }
-}
-
-    }
-
-    /**
-     * 게시글 작성자와 수정하려는 유저가 같은지 확인하는 메서드
-     *
-     * @param userId 수정하려는 유저
-     * @return 값을 비교 후 boolean 반환
-     */
-    public void isSameUser(Long userId) {
-        if (this.user.getId().equals(userId)) {
-            throw new MisMatchUserException("작성자만 수정할 수 있습니다.");
-        }
-    }
 
 }
+
+
+
+
+
+

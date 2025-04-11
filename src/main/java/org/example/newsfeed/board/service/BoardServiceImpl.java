@@ -125,4 +125,15 @@ public class BoardServiceImpl implements BoardService{
         return boardPage.map(board -> new PageResponseDto(board));
     }
 
+    //좋아요순 검색
+    public Page<LikesResponseDto> sortedByLikes(int page) {
+
+        int adjustedPage = (page > 0) ? page - 1 : 0;
+        PageRequest pageable = PageRequest.of(adjustedPage, 10, Sort.by("likesCount").descending());
+
+        Page<Board> boardPage = boardRepository.findAll(pageable);
+
+        return boardPage.map(board -> new LikesResponseDto(board));
+    }
+
 }

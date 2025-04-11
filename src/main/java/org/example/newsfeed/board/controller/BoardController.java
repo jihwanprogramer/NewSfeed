@@ -58,15 +58,6 @@ public class BoardController {
         return new ResponseEntity<>(findedById, HttpStatus.OK);
     }
 
-    //게시글 페이지로 조회
-    @GetMapping("/pages")
-    public ResponseEntity<Page<PageResponseDto>> findAllPage(@RequestParam(defaultValue = "1") int page) {
-
-        Page<PageResponseDto> findAllPage = boardService.findAllPage(page);
-
-        return new ResponseEntity<>(findAllPage, HttpStatus.OK);
-    }
-
     //게시글 수정
     @PatchMapping("/{id}")
     public ResponseEntity<BoardResponseDto> updateBoard(
