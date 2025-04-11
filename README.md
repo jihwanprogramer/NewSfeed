@@ -312,12 +312,14 @@ Java 17 (OpenJDK 17)
 
 ## 브랜치 전략 (Branch Strategy)
 
-적절한 클래스 사용과 다양한 메소드 활용이 주목적이기에 빠르게 수정 가능한
-직접적인 Main Branch을 바로 사용했습니다.
+- 공동 작업을 위해 `dev` 브랜치를 생성하여 기능 개발의 기준 브랜치(origin) 로 사용함
+- 개인 작업은 `feature/기능명` 형식의 브랜치를 dev 브랜치에서 분리하여 개발
+- 개발 완료시 pull request로 `dev` 브랜치에 병합
+- 
 
 ## 블록 구문
 
-한 줄짜리 블록일 경우라도 {}를 생략하지 않고, 명확히 줄 바꿈 하여 사용한다
+한 줄짜리 블록일 경우라도 {}를 생략하지 않고, 명확히 줄 바꿈 하여 사용
 
 ```
 if (session != null) {
@@ -327,7 +329,7 @@ if (session != null) {
 
 <br/>
 <br/>   
-카멜 표기법을 이용하여 가독성을 향상시켰다.
+카멜 표기법을 이용하여 가독성을 향상
 
 ```
 private final UserRepository userRepository;
@@ -337,13 +339,49 @@ private final PasswordEncoder passwordEncoder;
 
 <br/>
 
-## 메소드 네이밍
+## 메소드 네이밍 통일
 
-메소드 작성 시 아래 네이밍 규칙을 준수하여 의미 전달을 명확하게 한다.<br/>
-메소드명이 길어지더라도 의미 전달의 명확성에 목적을 두어 작성한다.<br/>
+메소드 작성 시 아래 네이밍 규칙을 준수하여 의미 전달을 명확하게 함<br/>
 
 ```
-public class PasswordEqualsCheckException extends RuntimeException
+- 생성 create{필드명}  
+- 조회 find{필드명}by{조회기준} 
+- 페이지 적용시 findPage{필드명}By{조회기준} 
+- 수정 update{필드명} 
+- 삭제 delete{필드명}
+```
+
+## 예외처리
+
+예외 발생시 커스텀 예외를 설정해 처리
+```
+public class AccessDeniedException extends RuntimeException {
+    public AccessDeniedException(String message) {
+        super(message);
+    }
+}
+```
+
+## 생성자 & Setter
+데이터베이스 보호를 위해 생성자 사용 지양 <br/>
+setter를 엔티티 내부에서 사용하므로써 보안 향상
+```
+public static Board of(CreateRequestDto requestDto, User user) {
+        Board board = new Board(requestDto);
+        board.initUser(user);
+        return board;
+    }
+```
+
+## 연관관계
+@ManyToOne, @OneToMany를 활용해 연관관계 구현
+```
+@ManyToOne
+@JoinColumn(name = "user_id")
+private User user;
+    
+@OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+private List<Comment> comments = new ArrayList<>();
 ```
 
 # 6. 트러블 슈팅
