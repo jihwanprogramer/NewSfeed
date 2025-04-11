@@ -45,7 +45,7 @@ public class FollowServiceImpl implements FollowService{
         Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUser(followerId, followingUser);
         optionalFollow.ifPresent(f -> { throw new AlreadyExistsException("이미 팔로우 내역이 존재합니다."); });
 
-        Follow follow = Follow.createFollow(followerId, followingUser);
+        Follow follow = Follow.of(followerId, followingUser);
         followRepository.save(follow);
         followRepository.flush();
 
@@ -106,7 +106,10 @@ public class FollowServiceImpl implements FollowService{
      * @return 팔로우한 사용자 목록 DTO 페이지
      */
     @Override
-    public Page<FollowResponseDto> findFollowingsById(Long id, Pageable pageable) {
+    public Page<FollowResponseDto> findFollowingsById(Long id, Long loginUserId, Pageable pageable) {
+        User followingUser = userRepository.findUserByIdOrElseThrow(id);
+        User loginUser = userRepository.findUserByIdOrElseThrow(loginUserId);
+        existFollowTrue(followingUser.getId() , loginUser);
         return followRepository.findByFollowerId(id, pageable).map(FollowResponseDto::toDto);
     }
 
@@ -118,9 +121,11 @@ public class FollowServiceImpl implements FollowService{
      * @return 팔로워 목록 DTO 페이지
      */
     @Override
-    public Page<FollowResponseDto> findFollowersById(Long id, Pageable pageable) {
-        User user = userRepository.findUserByIdOrElseThrow(id);
-        return followRepository.findByFollowingUser(user, pageable).map(FollowResponseDto::toDto);
+    public Page<FollowResponseDto> findFollowersById(Long id, Long loginUserId, Pageable pageable) {
+        User followingUser = userRepository.findUserByIdOrElseThrow(id);
+        User loginUser = userRepository.findUserByIdOrElseThrow(loginUserId);
+        existFollowTrue(followingUser.getId() , loginUser);
+        return followRepository.findByFollowingUser(followingUser, pageable).map(FollowResponseDto::toDto);
     }
 
     /**
@@ -131,11 +136,10 @@ public class FollowServiceImpl implements FollowService{
      * @throws AccessDeniedException 조건을 만족하지 않으면 접근 거부 예외 발생
      */
     @Override
-    public void existFollowTrue(Long followerId, Long followingId) {
-        User followingUser = userRepository.findUserByIdOrElseThrow(followerId);
+    public void existFollowTrue(Long followerId, User followingUser) {
         Optional<Follow> optionalFollow = followRepository.findByFollowerIdAndFollowingUser(followerId, followingUser);
 
-        if (!followerId.equals(followingId) &&
+        if (!followerId.equals(followingUser.getId()) &&
                 (optionalFollow.isEmpty() || !optionalFollow.get().isFollowYN())) {
             throw new AccessDeniedException("이 유저가 당신을 팔로워 해야 볼 수 있습니다.");
         }

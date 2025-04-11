@@ -81,7 +81,7 @@ public class Follow extends BaseEntity {
      * @return 생성된 Follow 객체
      * @throws SelfFollowNotAllowedException 자기 자신을 팔로우할 경우 발생
      */
-    public static Follow createFollow(Long followerId, User followingUser) {
+    public static Follow of(Long followerId, User followingUser) {
         if (followerId.equals(followingUser.getId())) {
             throw new SelfFollowNotAllowedException("자신은 팔로우 할 수 없습니다.");
         }

@@ -3,6 +3,7 @@ package org.example.newsfeed.follow.service;
 
 import org.example.newsfeed.follow.dto.FollowResponseDto;
 import org.example.newsfeed.follow.dto.FollowSingleResponseDto;
+import org.example.newsfeed.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -44,7 +45,7 @@ public interface FollowService {
      * @param pageable 페이징 정보
      * @return 팔로우한 사용자 목록 DTO 페이지
      */
-    Page<FollowResponseDto> findFollowingsById(Long id, Pageable pageable);
+    Page<FollowResponseDto> findFollowingsById(Long id,Long loginUserId, Pageable pageable);
 
     /**
      * 특정 사용자를 팔로우한 사용자 목록을 조회합니다. (follower 목록)
@@ -53,15 +54,17 @@ public interface FollowService {
      * @param pageable 페이징 정보
      * @return 팔로워 사용자 목록 DTO 페이지
      */
-    Page<FollowResponseDto> findFollowersById(Long id, Pageable pageable);
+    Page<FollowResponseDto> findFollowersById(Long id, Long loginUserId, Pageable pageable);
 
     /**
      * 팔로우가 존재하는지 확인합니다. (팔로우 상태가 true인지 검증)
      *
-     * @param followerId 팔로우 요청자 ID
+     * @param followerId  팔로우 요청자 ID
      * @param followingId 팔로우 대상 사용자 ID
      */
-    void existFollowTrue(Long followerId, Long followingId);
+    default void existFollowTrue(Long followerId, User followingUser) {
+
+    }
 
     /**
      * 특정 사용자를 팔로우한 유저 수를 반환합니다.

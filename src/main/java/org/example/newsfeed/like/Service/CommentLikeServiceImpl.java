@@ -39,7 +39,7 @@ public class CommentLikeServiceImpl implements CommentLikeService {
                  throw new AlreadyExistsException("이미 좋아요 내역이 존재합니다.");
             }
 
-            CommentLike commentLike = CommentLike.createLikeYN(findComment, userId);
+            CommentLike commentLike = CommentLike.of(findComment, userId);
 
             commentLikeRepository.save(commentLike);
 

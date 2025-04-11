@@ -66,7 +66,7 @@ public class CommentLike extends BaseEntity {
      * @param userId 좋아요를 한 userID
      * @return 생성된 CommentLike 객체
      */
-    public static CommentLike createLikeYN(Comment comment, Long userId) {
+    public static CommentLike of(Comment comment, Long userId) {
 
         CommentLike commentLike = new CommentLike(userId, true);
         commentLike.initComment(comment);

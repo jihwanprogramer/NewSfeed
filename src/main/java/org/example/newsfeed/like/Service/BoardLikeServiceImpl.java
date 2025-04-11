@@ -40,7 +40,7 @@ public class BoardLikeServiceImpl implements BoardLikeService{
             throw new AlreadyExistsException("이미 좋아요 내역이 존재합니다.");
         }
 
-            BoardLike boardLike = BoardLike.createLikeYN(findBoard, userId);
+            BoardLike boardLike = BoardLike.of(findBoard, userId);
             findBoard.increaseLike();
 
             boardLikeRepository.save(boardLike);

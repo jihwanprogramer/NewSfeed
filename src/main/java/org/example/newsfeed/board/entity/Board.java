@@ -7,6 +7,7 @@ import org.example.newsfeed.board.dto.UpdateRequestDto;
 import org.example.newsfeed.comment.entity.Comment;
 import org.example.newsfeed.common.entity.BaseEntity;
 import org.example.newsfeed.exception.MisMatchUserException;
+import org.example.newsfeed.like.entity.BoardLike;
 import org.example.newsfeed.user.entity.User;
 
 import java.util.ArrayList;
@@ -48,6 +49,9 @@ public class Board extends BaseEntity {
      */
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    private List<BoardLike> boardLikes = new ArrayList<>();
 
     /**
      * 게시글 좋아요 갯수

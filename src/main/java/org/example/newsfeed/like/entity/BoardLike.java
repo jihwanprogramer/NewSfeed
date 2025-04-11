@@ -67,7 +67,7 @@ public class BoardLike extends BaseEntity {
      * @param userId 좋아요를 한 userId
      * @return 생성된 BoardLike 객체
      */
-    public static BoardLike createLikeYN(Board board, Long userId) {
+    public static BoardLike of(Board board, Long userId) {
 
         BoardLike boardLike = new BoardLike(userId, true);
         boardLike.initBoard(board);

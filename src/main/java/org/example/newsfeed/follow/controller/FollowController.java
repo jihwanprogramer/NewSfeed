@@ -28,7 +28,7 @@ public class FollowController {
     private final FollowService followService;
 
     /**
-     * 팔로우를 생성합니다.
+     * 사용자가 다른 사용자를 팔로우합니다.
      *
      * @param followId 팔로우 대상 사용자 ID
      * @param loginUser 로그인한 사용자 정보
@@ -38,57 +38,49 @@ public class FollowController {
     public ResponseEntity<FollowSingleResponseDto> createFollow(
             @PathVariable Long followId,
             @SessionAttribute(name = Const.LOGIN_USER) UserResponseDto loginUser
-    ){
-
-        FollowSingleResponseDto followSingleResponseDto = followService.createFollow(loginUser.getId(),followId);
-
+    ) {
+        FollowSingleResponseDto followSingleResponseDto = followService.createFollow(loginUser.getId(), followId);
         return new ResponseEntity<>(followSingleResponseDto, HttpStatus.CREATED);
     }
 
     /**
-     * 팔로우 상태를 수정(토글)합니다.
+     * 팔로우 상태를 토글합니다. (팔로우 ↔ 언팔로우)
      *
      * @param followingId 팔로우 대상 사용자 ID
      * @param loginUser 로그인한 사용자 정보
-     * @return 수정된 팔로우 정보 DTO
+     * @return 변경된 팔로우 정보 DTO
      */
     @PatchMapping("/{followingId}/follow")
     public ResponseEntity<FollowSingleResponseDto> updateFollow(
             @PathVariable Long followingId,
             @SessionAttribute(name = Const.LOGIN_USER) UserResponseDto loginUser
     ) {
-
         FollowSingleResponseDto followSingleResponseDto = followService.updateFollow(loginUser.getId(), followingId);
-
         return new ResponseEntity<>(followSingleResponseDto, HttpStatus.OK);
-
     }
 
     /**
-     * 해당 사용자를 로그인한 사용자가 팔로우하고 있는지 확인합니다.
+     * 로그인한 사용자가 특정 사용자를 팔로우 중인지 확인합니다.
      *
-     * @param userId 대상 사용자 ID
+     * @param userId 확인할 대상 사용자 ID
      * @param loginUser 로그인한 사용자 정보
-     * @return 팔로우 상태 정보 DTO
+     * @return 팔로우 여부 및 관련 정보 DTO
      */
     @GetMapping("/{userId}/follow-status")
     public ResponseEntity<FollowSingleResponseDto> findFollowYN(
             @PathVariable Long userId,
             @SessionAttribute(name = Const.LOGIN_USER) UserResponseDto loginUser
-    ){
-
+    ) {
         FollowSingleResponseDto followSingleResponseDto = followService.findFollowStatus(loginUser.getId(), userId);
-
         return new ResponseEntity<>(followSingleResponseDto, HttpStatus.OK);
     }
 
-
     /**
-     * 특정 사용자가 팔로우한 사용자 목록을 조회합니다. (following 목록)
+     * 특정 사용자가 팔로우한 사용자 목록(followings)을 조회합니다.
      *
-     * @param userId 대상 사용자 ID
+     * @param userId 조회 대상 사용자 ID
      * @param loginUser 로그인한 사용자 정보
-     * @param pageable 페이징 정보
+     * @param pageable 페이징 및 정렬 정보
      * @return 팔로우한 사용자 목록 DTO 페이지
      */
     @GetMapping("/{userId}/followings")
@@ -96,19 +88,16 @@ public class FollowController {
             @PathVariable Long userId,
             @SessionAttribute(name = Const.LOGIN_USER) UserResponseDto loginUser,
             @PageableDefault(size = 10, sort = "modifiedAt", direction = Sort.Direction.DESC) Pageable pageable
-    ){
-
-        followService.existFollowTrue(userId, loginUser.getId());
-
-        return new ResponseEntity<>(followService.findFollowingsById(userId, pageable), HttpStatus.OK);
+    ) {
+        return new ResponseEntity<>(followService.findFollowingsById(userId, loginUser.getId(), pageable), HttpStatus.OK);
     }
 
     /**
-     * 특정 사용자를 팔로우한 사용자 목록을 조회합니다. (follower 목록)
+     * 특정 사용자를 팔로우한 사용자 목록(followers)을 조회합니다.
      *
-     * @param userId 대상 사용자 ID
+     * @param userId 조회 대상 사용자 ID
      * @param loginUser 로그인한 사용자 정보
-     * @param pageable 페이징 정보
+     * @param pageable 페이징 및 정렬 정보
      * @return 팔로워 사용자 목록 DTO 페이지
      */
     @GetMapping("/{userId}/followers")
@@ -116,11 +105,7 @@ public class FollowController {
             @PathVariable Long userId,
             @SessionAttribute(name = Const.LOGIN_USER) UserResponseDto loginUser,
             @PageableDefault(size = 10, sort = "modifiedAt", direction = Sort.Direction.DESC) Pageable pageable
-    ){
-
-        followService.existFollowTrue(userId, loginUser.getId());
-
-        return new ResponseEntity<>(followService.findFollowersById(userId, pageable),HttpStatus.OK);
+    ) {
+        return new ResponseEntity<>(followService.findFollowersById(userId, loginUser.getId(), pageable), HttpStatus.OK);
     }
-
 }

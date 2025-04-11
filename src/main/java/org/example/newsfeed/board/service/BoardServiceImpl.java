@@ -97,8 +97,7 @@ public class BoardServiceImpl implements BoardService{
         Long userId = userResponseDto.getId();
 
         findedBoard.isSameUser(userId); //작성자와 로그인된 회원이 다를경우 예외처리
-
-        boardLikeRepository.deleteByBoard(findedBoard);
+        
         boardRepository.delete(findedBoard);
     }
 
