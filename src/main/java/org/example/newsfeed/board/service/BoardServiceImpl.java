@@ -5,6 +5,7 @@ import org.example.newsfeed.board.dto.*;
 import org.example.newsfeed.board.entity.Board;
 import org.example.newsfeed.board.repository.BoardRepository;
 import org.example.newsfeed.exception.NullResponseException;
+import org.example.newsfeed.like.repository.BoardLikeRepository;
 import org.example.newsfeed.user.dto.UserResponseDto;
 import org.example.newsfeed.user.entity.User;
 import org.example.newsfeed.user.repository.UserRepository;
@@ -24,6 +25,7 @@ public class BoardServiceImpl implements BoardService{
 
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
+    private final BoardLikeRepository boardLikeRepository;
 
     //게시글 생성
     @Transactional
@@ -31,8 +33,7 @@ public class BoardServiceImpl implements BoardService{
 
         User findedUser = userRepository.findUserByIdOrElseThrow(userResponseDto.getId());
 
-        Board board = Board.of(requestDto);
-        board.initUser(findedUser);
+        Board board = Board.of(requestDto,findedUser);
         Board savedBoard = boardRepository.save(board);
 
         return new CreateResponseDto(savedBoard);
@@ -97,6 +98,7 @@ public class BoardServiceImpl implements BoardService{
 
         findedBoard.isSameUser(userId); //작성자와 로그인된 회원이 다를경우 예외처리
 
+        boardLikeRepository.deleteByBoard(findedBoard);
         boardRepository.delete(findedBoard);
     }
 

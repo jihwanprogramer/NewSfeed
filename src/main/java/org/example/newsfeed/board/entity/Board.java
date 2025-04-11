@@ -43,9 +43,15 @@ public class Board extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    /**
+     * 게시글 댓글
+     */
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
+    /**
+     * 게시글 좋아요 갯수
+     */
     @Column(nullable = false)
     private int likesCount;
 
@@ -65,8 +71,10 @@ public class Board extends BaseEntity {
      * @param requestDto 게시글 생성 객체 dto
      * @return 생성된 게시글 객체
      */
-    public static Board of(CreateRequestDto requestDto) {
-        return new Board(requestDto);
+    public static Board of(CreateRequestDto requestDto, User user) {
+        Board board = new Board(requestDto);
+        board.initUser(user);
+        return board;
     }
 
     /**
@@ -74,7 +82,7 @@ public class Board extends BaseEntity {
      *
      * @param user 게시글 작성 유저
      */
-    public void initUser(User user) {
+    private void initUser(User user) {
         this.user = user;
     }
 
@@ -91,6 +99,18 @@ public class Board extends BaseEntity {
     }
 
     /**
+     * 게시글 제목 수정 메서드
+     *
+     * @param requestDto 내용 수정 dto
+     * @return 내용이 수정된 게시글 객체
+     */
+    public void updateContents(UpdateRequestDto requestDto) {
+        if (requestDto.getContents() != null) {
+            this.contents = requestDto.getContents();
+        }
+    }
+
+    /**
      * 게시글 작성자와 수정하려는 유저가 같은지 확인하는 메서드
      *
      * @param userId 수정하려는 유저
@@ -100,16 +120,6 @@ public class Board extends BaseEntity {
         if (!this.user.getId().equals(userId)) {
             throw new MisMatchUserException("작성자만 수정할 수 있습니다.");
         }
-    }
-
-    /**
-     * 게시글 제목 수정 메서드
-     *
-     * @param requestDto 내용 수정 dto
-     * @return 내용이 수정된 게시글 객체
-     */
-    public void updateContents(UpdateRequestDto requestDto) {
-        this.contents = requestDto.getContents();
     }
 
     /**
