@@ -5,7 +5,6 @@ import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.time.LocalDateTime;
 
@@ -14,14 +13,18 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
 
+    /**
+     * 엔티티 생성 시 자동으로 설정되는 생성일자.
+     */
     @CreatedDate
     @Column(updatable = false)
-//    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
+    /**
+     * 엔티티 수정 시 자동으로 설정되는 수정일자.
+     */
     @LastModifiedDate
     @Column
-//    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime modifiedAt;
 
 }
