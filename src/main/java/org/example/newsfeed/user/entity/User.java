@@ -2,6 +2,9 @@ package org.example.newsfeed.user.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.example.newsfeed.common.config.PasswordEncoder;
+import org.example.newsfeed.common.entity.BaseEntity;
+import org.example.newsfeed.exception.WrongPasswordException;
 
 @Entity
 @Getter
