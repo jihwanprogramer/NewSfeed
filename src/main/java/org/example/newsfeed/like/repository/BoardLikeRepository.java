@@ -23,4 +23,6 @@ public interface BoardLikeRepository extends JpaRepository<BoardLike, Long> {
      * @return 해당 게시물에 좋아요 합
      */
     int countByBoardAndLikeYN(Board board, boolean likeYN);
+
+    void deleteByBoard(Board board);
 }
