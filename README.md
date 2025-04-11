@@ -1,81 +1,152 @@
-<img src="https://github.com/jihwanprogramer/TodoList/blob/main/ReadmeImage/todo.png?raw=true" alt="배너" width="100%"/>
-
-<br/>
-<br/>
-
 # 1. Project Overview (프로젝트 개요)
 
 - 프로젝트 이름: FACKBOOK
 - 프로젝트 설명: Spring 프레임워크 와 JPA 를 이용하고 Session과 Filter를 이용하여 SNS NewsFeed만들어 보기
 
+- 팀 9조
+  
+| 역할 | 팀장 | 팀원 | 팀원 | 팀원 | 팀원 |
+|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|:-------------:|
+|프로필|![image](https://avatars.githubusercontent.com/u/196007904?v=4&size=64)|![image](https://avatars.githubusercontent.com/u/130281249?v=4&size=64)|![image](https://avatars.githubusercontent.com/u/194772779?v=4&size=64)|![image]()|![image](https://avatars.githubusercontent.com/u/191333665?s=64&v=4)|
+|이름|김규현|김지환|김채원|류경선|오병택|
+|GitHub|0122-0|jihwanprogramer|chaewon9999|RKS-t|byeongtaek12|
+|기술블로그|[규현velog](https://velog.io/@flowercat95/posts)|[지환tistory](https://computerreport.tistory.com/)|[채원velog](https://velog.io/@w0729/posts)|[경선tistory](https://rudtjs2.tistory.com/)|[병택velog](https://velog.io/@byeongtaek12/posts)|
+  
 ## API 명세서
 
-
+![1](https://github.com/user-attachments/assets/d149cf3b-e5ea-410f-a9bf-cc30927a16ab)
+![2](https://github.com/user-attachments/assets/8001f5b4-c15a-42a2-9ebb-c5d49a71a877)
+![3](https://github.com/user-attachments/assets/2a99704b-77c3-4202-a658-c7800452f188)
+![4](https://github.com/user-attachments/assets/2146f96f-0c75-4b41-94ad-df3359dd56a3)
+![5](https://github.com/user-attachments/assets/ac30809c-c4f5-44b7-870e-41959c427bdf)
+![6](https://github.com/user-attachments/assets/ca907a82-ad69-49bb-98cb-41ef30bb7a0e)
+![7](https://github.com/user-attachments/assets/187ddbac-c7ea-4e61-81e1-7b76ede905d6)
+![8](https://github.com/user-attachments/assets/4062076e-bf0a-4ff2-9cef-069063c52ff7)
+![9](https://github.com/user-attachments/assets/4701288c-4571-4c34-9a8b-6bd1a30cbd02)
+![10](https://github.com/user-attachments/assets/b5a05f92-2297-4123-9242-2726ed6245cc)
+![11](https://github.com/user-attachments/assets/1ae8f122-4edc-438b-8b38-6dd1be708162)
+![12](https://github.com/user-attachments/assets/c1f12c58-13a6-4a05-acd4-4bee8c292dce)
+![13](https://github.com/user-attachments/assets/98fd16ce-1cef-4b05-8540-19467699fe66)
+![14](https://github.com/user-attachments/assets/f4e2ad23-b1c0-4e21-a870-ce7dd6a7ce2b)
+![15](https://github.com/user-attachments/assets/a2fb5fba-09f9-44be-bcfe-35bb30d93430)
+![16](https://github.com/user-attachments/assets/c607b83d-950d-4d89-b2e7-290531c3f3a0)
 
 ## ERD
+
+![ERD 1](https://github.com/user-attachments/assets/fc0b7575-c263-4bd3-b8f4-5e7b73d36db5)
 
 
 
 # 2. Key Features (주요 기능)
 
+<h3>회원</h3>
+
 - **사용자 등록**
-    - 사용자는 새로운 계정을 생성할 수 있으며, 이메일과 비밀번호를 입력하여 등록함.
+    - 사용자는 새로운 계정을 생성할 수 있으며, 이메일, 비밀번호, 이름, 나이를 입력하여 등록함.
 
 
 - **사용자 로그인**
-    - 사용자는 등록된 이메일과 비밀번호로 로그인할 수 있으며, 로그인 성공 시 사용자 정보를 반환함.
+    - 사용자는 등록된 이메일과 비밀번호로 로그인 가능
 
+- **사용자 로그아웃**
+    - 사용자가 토글로 로그아웃 가능.     
 
 - **사용자 정보 조회**
-    - 사용자는 자신의 ID로 정보 조회가 가능하며, UserResponseDto 형식으로 사용자 정보를 제공함.
+    - 사용자는 자신의 ID또는 이름으로 검색 가능
 
 
 - **사용자 정보 수정**
-    - 사용자는 자신의 사용자 이름과 이메일을 수정할 수 있으며, 수정된 정보가 반환됨.
+    - 사용자는 자신의 사용자 이름, 이메일, 나이, 비밀번호를 수정할 수 있으며, 수정된 정보중 이름과 나이가 반환됨.
 
 
 - **사용자 삭제**
-    - 사용자는 자신의 계정을 삭제할 수 있으며, 해당 ID로 사용자를 찾아 삭제를 수행함.
+    - 사용자는 자신의 계정을 삭제할 수 있으며, 해당 ID와 비밀번호를 입력하여 삭제 가능, 삭제를 할 경우 본인의 게시물, 게시물 좋아요 내역, 댓글, 댓글 좋아요 내역, 팔로우 관계가 모두 삭제 됩니다.
 
+<h3>게시물</h3>
 
 - **게시물 생성**
-    - 사용자는 새로운 게시물을 생성할 수 있으며, 제목과 내용을 입력하여 저장함.
+    - 로그인 후 사용자는 새로운 게시물을 생성할 수 있으며, 제목과 내용을 입력하여 저장함.
 
 
 - **게시물 조회**
-    - 사용자는 ID로 특정 게시물을 조회할 수 있으며, ResponseEntity<ResponseDto> 형식으로 항목 정보를 제공함.
+  - 사용자는 모든 게시물을 조회 하거나 특정 게시물을 조회할 수 있습니다. ResponseEntity<ResponseDto> 형식으로 항목 정보를 제공함.
 
 
 - **게시물 수정**
-    - 사용자는 기존의 게시물을 수정할 수 있으며, 새로운 제목과 내용을 입력하여 업데이트함.
+    - 로그인 후 사용자는 기존의 게시물을 수정할 수 있으며, 새로운 제목과 내용을 입력하여 업데이트함.
 
 
 - **게시물 삭제**
-    - 사용자는 ID로 특정 게시물을 삭제할 수 있으며, 해당 ID로 게시물을 찾아 삭제를 수행함.
+    - 로그인 후 사용자는 본인의 게시글을 삭제 할 수 있습니다.
+
+<h3>댓글</h3>
+
+- **댓글 생성**
+    - 로그인 후 사용자는 게시물에 새로운 댓글을 생성할 수 있으며, 내용을 입력하여 저장함.
+
+
+- **댓글 조회**
+  - 사용자는 원하는 게시물 모든 댓글을 조회할 수 있습니다. ResponseEntity<ResponseDto> 형식으로 항목 정보를 제공함.
+  - 또는 댓글 페이징 기능을 사용하여 댓글만 조회 할수 있습니다.
+
+- **댓글 수정**
+    - 로그인 후 사용자는 기존의 댓글을 수정할 수 있으며, 새로운 내용을 입력하여 업데이트함.
+
+
+- **댓글 삭제**
+    - 로그인 후 사용자는 본인의 댓글을 삭제 할 수 있습니다.
+
+<h3>팔로우</h3>
+
+- **팔로우 생성**
+    - 로그인 후 사용자는 토글을 통해 팔로우를 생성 합니다.
+
+
+- **팔로우 수정**
+  - 생성된 팔로우를 토글을 하여 true,false로 변환 가능.
+  - true = 활성화 , flase = 비활성화
+
+
+- **팔로우 조회**
+    - 로그인 후 사용자는 
+
+
+- **팔로워 조회**
+    - 로그인 후 사용자는 본인의 게시글을 삭제 할 수 있습니다.
+
+<h3>게시물 좋아요</h3>
+
+- **게시물 좋아요 생성**
+    - 로그인 후 사용자는 새로운 게시물을 생성할 수 있으며, 제목과 내용을 입력하여 저장함.
+
+
+- **게시물 좋아요 조회**
+  - 사용자는 모든 게시물을 조회 하거나 특정 게시물을 조회할 수 있습니다. ResponseEntity<ResponseDto> 형식으로 항목 정보를 제공함.
+
+
+- **게시물 좋아요 수정**
+    - 로그인 후 사용자는 기존의 게시물을 수정할 수 있으며, 새로운 제목과 내용을 입력하여 업데이트함.
+
+<h3>댓글 좋아요</h3>
+
+- **댓글 좋아요 생성**
+    - 로그인 후 사용자는 새로운 게시물을 생성할 수 있으며, 제목과 내용을 입력하여 저장함.
+
+
+- **댓글 좋아요 조회**
+  - 사용자는 모든 게시물을 조회 하거나 특정 게시물을 조회할 수 있습니다. ResponseEntity<ResponseDto> 형식으로 항목 정보를 제공함.
+
+
+- **댓글 좋아요 수정**
+    - 로그인 후 사용자는 기존의 게시물을 수정할 수 있으며, 새로운 제목과 내용을 입력하여 업데이트함.
 
 # 3. Technology Stack (기술 스택)
 
 ## Language
 
-|        |                                                                                                                  |
-|--------|------------------------------------------------------------------------------------------------------------------|
-| Java   | <img src="https://github.com/jihwanprogramer/calulators/blob/main/img/Java.jpg?raw=true" alt="Java" width="200"> | 
-| Spring | Spring Framework를 사용하여 RESTful API 구현                                                                            |
-| JPA    | 데이터베이스와의 연결 및 CRUD 작업을 위한 JPA 사용                                                                                 |
-
 ## Version Control
 
-|     |                                                                                                   |
-|-----|---------------------------------------------------------------------------------------------------|
-| Git | <img src="https://github.com/jihwanprogramer/Kiosk/blob/main/image/GIT.jpg?raw=true" width="200"> |
-
 ## JDK Version
-
-|        |                                                                                                                  |
-|--------|------------------------------------------------------------------------------------------------------------------|
-| JDK 17 | <img src="https://github.com/jihwanprogramer/Kiosk/blob/main/image/JDK23.jpg?raw=true" alt="JDK 11" width="180"> |
-
-|
 
 <br/>
 
