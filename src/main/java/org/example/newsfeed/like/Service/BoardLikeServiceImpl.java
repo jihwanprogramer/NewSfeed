@@ -31,7 +31,7 @@ public class BoardLikeServiceImpl implements BoardLikeService{
      */
     @Override
     public BoardLikeResponseDto saveLikeYN(Long boardId, Long userId) {
-
+        //보드 아이디로 보드 찾기 좋아요 여부 저장
 
         Board findBoard = boardRepository.findByIdOrElseThrow(boardId);
 
@@ -41,6 +41,7 @@ public class BoardLikeServiceImpl implements BoardLikeService{
         }
 
             BoardLike boardLike = BoardLike.createLikeYN(findBoard, userId);
+            findBoard.increaseLike();
 
             boardLikeRepository.save(boardLike);
 
@@ -68,6 +69,7 @@ public class BoardLikeServiceImpl implements BoardLikeService{
         optionalBoardLike.get().changeLikeYN();
 
         BoardLike changedBoardLike = optionalBoardLike.get();
+        findBoard.decreaseLike();
 
         return new BoardLikeResponseDto(changedBoardLike.getId(), countLike(findBoard), changedBoardLike.isLikeYN());
     }

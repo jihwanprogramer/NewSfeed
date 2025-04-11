@@ -40,15 +40,6 @@ public class BoardController {
         return new ResponseEntity<>(postList, HttpStatus.OK);
     }
 
-    //특정 게시글 조회
-    @GetMapping("/{id}")
-    public ResponseEntity<BoardResponseDto> findBoardById(@PathVariable Long id) {
-
-        BoardResponseDto findedById = boardService.findBoardById(id);
-
-        return new ResponseEntity<>(findedById, HttpStatus.OK);
-    }
-
     //게시글 페이지로 조회
     @GetMapping("/pages")
     public ResponseEntity<Page<PageResponseDto>> findAllPage(@RequestParam(defaultValue = "1") int page) {
@@ -56,6 +47,15 @@ public class BoardController {
         Page<PageResponseDto> findAllPage = boardService.findAllPage(page);
 
         return new ResponseEntity<>(findAllPage, HttpStatus.OK);
+    }
+
+    //특정 게시글 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<BoardResponseDto> findBoardById(@PathVariable Long id) {
+
+        BoardResponseDto findedById = boardService.findBoardById(id);
+
+        return new ResponseEntity<>(findedById, HttpStatus.OK);
     }
 
     //게시글 수정
@@ -90,7 +90,7 @@ public class BoardController {
         return new ResponseEntity<>(pageResponseDto, HttpStatus.OK);
     }
 
-    //기간별 검색
+    //기간별 조회
     @GetMapping("/period")
     public ResponseEntity<Page<PageResponseDto>> findBoardByPeriod(
             @Validated @ModelAttribute PeriodRequestDto requestDto,
@@ -100,5 +100,15 @@ public class BoardController {
         Page<PageResponseDto> findByPeriod = boardService.findBoardByPeriod(requestDto, page);
 
         return new ResponseEntity<>(findByPeriod, HttpStatus.OK);
+    }
+
+    //좋아요순으로 조회
+    @GetMapping("/like")
+    public ResponseEntity<Page<LikesResponseDto>> sortedByLikes(
+            @RequestParam(defaultValue = "1") int page)
+    {
+        Page<LikesResponseDto> likesResponseDto = boardService.sortedByLikes(page);
+
+        return new ResponseEntity<>(likesResponseDto, HttpStatus.OK);
     }
 }
