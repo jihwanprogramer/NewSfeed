@@ -46,10 +46,10 @@ public class UserController {
 
     // 이름으로 유저들 조회(Page)
     @GetMapping("/pages")
-    public ResponseEntity<Page<UserResponseDto>> findUserByNamePage(@RequestParam("name") String name,
+    public ResponseEntity<Page<UserResponseDto>> findPageUserByName(@RequestParam("name") String name,
                                                                     @PageableDefault Pageable pageable) {
 
-        Page<UserResponseDto> userResponseDtoPage = userService.findUserByNamePage(name, pageable);
+        Page<UserResponseDto> userResponseDtoPage = userService.findPageUserByName(name, pageable);
 
         return new ResponseEntity<>(userResponseDtoPage,HttpStatus.OK);
 

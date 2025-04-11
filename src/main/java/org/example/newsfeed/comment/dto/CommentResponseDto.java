@@ -16,9 +16,13 @@ public class CommentResponseDto {
     private final String content;
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
-    
-    public CommentResponseDto(Comment comment)
-    {
+
+    /**
+     * Comment 객체로부터 CommentResponseDto를 생성하는 생성자입니다.
+     *
+     * @param comment 댓글 객체
+     */
+    public CommentResponseDto(Comment comment) {
         this.id = comment.getId();
         this.boardId = comment.getBoard().getId();
         this.userId = comment.getUser().getId();
@@ -26,6 +30,4 @@ public class CommentResponseDto {
         this.createdAt = comment.getCreatedAt();
         this.modifiedAt = comment.getModifiedAt();
     }
-
-
 }
