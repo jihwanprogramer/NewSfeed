@@ -145,7 +145,7 @@ public class FollowServiceImpl implements FollowService {
 
         if (!followerId.equals(followingUser.getId()) &&
                 (optionalFollow.isEmpty() || !optionalFollow.get().isFollowYN())) {
-            throw new AccessDeniedException("이 유저가 당신을 팔로워 해야 볼 수 있습니다.");
+            throw new AccessDeniedException("이 유저가 당신을 팔로우 해야 볼 수 있습니다.");
         }
     }
 
