@@ -348,11 +348,11 @@ public class PasswordEqualsCheckException extends RuntimeException
 
 # 6. 트러블 슈팅
 
-https://computerreport.tistory.com/86
 
 # 7. 수행 결과
 
-## 1.board 생성
+
+## 1.게시물 생성
 
 ```
 POST /boards
@@ -364,7 +364,7 @@ Body: {
 
 <br/>
 
-## 2.board 전체 항목 조회
+## 2.게시물 전체 항목 조회
 
 ```
 GET /boards
@@ -372,7 +372,7 @@ GET /boards
 
 <br/>
 
-## 3.board 선택 조회
+## 3.게시물 선택 조회
 
 ```
 GET /boards/{id}
@@ -382,7 +382,7 @@ GET /boards/{id}
 
 <br/>
 
-## 4.board 페이지 조회
+## 4.게시물 페이지 조회
 
 ```
 GET /boards/pages?page={page}
@@ -390,48 +390,74 @@ GET /boards/pages?page={page}
 
 <br/>
 
-## 5.board 페이지 
+## 5.게시물 수정일자순 조회
 
 ```
-PATCH /todos/{id}
+GET /boards/sorted-by-modifiedAt?page={page}
+```
+
+<br/>
+
+## 6.게시물 기간별 조회
+
+```
+GET /boards/period?startDate={startDate}&endDate={endDate}
+```
+
+<br/>
+
+## 7.게시물 좋아요 순 조회
+
+```
+GET /boards/like
+```
+
+<br/>
+
+## 8. 게시물 수정
+
+```
+PATCH /boards/{id}
 Body: {
-    "title":"수정",
-    "contents":"수정 내용"
+    "title":"제목",
+    "contents":"내용"
 }
 ```
 
 <br/>
 
-## 5.Todo 항목 삭제
+## 9. 게시물 삭제
 
 ```
-DELETE /todos/{id}
+DELETE /boards/{id}
 ```
 
 <br/>
 
-## 6.유저 생성
+## 10.유저 생성
 
 ```
 POST /users/signup
 Body: {
-    "userName":"유저명",
-    "email":"kob882333@naver.com",
-    "password":"12345678"
+    "name": "사용자 이름",
+    "age": 나이,
+    "email": "이메일",
+    "password": "비밀번호",
+    "checkPassword": "비밀번호 확인"
 }
 ```
 
 <br/>
 
-## 7.전체 유저 조회
+## 11.이메일로 유저 조회
 
 ```
-GET /users
+GET /users?email={email}
 ```
 
 <br/>
 
-## 8.유저 상세 조회
+## 12. 아이디로 유저 조회
 
 ```
 GET /users/{id}
@@ -439,49 +465,105 @@ GET /users/{id}
 
 <br/>
 
-## 9.유저 수정
+## 13. 유저 수정
 
 ```
 PATCH /users/{id}
-Body:{
-    "title":"제목 수정"
-    "email":"이메일 수정"
+Body: {
+    "name": "사용자 이름",
+    "age": 나이,
+    "email": "이메일",
+    "password": "비밀번호",
+    "checkPassword": "비밀번호 확인"
 }
 ```
 
 <br/>
 
-## 10.유저 삭제
+## 14. 유저 삭제
 
 ```
 DELETE /users/{id}
 ```
 
-<br/>
-
-## 11.로그인
+## 15. 댓글 생성
 
 ```
-POST /session-login
-Body:{
-    "email" : "kob882333@naver.com",
-    "password" : "12345678"
+POST /boards/{id}/comments
+Body: {
+    "content":"댓글 내용"
 }
 ```
-
-<br/>
-
-## 12.로그아웃
+## 16. 댓글 조회
 
 ```
-POST /session-logout
+GET /boards/{id}/comments
 ```
 
-<br/>
-
-## 13.이메일 중복확인
-
+## 17. 댓글 수정
 ```
-GET /check?email={email}
+PATCH /boards/comments/{id}
+Body: {
+    "content":"댓글 내용"
+}
 ```
-
+## 18. 댓글 삭제
+```
+DELETE /boards/comments/{id}
+```
+## 19. 댓글 페이지네이션
+```
+GET /boards/comments/pages
+```
+## 20. 팔로우
+```
+POST /users/{id}/follow
+```
+## 21. 팔로우 취소
+```
+PATCH /{id}/follow
+```
+## 22. 팔로잉 목록 조회
+```
+GET /users/{id}/followings
+```
+## 23. 팔로워 목록 조회
+```
+GET /users/{id}/followers
+```
+## 24. 게시물 좋아요
+```
+POST /boards/{id}/like
+```
+## 25. 게시물 좋아요 취소
+```
+PATCH /boards/{id}/like
+```
+## 26. 게시물 좋아요 수 조회
+```
+GET /boards/{id}/like
+```
+## 27. 댓글 좋아요
+```
+POST /comments/{id}/like
+```
+## 28. 댓글 좋아요 취소
+```
+PATCH /comments/{id}/like
+```
+## 29. 댓글 좋아요 수 조회
+```
+GET /{id}/like
+```
+## 30. 로그인
+```
+POST /login
+BODY: {
+    "email":"이메일",
+    "password":"비밀번호"
+}
+```
+## 31. 로그아웃
+```
+POST /logout
+```
