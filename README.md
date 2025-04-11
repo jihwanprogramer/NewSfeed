@@ -14,23 +14,104 @@
   
 ## API 명세서
 
-![1](https://github.com/user-attachments/assets/d149cf3b-e5ea-410f-a9bf-cc30927a16ab)
-![2](https://github.com/user-attachments/assets/8001f5b4-c15a-42a2-9ebb-c5d49a71a877)
-![3](https://github.com/user-attachments/assets/2a99704b-77c3-4202-a658-c7800452f188)
-![4](https://github.com/user-attachments/assets/2146f96f-0c75-4b41-94ad-df3359dd56a3)
-![5](https://github.com/user-attachments/assets/ac30809c-c4f5-44b7-870e-41959c427bdf)
-![6](https://github.com/user-attachments/assets/ca907a82-ad69-49bb-98cb-41ef30bb7a0e)
-![7](https://github.com/user-attachments/assets/187ddbac-c7ea-4e61-81e1-7b76ede905d6)
-![8](https://github.com/user-attachments/assets/4062076e-bf0a-4ff2-9cef-069063c52ff7)
-![9](https://github.com/user-attachments/assets/4701288c-4571-4c34-9a8b-6bd1a30cbd02)
-![10](https://github.com/user-attachments/assets/b5a05f92-2297-4123-9242-2726ed6245cc)
-![11](https://github.com/user-attachments/assets/1ae8f122-4edc-438b-8b38-6dd1be708162)
-![12](https://github.com/user-attachments/assets/c1f12c58-13a6-4a05-acd4-4bee8c292dce)
-![13](https://github.com/user-attachments/assets/98fd16ce-1cef-4b05-8540-19467699fe66)
-![14](https://github.com/user-attachments/assets/f4e2ad23-b1c0-4e21-a870-ce7dd6a7ce2b)
-![15](https://github.com/user-attachments/assets/a2fb5fba-09f9-44be-bcfe-35bb30d93430)
-![16](https://github.com/user-attachments/assets/c607b83d-950d-4d89-b2e7-290531c3f3a0)
+## Board API
+| **Method** | **Endpoint**          | **Description**            | **Parameters**                                                                              | **Request Body**                                     | **Response**                                                                                         | **Status Code**  |
+|------------|-----------------------|----------------------------|---------------------------------------------------------------------------------------------|------------------------------------------------------|------------------------------------------------------------------------------------------------------|------------------|
+| `POST`     | `/boards`             | 게시글 생성                | **Session:** <br> - `loginUser` (UserResponseDto)                                         | `{ "title": string, "content": string }`             | `{ "id": long, "userId": long, "title": string, "content": string, "createdAt": string, "updatedAt": string }` | `201 Created`    |
+| `GET`      | `/boards`             | 게시글 전체 조회           | 없음                                                                                       | 없음                                                 | `[ { "id": long, "userId": long, "title": string, "content": string, "createdAt": string, "updatedAt": string }, ... ]` | `200 OK`         |
+| `GET`      | `/boards/pages`       | 게시글 페이지 조회         | **Query:** <br> - `page` (int, default: 1)                                               | 없음                                                 | `Page<PageResponseDto>`                                                                               | `200 OK`         |
+| `GET`      | `/boards/{id}`        | 특정 게시글 조회           | **Path:** <br> - `id` (Long)                                                              | 없음                                                 | `{ "id": long, "userId": long, "title": string, "content": string, "createdAt": string, "updatedAt": string }` | `200 OK`         |
+| `PATCH`    | `/boards/{id}`        | 게시글 수정                | **Path:** <br> - `id` (Long) <br> **Session:** <br> - `loginUser` (UserResponseDto)      | `{ "title": string, "content": string }`             | `{ "id": long, "userId": long, "title": string, "content": string, "createdAt": string, "updatedAt": string }` | `200 OK`         |
+| `DELETE`   | `/boards/{id}`        | 게시글 삭제                | **Path:** <br> - `id` (Long) <br> **Session:** <br> - `loginUser` (UserResponseDto)      | 없음                                                 | 없음                                                                                                | `204 No Content`  |
+| `GET`      | `/boards/sorted-by-modifiedAt` | 수정일자 기준 최신순으로 조회 | **Query:** <br> - `page` (int, default: 1)                                               | 없음                                                 | `Page<PageResponseDto>`                                                                               | `200 OK`         |
+| `GET`      | `/boards/period`      | 기간별 조회                | **Query:** <br> - `page` (int, default: 1)                                               | `{ "startDate": string, "endDate": string }`        | `Page<PageResponseDto>`                                                                               | `200 OK`         |
+| `GET`      | `/boards/like`        | 좋아요순으로 조회          | **Query:** <br> - `page` (int, default: 1)                                               | 없음                                                 | `Page<LikesResponseDto>`                                                                              | `200 OK`         |
+## Comment API
+| **Method** | **Endpoint**                           | **Description**                            | **Parameters**                                                                                         | **Request Body**             | **Response**                                                                                                      | **Status Code** |
+|------------|----------------------------------------|--------------------------------------------|--------------------------------------------------------------------------------------------------------|------------------------------|-------------------------------------------------------------------------------------------------------------------|-----------------|
+| `POST`     | `/boards/{board_id}/comments`         | 댓글 생성                                   | **Path:** <br> - `board_id`: 게시판 ID (Long) <br> **Session:** <br> - `loginUser`: 사용자 ID (Long) | `{ "content": string }`      | `{ "id": long, "userId": long, "scheduleId": long, "content": string, "createdAt": string, "updatedAt": string }`    | `201 Created`   |
+| `GET`      | `/boards/{board_id}/comments`         | 특정 게시판에 속한 댓글 목록 조회              | **Path:** <br> - `board_id`: 게시판 ID (Long)                                                       | 없음                         | `[ { "id": long, "userId": long, "scheduleId": long, "content": string, "createdAt": string, "updatedAt": string }, ... ]` | `200 OK`        |
+| `GET`      | `/comments/{id}`                       | 단일 댓글 조회                             | **Path:** <br> - `id`: 댓글 ID (Long)                                                                | 없음                         | `{ "id": long, "userId": long, "scheduleId": long, "content": string, "createdAt": string, "updatedAt": string }`     | `200 OK`        |
+| `PUT`      | `/comments/{id}`                       | 댓글 수정                                   | **Path:** <br> - `id`: 댓글 ID (Long) <br> **Session:** <br> - `loginUser`: 사용자 ID (Long)         | `{ "content": string }`      | `{ "id": long, "userId": long, "scheduleId": long, "content": string, "createdAt": string, "updatedAt": string }`     | `200 OK`        |
+| `DELETE`   | `/comments/{id}`                       | 댓글 삭제                                   | **Path:** <br> - `id`: 댓글 ID (Long) <br> **Session:** <br> - `loginUser`: 사용자 ID (Long)         | 없음                         | 없음                                                                                                              | `204 No Content` |
+## Follow API
+| **Method** | **Endpoint**                      | **Description**                                     | **Parameters**                                                                                               | **Request Body** | **Response**                                     | **Status Code** |
+|------------|-----------------------------------|-----------------------------------------------------|--------------------------------------------------------------------------------------------------------------|-------------------|--------------------------------------------------|-----------------|
+| `POST`     | `/users/{followId}/follow`       | 다른 사용자를 팔로우                               | **Path:** <br> - `followId`: 팔로우 대상 사용자 ID (Long) <br> **Session:** <br> - `loginUser`: 사용자 ID (Long)| 없음              | `{ "followId": long, "userId": long, "followed": boolean }` | `201 Created`   |
+| `PATCH`    | `/users/{followingId}/follow`    | 팔로우 상태를 토글                                 | **Path:** <br> - `followingId`: 팔로우 대상 사용자 ID (Long) <br> **Session:** <br> - `loginUser`: 사용자 ID (Long)| 없음              | `{ "followingId": long, "userId": long, "followed": boolean }` | `200 OK`        |
+| `GET`      | `/users/{userId}/follow-status`  | 팔로우 중인지 확인                                 | **Path:** <br> - `userId`: 확인할 대상 사용자 ID (Long) <br> **Session:** <br> - `loginUser`: 사용자 ID (Long)| 없음              | `{ "userId": long, "following": boolean }`     | `200 OK`        |
+| `GET`      | `/users/{userId}/followings`     | 특정 사용자가 팔로우한 사용자 목록 조회          | **Path:** <br> - `userId`: 조회 대상 사용자 ID (Long) <br> **Session:** <br> - `loginUser`: 사용자 ID (Long)| 없음              | `Page<FollowResponseDto>`                         | `200 OK`        |
+| `GET`      | `/users/{userId}/followers`      | 특정 사용자를 팔로우한 사용자 목록 조회          | **Path:** <br> - `userId`: 조회 대상 사용자 ID (Long) <br> **Session:** <br> - `loginUser`: 사용자 ID (Long)| 없음              | `Page<FollowResponseDto>`                         | `200 OK`        |
+## Like API
+### Board Like API
+| **Method** | **Endpoint**                    | **Description**                       | **Parameters**                | **Request Body**   | **Response**                                     | **Status Code** |
+|------------|---------------------------------|---------------------------------------|-------------------------------|---------------------|--------------------------------------------------|-----------------|
+| `POST`     | `/boards/{boardid}/like`       | 게시물 좋아요를 생성합니다.           | **Path:**<br> - `boardid`: 게시물 ID (Long) <br> **Session:** <br> - `LOGIN_USER`: 사용자 ID (Long) | 없음                | `{ "boardId": long, "userId": long, "liked": boolean }` | `201 Created`   |
+| `PATCH`    | `/boards/{boardid}/like`       | 게시물 좋아요를 토글합니다.           
+## Follow API
+| **Method** | **Endpoint**                      | **Description**                                     | **Parameters**                                                                                               | **Request Body** | **Response**                                     | **Status Code** |
+|------------|-----------------------------------|-----------------------------------------------------|--------------------------------------------------------------------------------------------------------------|-------------------|--------------------------------------------------|-----------------|
+| `POST`     | `/users/{followId}/follow`       | 다른 사용자를 팔로우                               | **Path:** <br> - `followId`: 팔로우 대상 사용자 ID (Long) <br> **Session:** <br> - `loginUser`: 사용자 ID (Long) | 없음              | `{ "followId": long, "userId": long, "followed": boolean }` | `201 Created`   |
+| `PATCH`    | `/users/{followingId}/follow`    | 팔로우 상태를 토글                                 | **Path:** <br> - `followingId`: 팔로우 대상 사용자 ID (Long) <br> **Session:** <br> - `loginUser`: 사용자 ID (Long) | 없음              | `{ "followingId": long, "userId": long, "followed": boolean }` | `200 OK`        |
+| `GET`      | `/users/{userId}/follow-status`  | 팔로우 중인지 확인                                 | **Path:** <br> - `userId`: 확인할 대상 사용자 ID (Long) <br> **Session:** <br> - `loginUser`: 사용자 ID (Long) | 없음              | `{ "userId": long, "following": boolean }`     | `200 OK`        |
+| `GET`      | `/users/{userId}/followings`     | 특정 사용자가 팔로우한 사용자 목록 조회          | **Path:** <br> - `userId`: 조회 대상 사용자 ID (Long) <br> **Session:** <br> - `loginUser`: 사용자 ID (Long) | 없음              | `Page<FollowResponseDto>`                         | `200 OK`        |
+| `GET`      | `/users/{userId}/followers`      | 특정 사용자를 팔로우한 사용자 목록 조회          | **Path:** <br> - `userId`: 조회 대상 사용자 ID (Long) <br> **Session:** <br> - `loginUser`: 사용자 ID (Long) | 없음              | `Page<FollowResponseDto>`                         | `200 OK`        |
+## Like API
+### Board Like API
+| **Method** | **Endpoint**                    | **Description**                       | **Parameters**                | **Request Body**   | **Response**                                     | **Status Code** |
+|------------|---------------------------------|---------------------------------------|-------------------------------|---------------------|--------------------------------------------------|-----------------|
+| `POST`     | `/boards/{boardid}/like`       | 게시물 좋아요를 생성합니다.           | **Path:**<br> - `boardid`: 게시물 ID (Long) <br> **Session:** <br> - `LOGIN_USER`: 사용자 ID (Long) | 없음                | `{ "boardId": long, "userId": long, "liked": boolean }` | `201 Created`   |
+| `PATCH`    | `/boards/{boardid}/like`       | 게시물 좋아요를 토글합니다.            | **Path:**<br> - `boardid`: 게시물 ID (Long) <br> **Session:** <br> - `LOGIN_USER`: 사용자 ID (Long) | 없음                | `{ "boardId": long, "userId": long, "liked": boolean }` | `200 OK`        |
+| `GET`      | `/boards/{boardid}/like`       | 게시물 좋아요를 조회합니다.            | **Path:**<br> - `boardid`: 게시물 ID (Long) <br> **Session:** <br> - `LOGIN_USER`: 사용자 ID (Long) | 없음                | `{ "boardId": long, "userId": long, "liked": boolean }` | `200 OK`        |
+### Comment Like API
+| **Method** | **Endpoint**                    | **Description**                       | **Parameters**                | **Request Body**   | **Response**                                     | **Status Code** |
+|------------|---------------------------------|---------------------------------------|-------------------------------|---------------------|--------------------------------------------------|-----------------|
+| `POST`     | `/comments/{commentid}/like`    | 댓글 좋아요를 생성합니다.             | **Path:**<br> - `commentid`: 댓글 ID (Long) <br> **Session:** <br> - `LOGIN_USER`: 사용자 ID (Long) | 없음                | `{ "commentId": long, "userId": long, "liked": boolean }` | `201 Created`   |
+| `PATCH`    | `/comments/{commentid}/like`    | 댓글 좋아요를 토글합니다.              | **Path:**<br> - `commentid`: 댓글 ID (Long) <br> **Session:** <br> - `LOGIN_USER`: 사용자 ID (Long) | 없음                | `{ "commentId": long, "userId": long, "liked": boolean }` | `200 OK`       아래는 `Follow API`부터 시작하는 API 문서입니다.
+markdown
+## Follow API
+| **Method** | **Endpoint**                      | **Description**                                     | **Parameters**                                                                                               | **Request Body** | **Response**                                     | **Status Code** |
+|------------|-----------------------------------|-----------------------------------------------------|--------------------------------------------------------------------------------------------------------------|-------------------|--------------------------------------------------|-----------------|
+| `POST`     | `/users/{followId}/follow`       | 다른 사용자를 팔로우                               | **Path:** <br> - `followId`: 팔로우 대상 사용자 ID (Long) <br> **Session:** <br> - `loginUser`: 사용자 ID (Long) | 없음              | `{ "followId": long, "userId": long, "followed": boolean }` | `201 Created`   |
+| `PATCH`    | `/users/{followingId}/follow`    | 팔로우 상태를 토글                                 | **Path:** <br> - `followingId`: 팔로우 대상 사용자 ID (Long) <br> **Session:** <br> - `loginUser`: 사용자 ID (Long) | 없음              | `{ "followingId": long, "userId": long, "followed": boolean }` | `200 OK`        |
+| `GET`      | `/users/{userId}/follow-status`  | 팔로우 중인지 확인                                 | **Path:** <br> - `userId`: 확인할 대상 사용자 ID (Long) <br> **Session:** <br> - `loginUser`: 사용자 ID (Long) | 없음              | `{ "userId": long, "following": boolean }`     | `200 OK`        |
+| `GET`      | `/users/{userId}/followings`     | 특정 사용자가 팔로우한 사용자 목록 조회          | **Path:** <br> - `userId`: 조회 대상 사용자 ID (Long) <br> **Session:** <br> - `loginUser`: 사용자 ID (Long) | 없음              | `Page<FollowResponseDto>`                         | `200 OK`        |
+| `GET`      | `/users/{userId}/followers`      | 특정 사용자를 팔로우한 사용자 목록 조회          | **Path:** <br> - `userId`: 조회 대상 사용자 ID (Long) <br> **Session:** <br> - `loginUser`: 사용자 ID (Long) | 없음              | `Page<FollowResponseDto>`                         | `200 OK`        |
+## Like API
+### Board Like API
+| **Method** | **Endpoint**                    | **Description**                       | **Parameters**                | **Request Body**   | **Response**                                     | **Status Code** |
+|------------|---------------------------------|---------------------------------------|-------------------------------|---------------------|--------------------------------------------------|-----------------|
+| `POST`     | `/boards/{boardid}/like`       | 게시물 좋아요를 생성합니다.           | **Path:**<br> - `boardid`: 게시물 ID (Long) <br> **Session:** <br> - `LOGIN_USER`: 사용자 ID (Long) | 없음                | `{ "boardId": long, "userId": long, "liked": boolean }` | `201 Created`   |
+| `PATCH`    | `/boards/{boardid}/like`       | 게시물 좋아요를 토글합니다.            | **Path:**<br> - `boardid`: 게시물 ID (Long) <br> **Session:** <br> - `LOGIN_USER`: 사용자 ID (Long) | 없음                | `{ "boardId": long, "userId": long, "liked": boolean }` | `200 OK`        |
+| `GET`      | `/boards/{boardid}/like`       | 게시물 좋아요를 조회합니다.            | **Path:**<br> - `boardid`: 게시물 ID (Long) <br> **Session:** <br> - `LOGIN_USER`: 사용자 ID (Long) | 없음                | `{ "boardId": long, "userId": long, "liked": boolean }` | `200 OK`        |
+### Comment Like API
+| **Method** | **Endpoint**                    | **Description**                       | **Parameters**                | **Request Body**   | **Response**                                     | **Status Code** |
+|------------|---------------------------------|---------------------------------------|-------------------------------|---------------------|--------------------------------------------------|-----------------|
+| `POST`     | `/comments/{commentid}/like`    | 댓글 좋아요를 생성합니다.             | **Path:**<br> - `commentid`: 댓글 ID (Long) <br> **Session:** <br> - `LOGIN_USER`: 사용자 ID (Long) | 없음                | `{ "commentId": long, "userId": long, "liked": boolean }` | `201 Created`   |
+| `PATCH`    | `/comments/{commentid}/like`    | 댓글 좋아요를 토글합니다.              | **Path:**<br> - `commentid`: 댓글 ID (Long) <br> **Session:** <br> - `LOGIN_USER`: 사용자 ID (Long) | 없음                | `{ "commentId": long, "userId": long, "liked": boolean }` | `200 OK`        |
+| `GET`      | `/comments/{commentid}/like`    | 댓글 좋아요를 조회합니다.              | **Path:**<br> - `commentid`: 댓글 ID (Long) <br> **Session:** <br> - `LOGIN_USER`: 사용자 ID (Long) | 없음                | `{ "commentId": long, "userId": long, "liked": boolean }` | `200 OK`        |
+                                                                | `204 No Content` |
+# API Documentation
+## Login API
+| **Method** | **Endpoint**    | **Description**          | **Parameters**                        | **Request Body**                                | **Response**                                   | **Status Code** |
+|------------|------------------|--------------------------|---------------------------------------|-------------------------------------------------|------------------------------------------------|-----------------|
+| `POST`     | `/login`         | 로그인 요청              | 없음                                  | `{ "email": string, "password": string }`      | `{ "message": "로그인에 성공하였습니다." }`   | `200 OK`        |
+| `POST`     | `/logout`        | 로그아웃 요청            | 없음                                  | 없음                                            | `{ "message": "로그아웃하였습니다." }`        | `200 OK`        |
+## User API
+| **Method** | **Endpoint**         | **Description**                | **Parameters**                        | **Request Body**                                      | **Response**                                   | **Status Code**  |
+|------------|----------------------|----------------------------------|---------------------------------------|-------------------------------------------------------|------------------------------------------------|------------------|
+| `POST`     | `/users/signup`      | 회원 가입 요청                  | 없음                                  | `{ "name": string, "age": int, "email": string, "password": string, "checkPassword": string }` | `{ "id": long, "name": string, "email": string, ... }` | `201 Created`    |
+| `GET`      | `/users`             | 사용자 목록 조회 (이름 검색)    | **Query:** <br> - `name` (string)   | 없음                                                  | `[ { "id": long, "name": string, "email": string }, ... ]` | `200 OK`        |
+| `GET`      | `/users/pages`       | 사용자 목록 페이지 조회         | **Query:** <br> - `name` (string)   | 없음                                                  | `Page<UserResponseDto>`                        | `200 OK`        |
+| `GET`      | `/users/{id}`        | 사용자 ID로 정보 조회           | **Path:** <br> - `id` (Long)        | 없음                                                  | `{ "id": long, "name": string, "email": string, ... }` | `200 OK`        |
+| `PATCH`    | `/users/{id}`        | 사용자 정보 수정                | **Path:** <br> - `id` (Long)        | `{ "name": string, "age": int, "email": string, "password": string, "newPassword": string, "checkNewPassword": string }` | `{ "id": long, "name": string, "email": string, ... }` | `200 OK`        |
+| `DELETE`   | `/users/{id}`        | 사용자 계정 삭제                | **Path:** <br> - `id` (Long)        | **Query:** <br> - `password` (string)                | 없음                                           | `204 No Content` |
 
+
+
+
+
+[API 명세서 참고용](https://teamsparta.notion.site/9-FAKE-BOOK-1ce2dc3ef51480d5956de52b6fcea2de)
 ## ERD
 
 ![ERD 1](https://github.com/user-attachments/assets/fc0b7575-c263-4bd3-b8f4-5e7b73d36db5)
@@ -386,8 +467,11 @@ private List<Comment> comments = new ArrayList<>();
 
 # 6. 트러블 슈팅
 
+- user를 삭제하려는 중에 삭제가 안되서 확인 해보니 user에서 boardrepository통해서 삭제를 하는데 board에서 연관관계설정이 안되어 있어서 삭제가 안됨 -> board에서는 method를 호출해서 지웠음 like and comment 를 user 에서 board로 삭제하려고 하면 method가 호출이 안되서 삭제 불가->
+board에서 연관관계를 설정해서 해결
 
 # 7. 수행 결과
+
 
 
 ## 1.게시물 생성
