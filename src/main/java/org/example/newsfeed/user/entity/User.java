@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import org.example.newsfeed.common.config.PasswordEncoder;
 import org.example.newsfeed.common.entity.BaseEntity;
+import org.example.newsfeed.exception.MisMatchUserException;
 import org.example.newsfeed.exception.WrongPasswordException;
 
 @Entity
@@ -38,7 +39,9 @@ public class User extends BaseEntity {
     }
 
     public static User of(String name, Integer age, String email, String encodedPassword) {
+
         return new User(name,age,email,encodedPassword);
+
     }
 
     public void passwordMatch(String password, PasswordEncoder passwordEncoder) {
@@ -48,7 +51,6 @@ public class User extends BaseEntity {
         }
 
     }
-
 
     public void notNullUpdate(String name, Integer age, String email, String password, String newPassword,
                               String checkNewPassword, PasswordEncoder passwordEncoder) {
@@ -73,6 +75,15 @@ public class User extends BaseEntity {
 
             this.password = passwordEncoder.encode(newPassword);
 
+        }
+
+    }
+
+    // 세션의 id와 요청받은 id 확인 메서드
+    public void sessionCheck(Long loginUserId) {
+
+        if(!isSameUser(loginUserId)){
+            throw new MisMatchUserException("권한이 없습니다.");
         }
 
     }
