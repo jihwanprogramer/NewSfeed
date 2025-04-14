@@ -469,8 +469,17 @@ private List<Comment> comments = new ArrayList<>();
 
 # 6. 트러블 슈팅
 
-- user를 삭제하려는 중에 삭제가 안되서 확인 해보니 user에서 boardrepository통해서 삭제를 하는데 board에서 연관관계설정이 안되어 있어서 삭제가 안됨 -> board에서는 method를 호출해서 지웠음 like and comment 를 user 에서 board로 삭제하려고 하면 method가 호출이 안되서 삭제 불가->
-board에서 연관관계를 설정해서 해결
+**문제 상황**
+- 코드 테스트 중 user 테이블 삭제 시도 시 삭제가 되지 않음
+
+**원인**
+- board 테이블과 comment 테이블이 user 테이블과의 연관관계 없이 구현되어 있었음
+- 해당 테이블의 데이터를 삭제하는 별도의 메서드는 존재했지만, user 삭제 시 이 메서드가 호출되지 않음
+- 이로 인해 user 테이블 삭제 시 연관된 board/comment 데이터가 남아 있어 제약 조건 위반 발생 
+
+**해결**
+- board, comment 테이블 간에 연관관계 설정
+- user 삭제 시 연관된 board, comment도 함께 삭제되도록 Cascade 설정 적용 
 
 # 7. 수행 결과
 
