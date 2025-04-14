@@ -14,6 +14,8 @@
   
 ## API 명세서
 
+[API 명세서 자세한 예외 처리](https://teamsparta.notion.site/9-FAKE-BOOK-1ce2dc3ef51480d5956de52b6fcea2de)
+
 ## Board API
 | **Method** | **Endpoint**          | **Description**            | **Parameters**                                                                              | **Request Body**                                     | **Response**                                                                                         | **Status Code**  |
 |------------|-----------------------|----------------------------|---------------------------------------------------------------------------------------------|------------------------------------------------------|------------------------------------------------------------------------------------------------------|------------------|
@@ -111,7 +113,7 @@ markdown
 
 
 
-[API 명세서 참고용](https://teamsparta.notion.site/9-FAKE-BOOK-1ce2dc3ef51480d5956de52b6fcea2de)
+
 ## ERD
 
 ![ERD 1](https://github.com/user-attachments/assets/fc0b7575-c263-4bd3-b8f4-5e7b73d36db5)
