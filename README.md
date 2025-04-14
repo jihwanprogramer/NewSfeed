@@ -532,10 +532,10 @@ Body: {
 
 <br/>
 
-## 11.이메일로 유저 조회
+## 11.이름으로 유저 조회
 
 ```
-GET /users?email={email}
+GET /users?name={name}
 ```
 
 <br/>
