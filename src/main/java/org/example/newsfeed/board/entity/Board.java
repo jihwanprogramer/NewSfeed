@@ -7,6 +7,7 @@ import org.example.newsfeed.board.dto.UpdateRequestDto;
 import org.example.newsfeed.comment.entity.Comment;
 import org.example.newsfeed.common.entity.BaseEntity;
 import org.example.newsfeed.exception.MisMatchUserException;
+import org.example.newsfeed.exception.NullResponseException;
 import org.example.newsfeed.like.entity.BoardLike;
 import org.example.newsfeed.user.entity.User;
 
@@ -93,22 +94,18 @@ public class Board extends BaseEntity {
     /**
      * 게시글 제목 수정 메서드
      *
-     * @param requestDto 제목 수정 dto
-     * @return 제목이 수정된 게시글 객체
+     * @param requestDto 수정 dto
+     * @return 제목과 내용이 수정된 board 반환
      */
-    public void updateTitle(UpdateRequestDto requestDto) {
+    public void updateBoard(UpdateRequestDto requestDto) {
+        if (requestDto.getTitle() == null && requestDto.getContents() == null) {
+            throw new NullResponseException("잘못된 요청입니다.");
+        }
+
         if (requestDto.getTitle() != null) {
             this.title = requestDto.getTitle();
         }
-    }
 
-    /**
-     * 게시글 제목 수정 메서드
-     *
-     * @param requestDto 내용 수정 dto
-     * @return 내용이 수정된 게시글 객체
-     */
-    public void updateContents(UpdateRequestDto requestDto) {
         if (requestDto.getContents() != null) {
             this.contents = requestDto.getContents();
         }
@@ -121,7 +118,7 @@ public class Board extends BaseEntity {
      * @return 값을 비교 후 boolean 반환
      */
     public void isSameUser(Long userId) {
-        if (!this.user.getId().equals(userId)) {
+        if (!this.user.isSameUser(userId)) {
             throw new MisMatchUserException("작성자만 수정할 수 있습니다.");
         }
     }
